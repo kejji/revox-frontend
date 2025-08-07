@@ -1,11 +1,27 @@
+import { useState, useEffect } from "react";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { HeroLogo } from "@/components/ui/hero-logo";
 import { Link } from "react-router-dom";
 import { ArrowRight, Users, Zap, Star, CheckCircle, BarChart, Target } from "lucide-react";
 const Index = () => {
-  return <Layout>
+  const [showHeroLogo, setShowHeroLogo] = useState(true);
+
+  useEffect(() => {
+    // Hide hero logo after animation completes
+    const timer = setTimeout(() => {
+      setShowHeroLogo(false);
+    }, 2500);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  return (
+    <>
+      {showHeroLogo && <HeroLogo />}
+      <Layout>
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-gradient-to-br from-primary/5 via-background to-blue-500/5">
         <div className="mx-auto max-w-7xl px-4 py-20 lg:px-8 lg:py-32">
@@ -135,6 +151,8 @@ const Index = () => {
           </div>
         </div>
       </section>
-    </Layout>;
+    </Layout>
+    </>
+  );
 };
 export default Index;
