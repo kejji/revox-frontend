@@ -5,17 +5,20 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
-
-const navigation = [
-  { name: "About", href: "/about" },
-  { name: "Services", href: "/services" },
-  { name: "Blog", href: "/blog" },
-  { name: "Revox", href: "/revox", isProduct: true },
-];
+import { LanguageToggle } from "@/components/ui/language-toggle";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const { t } = useLanguage();
+
+  const navigation = [
+    { name: t("about"), href: "/about" },
+    { name: t("services"), href: "/services" },
+    { name: t("blog"), href: "/blog" },
+    { name: t("revox"), href: "/revox", isProduct: true },
+  ];
 
   const isActive = (href: string) => {
     if (href === "/") return location.pathname === "/";
@@ -60,14 +63,15 @@ export function Header() {
                   </Link>
                 ))}
                 <div className="mt-4 space-y-2">
-                  <div className="flex justify-center mb-4">
+                  <div className="flex justify-center gap-2 mb-4">
                     <ThemeToggle />
+                    <LanguageToggle />
                   </div>
                   <Button asChild className="w-full">
-                    <Link to="/contact">Get in Touch</Link>
+                    <Link to="/contact">{t("getInTouch")}</Link>
                   </Button>
                   <Button asChild variant="outline" className="w-full">
-                    <Link to="/revox">Try Revox Free</Link>
+                    <Link to="/revox">{t("tryRevoxFree")}</Link>
                   </Button>
                 </div>
               </nav>
@@ -96,12 +100,13 @@ export function Header() {
 
         {/* Desktop CTA buttons */}
         <div className="hidden lg:flex lg:flex-1 lg:justify-end lg:gap-x-4 lg:items-center">
+          <LanguageToggle />
           <ThemeToggle />
           <Button asChild variant="outline">
-            <Link to="/contact">Get in Touch</Link>
+            <Link to="/contact">{t("getInTouch")}</Link>
           </Button>
           <Button asChild>
-            <Link to="/revox">Try Revox Free</Link>
+            <Link to="/revox">{t("tryRevoxFree")}</Link>
           </Button>
         </div>
       </nav>
