@@ -4,38 +4,41 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 import { ArrowRight, Users, Target, Smartphone, TrendingUp } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function About() {
+  const { t } = useLanguage();
+
   const expertise = [
     {
       icon: Target,
-      title: "Product Strategy",
-      description: "Define product vision and roadmaps that align with business goals and user needs."
+      title: t("productStrategy"),
+      description: t("productStrategyDesc")
     },
     {
       icon: Users,
-      title: "User-Centric Design",
-      description: "Build products that truly solve user problems through research and feedback analysis."
+      title: t("userCentricDesign"),
+      description: t("userCentricDesignDesc")
     },
     {
       icon: Smartphone,
-      title: "Mobile Excellence",
-      description: "Specialized expertise in mobile app development and mobile-first experiences."
+      title: t("mobileExcellence"),
+      description: t("mobileExcellenceDesc")
     },
     {
       icon: TrendingUp,
-      title: "Data-Driven Decisions",
-      description: "Use analytics and user feedback to make informed product decisions."
+      title: t("dataDecisions"),
+      description: t("dataDecisionsDesc")
     }
   ];
 
   const industries = [
-    "Banking & Fintech",
-    "SaaS Platforms",
-    "E-commerce",
-    "Healthcare Tech",
-    "Insurance",
-    "Telecommunications"
+    t("bankingFintech"),
+    t("saasPlatforms"),
+    t("ecommerce"),
+    t("healthcareTech"),
+    t("insurance"),
+    t("telecommunications")
   ];
 
   return (
@@ -44,40 +47,40 @@ export default function About() {
         {/* Hero Section */}
         <div className="text-center mb-16">
           <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-6xl mb-6">
-            Product Owner with a
-            <span className="text-primary"> user-first</span> approach
+            {t("aboutHeroTitle")}
+            <span className="text-primary"> {t("aboutHeroHighlight")}</span> {t("aboutHeroTitle2")}
           </h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
-            I'm a freelance Product Owner specialized in mobile and tech products. I help startups and enterprise clients build user-centric digital experiences that drive real business value.
+            {t("aboutHeroDescription")}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button asChild size="lg">
               <Link to="/services">
-                View My Services <ArrowRight className="ml-2 h-4 w-4" />
+                {t("viewMyServices")} <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
             <Button asChild variant="outline" size="lg">
-              <Link to="/contact">Get in Touch</Link>
+              <Link to="/contact">{t("getInTouch")}</Link>
             </Button>
           </div>
         </div>
 
         {/* Background */}
         <section className="mb-16">
-          <h2 className="text-3xl font-bold text-foreground mb-8">Background</h2>
+          <h2 className="text-3xl font-bold text-foreground mb-8">{t("background")}</h2>
           <div className="prose prose-lg max-w-none text-muted-foreground">
             <p>
-              With over a decade of experience in product management and ownership, I specialize in transforming complex business requirements into user-friendly digital solutions. My journey began in traditional product management, but I quickly found my passion in the intersection of user experience and business strategy.
+              {t("backgroundP1")}
             </p>
             <p>
-              What sets me apart is my deep understanding of mobile ecosystems and my ability to translate user feedback into actionable product improvements. This expertise led me to create <Link to="/revox" className="text-primary font-medium">Revox</Link>, a SaaS platform that helps Product Owners like myself make better prioritization decisions using app store feedback.
+              {t("backgroundP2")} <Link to="/revox" className="text-primary font-medium">{t("revox")}</Link>{t("backgroundP3")}
             </p>
           </div>
         </section>
 
         {/* Expertise */}
         <section className="mb-16">
-          <h2 className="text-3xl font-bold text-foreground mb-8">Core Expertise</h2>
+          <h2 className="text-3xl font-bold text-foreground mb-8">{t("coreExpertise")}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {expertise.map((item, index) => (
               <Card key={index} className="border-2 hover:border-primary/50 transition-colors">
@@ -99,9 +102,9 @@ export default function About() {
 
         {/* Industries */}
         <section className="mb-16">
-          <h2 className="text-3xl font-bold text-foreground mb-8">Industries I Serve</h2>
+          <h2 className="text-3xl font-bold text-foreground mb-8">{t("industriesIServe")}</h2>
           <p className="text-lg text-muted-foreground mb-6">
-            I work across various sectors, with particular expertise in regulated industries where user trust and compliance are paramount.
+            {t("industriesDescription")}
           </p>
           <div className="flex flex-wrap gap-3">
             {industries.map((industry, index) => (
@@ -115,17 +118,17 @@ export default function About() {
         {/* CTA */}
         <section className="text-center bg-muted/30 rounded-lg p-8">
           <h2 className="text-2xl font-bold text-foreground mb-4">
-            Ready to work together?
+            {t("readyToWork")}
           </h2>
           <p className="text-muted-foreground mb-6">
-            Let's discuss how I can help you build better products that your users will love.
+            {t("readyToWorkDesc")}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button asChild size="lg">
-              <Link to="/contact">Start a Conversation</Link>
+              <Link to="/contact">{t("startConversation")}</Link>
             </Button>
             <Button asChild variant="outline" size="lg">
-              <Link to="/blog">Read My Insights</Link>
+              <Link to="/blog">{t("readMyInsights")}</Link>
             </Button>
           </div>
         </section>

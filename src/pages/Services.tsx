@@ -4,13 +4,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 import { CheckCircle, ArrowRight, Compass, Layers, Users, BarChart } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function Services() {
+  const { t } = useLanguage();
+
   const services = [
     {
       icon: Compass,
-      title: "Product Discovery & Strategy",
-      description: "Define product vision, identify market opportunities, and create strategic roadmaps.",
+      title: t("productDiscovery"),
+      description: t("productDiscoveryDesc"),
       features: [
         "Market research and competitive analysis",
         "User journey mapping and persona development",
@@ -22,8 +25,8 @@ export default function Services() {
     },
     {
       icon: Layers,
-      title: "Product Ownership & Management",
-      description: "End-to-end product ownership from concept to launch and beyond.",
+      title: t("productOwnership"),
+      description: t("productOwnershipDesc"),
       features: [
         "Backlog prioritization and management",
         "User story writing and acceptance criteria",
@@ -35,8 +38,8 @@ export default function Services() {
     },
     {
       icon: Users,
-      title: "User Feedback Analysis",
-      description: "Transform user feedback into actionable product improvements.",
+      title: t("userFeedbackAnalysis"),
+      description: t("userFeedbackAnalysisDesc"),
       features: [
         "App store review analysis",
         "User interview facilitation",
@@ -48,8 +51,8 @@ export default function Services() {
     },
     {
       icon: BarChart,
-      title: "Mobile Strategy & Optimization",
-      description: "Specialized mobile product strategy and performance optimization.",
+      title: t("mobileStrategy"),
+      description: t("mobileStrategyDesc"),
       features: [
         "Mobile-first product design",
         "App store optimization (ASO)",
@@ -76,11 +79,11 @@ export default function Services() {
         {/* Hero Section */}
         <div className="text-center mb-16">
           <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-6xl mb-6">
-            Product Ownership
-            <span className="text-primary"> Services</span>
+            {t("servicesHeroTitle")}
+            <span className="text-primary"> {t("servicesHeroHighlight")}</span>
           </h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
-            Comprehensive product ownership services to help you build user-centric digital experiences that drive business success.
+            {t("servicesHeroDescription")}
           </p>
         </div>
 
@@ -115,9 +118,9 @@ export default function Services() {
         {/* Working Methods */}
         <section className="mb-16">
           <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-foreground mb-4">How I Work</h2>
+            <h2 className="text-3xl font-bold text-foreground mb-4">{t("howIWork")}</h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              I use proven methodologies and modern practices to ensure successful product outcomes.
+              {t("howIWorkDesc")}
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -132,13 +135,13 @@ export default function Services() {
 
         {/* Process */}
         <section className="mb-16">
-          <h2 className="text-3xl font-bold text-foreground mb-8 text-center">My Process</h2>
+          <h2 className="text-3xl font-bold text-foreground mb-8 text-center">{t("myProcess")}</h2>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             {[
-              { step: "01", title: "Discovery", description: "Understand your business goals, user needs, and current challenges." },
-              { step: "02", title: "Strategy", description: "Define product vision, roadmap, and success metrics." },
-              { step: "03", title: "Execution", description: "Implement agile practices and manage product development." },
-              { step: "04", title: "Optimization", description: "Analyze results and continuously improve based on feedback." }
+              { step: "01", title: t("discovery"), description: t("discoveryDesc") },
+              { step: "02", title: t("strategy"), description: t("strategyDesc") },
+              { step: "03", title: t("execution"), description: t("executionDesc") },
+              { step: "04", title: t("optimization"), description: t("optimizationDesc") }
             ].map((item, index) => (
               <div key={index} className="text-center">
                 <div className="mx-auto w-12 h-12 bg-primary text-primary-foreground rounded-full flex items-center justify-center font-bold text-lg mb-4">
@@ -154,19 +157,19 @@ export default function Services() {
         {/* CTA */}
         <section className="text-center bg-gradient-to-r from-primary/10 to-blue-500/10 rounded-lg p-8">
           <h2 className="text-2xl font-bold text-foreground mb-4">
-            Ready to elevate your product?
+            {t("readyToElevate")}
           </h2>
           <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-            Let's discuss your product challenges and how my expertise can help you build something amazing.
+            {t("readyToElevateDesc")}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button asChild size="lg">
               <Link to="/contact">
-                Book a Consultation <ArrowRight className="ml-2 h-4 w-4" />
+                {t("bookConsultation")} <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
             <Button asChild variant="outline" size="lg">
-              <Link to="/about">Learn More About Me</Link>
+              <Link to="/about">{t("learnMoreAboutMe")}</Link>
             </Button>
           </div>
         </section>
