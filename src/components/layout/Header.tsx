@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 const navigation = [
   { name: "About", href: "/about" },
@@ -57,6 +58,9 @@ export function Header() {
                   </Link>
                 ))}
                 <div className="mt-4 space-y-2">
+                  <div className="flex justify-center mb-4">
+                    <ThemeToggle />
+                  </div>
                   <Button asChild className="w-full">
                     <Link to="/contact">Get in Touch</Link>
                   </Button>
@@ -87,7 +91,8 @@ export function Header() {
         </div>
 
         {/* Desktop CTA buttons */}
-        <div className="hidden lg:flex lg:flex-1 lg:justify-end lg:gap-x-4">
+        <div className="hidden lg:flex lg:flex-1 lg:justify-end lg:gap-x-4 lg:items-center">
+          <ThemeToggle />
           <Button asChild variant="outline">
             <Link to="/contact">Get in Touch</Link>
           </Button>
