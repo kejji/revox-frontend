@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { AnimatedLogo } from "@/components/ui/animated-logo";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -27,10 +26,9 @@ export function Header() {
       <nav className="mx-auto flex max-w-7xl items-center justify-between p-4 lg:px-8">
         {/* Logo */}
         <div className="flex lg:flex-1">
-          <AnimatedLogo 
-            showAnimation={location.pathname === "/"} 
-            className="-m-1.5 p-1.5"
-          />
+          <Link to="/" className="-m-1.5 p-1.5">
+            <span className="text-xl font-bold text-foreground">Revogate</span>
+          </Link>
         </div>
 
         {/* Mobile menu button */}
