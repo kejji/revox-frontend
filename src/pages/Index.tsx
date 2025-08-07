@@ -21,14 +21,14 @@ const Index = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-6 justify-center">
               <Button asChild size="lg" className="text-lg px-8 py-6">
-                <Link to="/services">
-                  Hire Me as Product Owner <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
-              </Button>
-              <Button asChild variant="outline" size="lg" className="text-lg px-8 py-6">
                 <Link to="/revox">
                   <Zap className="mr-2 h-5 w-5" />
                   Try Revox Free
+                </Link>
+              </Button>
+              <Button asChild variant="outline" size="lg" className="text-lg px-8 py-6">
+                <Link to="/contact">
+                  Get in Touch <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
             </div>
