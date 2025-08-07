@@ -4,17 +4,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 import { ArrowRight, Users, Zap, Star, CheckCircle, BarChart, Target } from "lucide-react";
-
 const Index = () => {
-  return (
-    <Layout>
+  return <Layout>
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-gradient-to-br from-primary/5 via-background to-blue-500/5">
         <div className="mx-auto max-w-7xl px-4 py-20 lg:px-8 lg:py-32">
           <div className="text-center">
-            <Badge className="mb-8 bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-              Product Owner & SaaS Creator
-            </Badge>
+            <Badge className="mb-8 bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">Product Owner & SaaS Creator</Badge>
             <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-7xl mb-8">
               Building better products through
               <span className="text-primary"> user insights</span>
@@ -48,12 +44,19 @@ const Index = () => {
             <p className="text-lg text-muted-foreground">Comprehensive support for your product development journey</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              { icon: Target, title: "Product Strategy", desc: "Define vision and roadmaps aligned with business goals" },
-              { icon: Users, title: "User Research", desc: "Deep user insights through feedback analysis and research" },
-              { icon: BarChart, title: "Data-Driven Decisions", desc: "Analytics and metrics to guide product choices" }
-            ].map((service, index) => (
-              <Card key={index} className="text-center hover:border-primary/50 transition-colors">
+            {[{
+            icon: Target,
+            title: "Product Strategy",
+            desc: "Define vision and roadmaps aligned with business goals"
+          }, {
+            icon: Users,
+            title: "User Research",
+            desc: "Deep user insights through feedback analysis and research"
+          }, {
+            icon: BarChart,
+            title: "Data-Driven Decisions",
+            desc: "Analytics and metrics to guide product choices"
+          }].map((service, index) => <Card key={index} className="text-center hover:border-primary/50 transition-colors">
                 <CardHeader>
                   <service.icon className="h-12 w-12 text-primary mx-auto mb-4" />
                   <CardTitle>{service.title}</CardTitle>
@@ -61,8 +64,7 @@ const Index = () => {
                 <CardContent>
                   <p className="text-muted-foreground">{service.desc}</p>
                 </CardContent>
-              </Card>
-            ))}
+              </Card>)}
           </div>
           <div className="text-center mt-12">
             <Button asChild variant="outline" size="lg">
@@ -86,17 +88,10 @@ const Index = () => {
                 to help teams identify issues, prioritize features, and make data-driven product decisions.
               </p>
               <div className="space-y-3 mb-8">
-                {[
-                  "Automated review collection and analysis",
-                  "AI-powered categorization and insights",
-                  "Save 10+ hours per week on manual analysis",
-                  "Used by 500+ product teams worldwide"
-                ].map((feature, index) => (
-                  <div key={index} className="flex items-center space-x-3">
+                {["Automated review collection and analysis", "AI-powered categorization and insights", "Save 10+ hours per week on manual analysis", "Used by 500+ product teams worldwide"].map((feature, index) => <div key={index} className="flex items-center space-x-3">
                     <CheckCircle className="h-5 w-5 text-primary" />
                     <span className="text-muted-foreground">{feature}</span>
-                  </div>
-                ))}
+                  </div>)}
               </div>
               <Button asChild size="lg">
                 <Link to="/revox">
@@ -140,8 +135,6 @@ const Index = () => {
           </div>
         </div>
       </section>
-    </Layout>
-  );
+    </Layout>;
 };
-
 export default Index;
