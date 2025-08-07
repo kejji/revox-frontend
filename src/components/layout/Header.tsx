@@ -49,9 +49,11 @@ export function Header() {
                     to={item.href}
                     onClick={() => setMobileMenuOpen(false)}
                     className={cn(
-                      "text-lg font-medium transition-colors hover:text-primary",
-                      isActive(item.href) ? "text-primary" : "text-foreground",
-                      item.isProduct && "text-blue-600 dark:text-blue-400"
+                      "px-3 py-2 rounded-md text-lg font-medium transition-all duration-200",
+                      isActive(item.href) 
+                        ? "bg-primary/10 text-primary border border-primary/20" 
+                        : "text-foreground hover:text-primary hover:bg-primary/5",
+                      item.isProduct && !isActive(item.href) && "text-blue-600 dark:text-blue-400"
                     )}
                   >
                     {item.name}
@@ -74,15 +76,17 @@ export function Header() {
         </div>
 
         {/* Desktop navigation */}
-        <div className="hidden lg:flex lg:gap-x-8">
+        <div className="hidden lg:flex lg:gap-x-2">
           {navigation.map((item) => (
             <Link
               key={item.name}
               to={item.href}
               className={cn(
-                "text-sm font-medium transition-colors hover:text-primary",
-                isActive(item.href) ? "text-primary" : "text-foreground",
-                item.isProduct && "text-blue-600 dark:text-blue-400"
+                "px-3 py-2 rounded-md text-sm font-medium transition-all duration-200",
+                isActive(item.href) 
+                  ? "bg-primary/10 text-primary border border-primary/20" 
+                  : "text-foreground hover:text-primary hover:bg-primary/5",
+                item.isProduct && !isActive(item.href) && "text-blue-600 dark:text-blue-400 hover:text-blue-500"
               )}
             >
               {item.name}
