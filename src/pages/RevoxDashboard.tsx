@@ -1,5 +1,4 @@
 import { useState } from "react";
-import androidLogo from "@/assets/android-logo.png";
 import { 
   Plus, 
   MoreVertical, 
@@ -14,7 +13,8 @@ import {
   Apple,
   Trash2,
   Grid3X3,
-  BarChart3
+  BarChart3,
+  Bot
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -111,7 +111,7 @@ const RevoxDashboard = () => {
           {platform === 'ios' ? (
             <Apple className="w-3 h-3 mr-1" />
           ) : (
-            <img src={androidLogo} alt="Android" className="w-3 h-3 mr-1" />
+            <Bot className="w-3 h-3 mr-1" />
           )}
           {platform.toUpperCase()}
         </Badge>
