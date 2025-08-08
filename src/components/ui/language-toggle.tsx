@@ -16,10 +16,10 @@ export function LanguageToggle() {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuItem onClick={() => setLanguage('en')} className={language === 'en' ? 'bg-accent' : ''}>
-          🇺🇸 English
+          English
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setLanguage('fr')} className={language === 'fr' ? 'bg-accent' : ''}>
-          🇫🇷 Français
+          Français
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
