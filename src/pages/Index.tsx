@@ -23,9 +23,9 @@ const Index = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-6 justify-center">
               <Button asChild size="lg" className="text-lg px-8 py-6">
-                <Link to="/rg-insights/auth">
+                <Link to="/revox/auth">
                   <Zap className="mr-2 h-5 w-5" />
-                  {t("tryRGInsightsFree")}
+                  {t("tryRevoxFree")}
                 </Link>
               </Button>
               <Button asChild variant="outline" size="lg" className="text-lg px-8 py-6">
@@ -81,22 +81,22 @@ const Index = () => {
         <div className="mx-auto max-w-6xl px-4 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
-              <Badge className="mb-6">{t("introducingRGInsights")}</Badge>
+              <Badge className="mb-6">{t("introducingRevox")}</Badge>
               <h2 className="text-4xl font-bold text-foreground mb-6">
-                {t("rgInsightsTitle")}
+                {t("revoxTitle")}
               </h2>
               <p className="text-lg text-muted-foreground mb-8">
-                {t("rgInsightsDescription")}
+                {t("revoxDescription")}
               </p>
               <div className="space-y-3 mb-8">
-                {[t("rgInsightsFeature1"), t("rgInsightsFeature2"), t("rgInsightsFeature3"), t("rgInsightsFeature4")].map((feature, index) => <div key={index} className="flex items-center space-x-3">
+                {[t("revoxFeature1"), t("revoxFeature2"), t("revoxFeature3"), t("revoxFeature4")].map((feature, index) => <div key={index} className="flex items-center space-x-3">
                     <CheckCircle className="h-5 w-5 text-primary" />
                     <span className="text-muted-foreground">{feature}</span>
                   </div>)}
               </div>
               <Button asChild size="lg">
-                <Link to="/rg-insights">
-                  {t("exploreRGInsights")} <ArrowRight className="ml-2 h-5 w-5" />
+                <Link to="/revox">
+                  {t("exploreRevox")} <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
             </div>

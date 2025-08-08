@@ -73,7 +73,7 @@ export default function About() {
               {t("backgroundP1")}
             </p>
             <p>
-              {t("backgroundP2")} <Link to="/rg-insights" className="text-primary font-medium">{t("rgInsights")}</Link>{t("backgroundP3")}
+              {t("backgroundP2")} <Link to="/revox" className="text-primary font-medium">{t("revox")}</Link>{t("backgroundP3")}
             </p>
           </div>
         </section>

@@ -8,12 +8,11 @@ const footerLinks = {
     { name: "Blog", href: "/blog" },
     { name: "Contact", href: "/contact" },
   ],
-  rgInsights: [
-    { name: "Product", href: "/rg-insights" },
-    { name: "How it Works", href: "/rg-insights/how-it-works" },
-    { name: "Use Cases", href: "/rg-insights/use-cases" },
-    { name: "Pricing", href: "/rg-insights/pricing" },
-    { name: "About", href: "/rg-insights/about" },
+  revox: [
+    { name: "Product", href: "/revox" },
+    { name: "How it Works", href: "/revox/how-it-works" },
+    { name: "Use Cases", href: "/revox/use-cases" },
+    { name: "Pricing", href: "/revox/pricing" },
   ],
   legal: [
     { name: "Privacy Policy", href: "/privacy" },
@@ -30,10 +29,10 @@ export function Footer() {
           {/* Brand */}
           <div className="lg:col-span-1">
             <Link to="/" className="text-xl font-bold text-foreground">
-              Règle & Gestion
+              Revogate
             </Link>
             <p className="mt-4 text-sm text-muted-foreground">
-              Product Owner services and RG Insights SaaS platform for better product decisions through user feedback analysis.
+              Product Owner services and Revox SaaS platform for better product decisions through user feedback analysis.
             </p>
             <div className="mt-6 flex space-x-4">
               <a
@@ -70,11 +69,11 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* RG Insights Links */}
+          {/* Revox Links */}
           <div>
-            <h3 className="text-sm font-semibold text-foreground">RG Insights</h3>
+            <h3 className="text-sm font-semibold text-foreground">Revox</h3>
             <ul className="mt-4 space-y-2">
-              {footerLinks.rgInsights.map((link) => (
+              {footerLinks.revox.map((link) => (
                 <li key={link.name}>
                   <Link
                     to={link.href}
@@ -107,7 +106,7 @@ export function Footer() {
 
         <div className="mt-8 border-t pt-8">
           <p className="text-center text-sm text-muted-foreground">
-            © {new Date().getFullYear()} Règle & Gestion. All rights reserved. Built with care for Product Owners.
+            © {new Date().getFullYear()} Revogate. All rights reserved. Built with care for Product Owners.
           </p>
         </div>
       </div>

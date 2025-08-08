@@ -7,7 +7,6 @@ import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { LanguageToggle } from "@/components/ui/language-toggle";
 import { useLanguage } from "@/contexts/LanguageContext";
-import rgLogo from "@/assets/rg-logo.png";
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -18,7 +17,7 @@ export function Header() {
     { name: t("about"), href: "/about" },
     { name: t("services"), href: "/services" },
     { name: t("blog"), href: "/blog" },
-    { name: t("rgInsights"), href: "/rg-insights", isProduct: true },
+    { name: t("revox"), href: "/revox", isProduct: true },
   ];
 
   const isActive = (href: string) => {
@@ -31,9 +30,8 @@ export function Header() {
       <nav className="mx-auto flex max-w-7xl items-center justify-between p-4 lg:px-8">
         {/* Logo */}
         <div className="flex lg:flex-1">
-          <Link to="/" className="-m-1.5 p-1.5 flex items-center gap-3">
-            <img src={rgLogo} alt="RG Logo" className="h-8 w-auto" />
-            <span className="text-xl font-bold text-foreground">Règle & Gestion</span>
+          <Link to="/" className="-m-1.5 p-1.5">
+            <span className="text-xl font-bold text-foreground">Revogate</span>
           </Link>
         </div>
 
@@ -73,7 +71,7 @@ export function Header() {
                     <Link to="/contact">{t("getInTouch")}</Link>
                   </Button>
                   <Button asChild variant="outline" className="w-full">
-                    <Link to="/rg-insights">{t("tryRGInsightsFree")}</Link>
+                    <Link to="/revox">{t("tryRevoxFree")}</Link>
                   </Button>
                 </div>
               </nav>
@@ -108,7 +106,7 @@ export function Header() {
             <Link to="/contact">{t("getInTouch")}</Link>
           </Button>
           <Button asChild>
-            <Link to="/rg-insights">{t("tryRGInsightsFree")}</Link>
+            <Link to="/revox">{t("tryRevoxFree")}</Link>
           </Button>
         </div>
       </nav>
