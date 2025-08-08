@@ -9,7 +9,7 @@ import {
   MessageSquare, 
   AlertTriangle,
   Smartphone,
-  Zap,
+  Bot,
   Apple,
   Trash2,
   Grid3X3,
@@ -107,7 +107,7 @@ const RevoxDashboard = () => {
     <div className="flex gap-1">
       {platforms.map(platform => (
         <Badge key={platform} variant="secondary" className="text-xs">
-          {platform === 'ios' ? <Apple className="w-3 h-3 mr-1" /> : <Zap className="w-3 h-3 mr-1" />}
+          {platform === 'ios' ? <Apple className="w-3 h-3 mr-1" /> : <Bot className="w-3 h-3 mr-1" />}
           {platform.toUpperCase()}
         </Badge>
       ))}
