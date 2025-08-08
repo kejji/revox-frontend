@@ -36,7 +36,7 @@ const RevoxAuth = () => {
             {/* Left side - Auth forms */}
             <div>
               <div className="mb-8">
-                <Badge className="mb-4">{t("joinRevox")}</Badge>
+                <Badge className="mb-4">{t("joinRGInsights")}</Badge>
                 <h1 className="text-3xl font-bold text-foreground mb-4">
                   {t("authTitle")}
                 </h1>
@@ -131,7 +131,7 @@ const RevoxAuth = () => {
                         </Button>
                       </div>
                       <Button className="w-full" onClick={handleLogin}>
-                        {t("signInToRevox")}
+                        {t("signInToRGInsights")}
                       </Button>
                     </CardContent>
                   </Card>
@@ -156,7 +156,7 @@ const RevoxAuth = () => {
             {/* Right side - Benefits */}
             <div className="space-y-8">
               <div className="bg-gradient-to-br from-primary/10 to-blue-500/10 rounded-xl p-8">
-                <h3 className="text-xl font-bold text-foreground mb-6">{t("whyRevox")}</h3>
+                <h3 className="text-xl font-bold text-foreground mb-6">{t("whyRGInsights")}</h3>
                 <div className="space-y-4">
                   {[
                     { title: t("savesTime"), desc: t("savesTimeDesc") },
