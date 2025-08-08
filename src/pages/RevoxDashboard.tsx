@@ -1,5 +1,4 @@
 import { useState } from "react";
-import androidLogo from "@/assets/android-logo.png";
 import { 
   Plus, 
   MoreVertical, 
@@ -108,11 +107,7 @@ const RevoxDashboard = () => {
     <div className="flex gap-1">
       {platforms.map(platform => (
         <Badge key={platform} variant="secondary" className="text-xs">
-          {platform === 'ios' ? (
-            <Apple className="w-3 h-3 mr-1" />
-          ) : (
-            <img src={androidLogo} alt="Android" className="w-3 h-3 mr-1" />
-          )}
+          {platform === 'ios' ? <Apple className="w-3 h-3 mr-1" /> : <Zap className="w-3 h-3 mr-1" />}
           {platform.toUpperCase()}
         </Badge>
       ))}
