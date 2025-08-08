@@ -4,15 +4,15 @@ export const translations = {
     about: "About",
     services: "Services", 
     blog: "Blog",
-    revox: "Revox",
+    revox: "RG Insights",
     getInTouch: "Get in Touch",
-    tryRevoxFree: "Try Revox Free",
+    tryRevoxFree: "Try RG Insights Free",
     
     // Hero Section
     heroSubtitle: "Product Owner & SaaS Creator",
     heroTitle: "Building better products through",
     heroTitleHighlight: "user insights",
-    heroDescription: "I'm a freelance Product Owner who helps teams build user-centric digital experiences. I also created Revox, a SaaS platform that transforms app store feedback into actionable product insights.",
+    heroDescription: "I'm a freelance Product Owner who helps teams build user-centric digital experiences. I also created RG Insights, a SaaS platform that transforms app store feedback into actionable product insights.",
     
     // Services Section
     servicesTitle: "Product Ownership Services",
@@ -25,21 +25,21 @@ export const translations = {
     dataDecisionsDesc: "Analytics and metrics to guide product choices",
     viewAllServices: "View All Services",
     
-    // Revox Section
-    introducingRevox: "Introducing Revox",
+    // RG Insights Section
+    introducingRevox: "Introducing RG Insights",
     revoxTitle: "Turn user feedback into product decisions",
-    revoxDescription: "Built from my experience as a Product Owner, Revox automatically analyzes app store reviews to help teams identify issues, prioritize features, and make data-driven product decisions.",
+    revoxDescription: "Built from my experience as a Product Owner, RG Insights automatically analyzes app store reviews to help teams identify issues, prioritize features, and make data-driven product decisions.",
     revoxFeature1: "Automated review collection and analysis",
     revoxFeature2: "AI-powered categorization and insights", 
     revoxFeature3: "Save 10+ hours per week on manual analysis",
     revoxFeature4: "Used by 500+ product teams worldwide",
-    exploreRevox: "Explore Revox",
-    teamsUsing: "Teams using Revox",
+    exploreRevox: "Explore RG Insights",
+    teamsUsing: "Teams using RG Insights",
     reviewsAnalyzed: "Reviews analyzed",
     
     // CTA Section
     ctaTitle: "Ready to build better products together?",
-    ctaDescription: "Whether you need Product Owner expertise or want to transform your feedback analysis with Revox, I'm here to help.",
+    ctaDescription: "Whether you need Product Owner expertise or want to transform your feedback analysis with RG Insights, I'm here to help.",
     readMyBlog: "Read My Blog",
 
     // Auth Page
