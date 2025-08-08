@@ -38,25 +38,25 @@ export default function Contact() {
               <CardContent>
                 <form className="space-y-6">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="firstName">{t("firstName")}</Label>
-                      <Input id="firstName" placeholder="John" />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="lastName">{t("lastName")}</Label>
-                      <Input id="lastName" placeholder="Doe" />
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="email">{t("email")}</Label>
-                    <Input id="email" type="email" placeholder="john.doe@company.com" />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="company">{t("company")}</Label>
-                    <Input id="company" placeholder="Your Company" />
-                  </div>
+                     <div className="space-y-2">
+                       <Label htmlFor="firstName">{t("contactFirstName")}</Label>
+                       <Input id="firstName" placeholder="John" />
+                     </div>
+                     <div className="space-y-2">
+                       <Label htmlFor="lastName">{t("contactLastName")}</Label>
+                       <Input id="lastName" placeholder="Doe" />
+                     </div>
+                   </div>
+                   
+                   <div className="space-y-2">
+                     <Label htmlFor="email">{t("contactEmail")}</Label>
+                     <Input id="email" type="email" placeholder="john.doe@company.com" />
+                   </div>
+                   
+                   <div className="space-y-2">
+                     <Label htmlFor="company">{t("contactCompany")}</Label>
+                     <Input id="company" placeholder="Your Company" />
+                   </div>
                   
                   <div className="space-y-2">
                     <Label htmlFor="projectType">{t("projectType")}</Label>
