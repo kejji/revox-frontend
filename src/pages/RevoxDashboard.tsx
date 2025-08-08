@@ -37,6 +37,8 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { LanguageToggle } from "@/components/ui/language-toggle";
 
 interface App {
   id: string;
@@ -173,6 +175,8 @@ const RevoxDashboard = () => {
           </div>
           
           <div className="flex items-center gap-4">
+            <ThemeToggle />
+            <LanguageToggle />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative h-8 w-8 rounded-full">
