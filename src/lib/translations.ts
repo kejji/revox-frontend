@@ -4,15 +4,15 @@ export const translations = {
     about: "About",
     services: "Services", 
     blog: "Blog",
-    revox: "RG Insights",
+    revox: "FeedbackLens",
     getInTouch: "Get in Touch",
-    tryRevoxFree: "Try RG Insights Free",
+    tryRevoxFree: "Try FeedbackLens Free",
     
     // Hero Section
     heroSubtitle: "Product Owner & SaaS Creator",
     heroTitle: "Building better products through",
     heroTitleHighlight: "user insights",
-    heroDescription: "I'm a freelance Product Owner who helps teams build user-centric digital experiences. I also created RG Insights, a SaaS platform that transforms app store feedback into actionable product insights.",
+    heroDescription: "I'm a freelance Product Owner who helps teams build user-centric digital experiences. I also created FeedbackLens, a SaaS platform that transforms app store feedback into actionable product insights.",
     
     // Services Section
     servicesTitle: "Product Ownership Services",
@@ -25,21 +25,21 @@ export const translations = {
     dataDecisionsDesc: "Analytics and metrics to guide product choices",
     viewAllServices: "View All Services",
     
-    // RG Insights Section
-    introducingRevox: "Introducing RG Insights",
+    // FeedbackLens Section
+    introducingRevox: "Introducing FeedbackLens",
     revoxTitle: "Turn user feedback into product decisions",
-    revoxDescription: "Built from my experience as a Product Owner, RG Insights automatically analyzes app store reviews to help teams identify issues, prioritize features, and make data-driven product decisions.",
+    revoxDescription: "Built from my experience as a Product Owner, FeedbackLens automatically analyzes app store reviews to help teams identify issues, prioritize features, and make data-driven product decisions.",
     revoxFeature1: "Automated review collection and analysis",
     revoxFeature2: "AI-powered categorization and insights", 
     revoxFeature3: "Save 10+ hours per week on manual analysis",
     revoxFeature4: "Used by 500+ product teams worldwide",
-    exploreRevox: "Explore RG Insights",
-    teamsUsing: "Teams using RG Insights",
+    exploreRevox: "Explore FeedbackLens",
+    teamsUsing: "Teams using FeedbackLens",
     reviewsAnalyzed: "Reviews analyzed",
     
     // CTA Section
     ctaTitle: "Ready to build better products together?",
-    ctaDescription: "Whether you need Product Owner expertise or want to transform your feedback analysis with RG Insights, I'm here to help.",
+    ctaDescription: "Whether you need Product Owner expertise or want to transform your feedback analysis with FeedbackLens, I'm here to help.",
     readMyBlog: "Read My Blog",
 
     // Auth Page

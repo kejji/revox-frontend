@@ -29,10 +29,10 @@ export function Footer() {
           {/* Brand */}
           <div className="lg:col-span-1">
             <Link to="/" className="text-xl font-bold text-foreground">
-              RG Studio
+              ProductForge
             </Link>
             <p className="mt-4 text-sm text-muted-foreground">
-              Product Owner services and RG Insights platform for better product decisions through user feedback analysis.
+              Product Owner services and FeedbackLens platform for better product decisions through user feedback analysis.
             </p>
             <div className="mt-6 flex space-x-4">
               <a
@@ -69,9 +69,9 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* RG Insights Links */}
+          {/* FeedbackLens Links */}
           <div>
-            <h3 className="text-sm font-semibold text-foreground">RG Insights</h3>
+            <h3 className="text-sm font-semibold text-foreground">FeedbackLens</h3>
             <ul className="mt-4 space-y-2">
               {footerLinks.revox.map((link) => (
                 <li key={link.name}>
@@ -106,7 +106,7 @@ export function Footer() {
 
         <div className="mt-8 border-t pt-8">
           <p className="text-center text-sm text-muted-foreground">
-            © {new Date().getFullYear()} RG Studio. All rights reserved. Built with care for Product Owners.
+            © {new Date().getFullYear()} ProductForge. All rights reserved. Built with care for Product Owners.
           </p>
         </div>
       </div>
