@@ -6,12 +6,17 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, Mail, Lock, User, Building, Zap, Shield, Globe } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 const RevoxAuth = () => {
   const { t } = useLanguage();
+  const navigate = useNavigate();
+
+  const handleLogin = () => {
+    navigate('/revox/dashboard');
+  };
   
   return (
     <Layout>
@@ -84,7 +89,7 @@ const RevoxAuth = () => {
                           <Input id="password" type="password" className="pl-10" placeholder={t("passwordPlaceholder")} />
                         </div>
                       </div>
-                      <Button className="w-full">
+                      <Button className="w-full" onClick={handleLogin}>
                         <Zap className="mr-2 h-4 w-4" />
                         {t("startFreeTrial")}
                       </Button>
@@ -125,7 +130,7 @@ const RevoxAuth = () => {
                           {t("forgotPassword")}
                         </Button>
                       </div>
-                      <Button className="w-full">
+                      <Button className="w-full" onClick={handleLogin}>
                         {t("signInToRevox")}
                       </Button>
                     </CardContent>
