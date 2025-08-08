@@ -16,6 +16,7 @@ import RevoxUseCases from "./pages/RevoxUseCases";
 import RevoxPricing from "./pages/RevoxPricing";
 import RevoxAbout from "./pages/RevoxAbout";
 import RevoxAuth from "./pages/RevoxAuth";
+import RevoxDashboard from "./pages/RevoxDashboard";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 
@@ -42,6 +43,7 @@ const App = () => (
           <Route path="/revox/pricing" element={<RevoxPricing />} />
           <Route path="/revox/about" element={<RevoxAbout />} />
           <Route path="/revox/auth" element={<RevoxAuth />} />
+          <Route path="/revox/dashboard" element={<RevoxDashboard />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
