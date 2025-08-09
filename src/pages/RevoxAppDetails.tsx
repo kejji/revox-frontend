@@ -313,7 +313,7 @@ const RevoxAppDetails = () => {
                              <span>1 update per month</span>
                            </div>
                            <div className="text-xs">
-                             Last update: {formatDistanceToNow(new Date(allUpdates[0].date), { addSuffix: true })}
+                             Last update : 3 days ago
                            </div>
                          </div>
                        ) : (
