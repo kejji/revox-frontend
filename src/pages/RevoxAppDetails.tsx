@@ -314,7 +314,7 @@ const RevoxAppDetails = () => {
         </Card>
 
         {/* Analytics and Trends Section */}
-        <div className="grid gap-6 lg:grid-cols-3">
+        <div className="grid gap-6 lg:grid-cols-3 lg:items-start">
           {/* Analytics Widgets */}
           <div className="lg:col-span-1 space-y-4">
             <Card>
