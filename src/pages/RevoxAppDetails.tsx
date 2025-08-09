@@ -38,7 +38,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from "recharts";
+import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Cell } from "recharts";
 
 interface Review {
   id: string;
@@ -119,19 +119,36 @@ const RevoxAppDetails = () => {
   const [searchKeyword, setSearchKeyword] = useState('');
   const [topThemesPlatform, setTopThemesPlatform] = useState<string>('all');
   const [flopThemesPlatform, setFlopThemesPlatform] = useState<string>('all');
+  const [chartPlatformFilter, setChartPlatformFilter] = useState<string>('all');
   
   const reviewsPerPage = 10;
 
-  // Mock trend data
-  const trendData = [
-    { date: 'Jan 10', rating: 4.1, reviews: 152 },
-    { date: 'Jan 11', rating: 4.0, reviews: 143 },
-    { date: 'Jan 12', rating: 4.3, reviews: 167 },
-    { date: 'Jan 13', rating: 3.8, reviews: 134 },
-    { date: 'Jan 14', rating: 4.1, reviews: 156 },
-    { date: 'Jan 15', rating: 4.2, reviews: 189 },
-    { date: 'Jan 16', rating: 4.4, reviews: 201 }
+  // Mock individual review data for scatter chart
+  const reviewsChartData = [
+    { date: '2024-01-10', rating: 5, platform: 'ios', timestamp: new Date('2024-01-10T08:30:00').getTime() },
+    { date: '2024-01-10', rating: 4, platform: 'android', timestamp: new Date('2024-01-10T10:15:00').getTime() },
+    { date: '2024-01-10', rating: 3, platform: 'ios', timestamp: new Date('2024-01-10T14:20:00').getTime() },
+    { date: '2024-01-11', rating: 2, platform: 'android', timestamp: new Date('2024-01-11T09:45:00').getTime() },
+    { date: '2024-01-11', rating: 5, platform: 'ios', timestamp: new Date('2024-01-11T11:30:00').getTime() },
+    { date: '2024-01-11', rating: 4, platform: 'ios', timestamp: new Date('2024-01-11T16:00:00').getTime() },
+    { date: '2024-01-12', rating: 5, platform: 'android', timestamp: new Date('2024-01-12T12:15:00').getTime() },
+    { date: '2024-01-12', rating: 3, platform: 'ios', timestamp: new Date('2024-01-12T13:45:00').getTime() },
+    { date: '2024-01-12', rating: 4, platform: 'android', timestamp: new Date('2024-01-12T17:30:00').getTime() },
+    { date: '2024-01-13', rating: 1, platform: 'ios', timestamp: new Date('2024-01-13T07:20:00').getTime() },
+    { date: '2024-01-13', rating: 2, platform: 'android', timestamp: new Date('2024-01-13T15:10:00').getTime() },
+    { date: '2024-01-14', rating: 4, platform: 'ios', timestamp: new Date('2024-01-14T09:15:00').getTime() },
+    { date: '2024-01-14', rating: 5, platform: 'android', timestamp: new Date('2024-01-14T14:30:00').getTime() },
+    { date: '2024-01-15', rating: 5, platform: 'ios', timestamp: new Date('2024-01-15T11:45:00').getTime() },
+    { date: '2024-01-15', rating: 3, platform: 'android', timestamp: new Date('2024-01-15T16:20:00').getTime() },
+    { date: '2024-01-16', rating: 4, platform: 'ios', timestamp: new Date('2024-01-16T10:30:00').getTime() },
+    { date: '2024-01-16', rating: 5, platform: 'android', timestamp: new Date('2024-01-16T13:15:00').getTime() }
   ];
+
+  // Filter chart data based on platform
+  const getFilteredChartData = () => {
+    if (chartPlatformFilter === 'all') return reviewsChartData;
+    return reviewsChartData.filter(review => review.platform === chartPlatformFilter);
+  };
 
   useEffect(() => {
     let filtered = [...reviews];
@@ -376,47 +393,85 @@ const RevoxAppDetails = () => {
             </Card>
           </div>
 
-          {/* Trends Evolution Widget */}
+          {/* Reviews Distribution Chart */}
           <div className="lg:col-span-2">
             <Card>
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium flex items-center gap-2">
-                  <BarChart3 className="w-4 h-4 text-blue-500" />
-                  Trends Evolution
-                </CardTitle>
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                  <CardTitle className="text-sm font-medium flex items-center gap-2">
+                    <BarChart3 className="w-4 h-4 text-blue-500" />
+                    Reviews Distribution
+                  </CardTitle>
+                  <Select value={chartPlatformFilter} onValueChange={setChartPlatformFilter}>
+                    <SelectTrigger className="w-full sm:w-32">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">
+                        <div className="flex items-center gap-2">
+                          <SlidersHorizontal className="w-3 h-3" />
+                          All Platforms
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="ios">
+                        <div className="flex items-center gap-2">
+                          <Apple className="w-3 h-3" />
+                          iOS Only
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="android">
+                        <div className="flex items-center gap-2">
+                          <Bot className="w-3 h-3" />
+                          Android Only
+                        </div>
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </CardHeader>
               <CardContent>
                 <div className="h-64">
                   <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={trendData}>
+                    <ScatterChart data={getFilteredChartData()}>
                       <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
                       <XAxis 
                         dataKey="date" 
                         className="text-xs"
-                        tick={{ fontSize: 12 }}
+                        tick={{ fontSize: 10 }}
+                        angle={-45}
+                        textAnchor="end"
+                        height={60}
                       />
                       <YAxis 
-                        domain={[0, 5]}
+                        domain={[0.5, 5.5]}
                         className="text-xs"
                         tick={{ fontSize: 12 }}
+                        tickCount={5}
+                        ticks={[1, 2, 3, 4, 5]}
                       />
-                      <Line 
-                        type="monotone" 
-                        dataKey="rating" 
-                        stroke="hsl(var(--primary))" 
-                        strokeWidth={2}
-                        dot={{ fill: "hsl(var(--primary))", strokeWidth: 2, r: 4 }}
-                        activeDot={{ r: 6, stroke: "hsl(var(--primary))", strokeWidth: 2 }}
-                      />
-                    </LineChart>
+                      <Scatter name="iOS Reviews" dataKey="rating" fill="#007AFF">
+                        {getFilteredChartData().map((entry, index) => (
+                          <Cell 
+                            key={`cell-${index}`} 
+                            fill={entry.platform === 'ios' ? '#007AFF' : '#34C759'} 
+                          />
+                        ))}
+                      </Scatter>
+                    </ScatterChart>
                   </ResponsiveContainer>
                 </div>
                 <div className="mt-4 flex items-center justify-between text-sm text-muted-foreground">
-                  <span>Average rating over the last 7 days</span>
-                  <span className="flex items-center gap-1">
-                    <TrendingUp className="w-3 h-3 text-green-500" />
-                    +0.3 from last week
-                  </span>
+                  <span>Individual review ratings over time</span>
+                  <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-1">
+                      <div className="w-3 h-3 rounded-full bg-[#007AFF]"></div>
+                      <span>iOS</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <div className="w-3 h-3 rounded-full bg-[#34C759]"></div>
+                      <span>Android</span>
+                    </div>
+                  </div>
                 </div>
               </CardContent>
             </Card>
