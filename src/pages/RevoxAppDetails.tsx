@@ -17,7 +17,8 @@ import {
   TrendingDown,
   MessageSquare,
   ThumbsUp,
-  ThumbsDown
+  ThumbsDown,
+  Globe
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -250,7 +251,7 @@ const RevoxAppDetails = () => {
                   <SelectContent>
                     <SelectItem value="all">
                       <div className="flex items-center gap-2">
-                        <Filter className="w-3 h-3" />
+                        <Globe className="w-3 h-3" />
                         All
                       </div>
                     </SelectItem>
@@ -302,7 +303,7 @@ const RevoxAppDetails = () => {
                   <SelectContent>
                     <SelectItem value="all">
                       <div className="flex items-center gap-2">
-                        <Filter className="w-3 h-3" />
+                        <Globe className="w-3 h-3" />
                         All
                       </div>
                     </SelectItem>
