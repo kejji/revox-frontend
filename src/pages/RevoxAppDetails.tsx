@@ -19,7 +19,8 @@ import {
   MessageSquare,
   ThumbsUp,
   ThumbsDown,
-  SlidersHorizontal
+  SlidersHorizontal,
+  BarChart3
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -37,6 +38,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from "recharts";
 
 interface Review {
   id: string;
@@ -119,6 +121,17 @@ const RevoxAppDetails = () => {
   const [flopThemesPlatform, setFlopThemesPlatform] = useState<string>('all');
   
   const reviewsPerPage = 10;
+
+  // Mock trend data
+  const trendData = [
+    { date: 'Jan 10', rating: 4.1, reviews: 152 },
+    { date: 'Jan 11', rating: 4.0, reviews: 143 },
+    { date: 'Jan 12', rating: 4.3, reviews: 167 },
+    { date: 'Jan 13', rating: 3.8, reviews: 134 },
+    { date: 'Jan 14', rating: 4.1, reviews: 156 },
+    { date: 'Jan 15', rating: 4.2, reviews: 189 },
+    { date: 'Jan 16', rating: 4.4, reviews: 201 }
+  ];
 
   useEffect(() => {
     let filtered = [...reviews];
@@ -360,6 +373,50 @@ const RevoxAppDetails = () => {
             </CardContent>
           </Card>
         </div>
+
+        {/* Trends Evolution Widget */}
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium flex items-center gap-2">
+              <BarChart3 className="w-4 h-4 text-blue-500" />
+              Trends Evolution
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={trendData}>
+                  <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                  <XAxis 
+                    dataKey="date" 
+                    className="text-xs"
+                    tick={{ fontSize: 12 }}
+                  />
+                  <YAxis 
+                    domain={[0, 5]}
+                    className="text-xs"
+                    tick={{ fontSize: 12 }}
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="rating" 
+                    stroke="hsl(var(--primary))" 
+                    strokeWidth={2}
+                    dot={{ fill: "hsl(var(--primary))", strokeWidth: 2, r: 4 }}
+                    activeDot={{ r: 6, stroke: "hsl(var(--primary))", strokeWidth: 2 }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+            <div className="mt-4 flex items-center justify-between text-sm text-muted-foreground">
+              <span>Average rating over the last 7 days</span>
+              <span className="flex items-center gap-1">
+                <TrendingUp className="w-3 h-3 text-green-500" />
+                +0.3 from last week
+              </span>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Reviews Section */}
         <Card>
