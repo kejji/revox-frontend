@@ -113,6 +113,7 @@ const RevoxAppDetails = () => {
   const [platformFilter, setPlatformFilter] = useState<string>('all');
   const [ratingFilter, setRatingFilter] = useState<string>('all');
   const [searchKeyword, setSearchKeyword] = useState('');
+  const [topThemesPlatform, setTopThemesPlatform] = useState<string>('all');
   
   const reviewsPerPage = 10;
 
@@ -236,10 +237,22 @@ const RevoxAppDetails = () => {
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium flex items-center gap-2">
-                <TrendingUp className="w-4 h-4 text-green-500" />
-                Top 3 Positive Themes
-              </CardTitle>
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                <CardTitle className="text-sm font-medium flex items-center gap-2">
+                  <TrendingUp className="w-4 h-4 text-green-500" />
+                  Top 3 Positive Themes
+                </CardTitle>
+                <Select value={topThemesPlatform} onValueChange={setTopThemesPlatform}>
+                  <SelectTrigger className="w-full sm:w-24">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All</SelectItem>
+                    <SelectItem value="ios">iOS</SelectItem>
+                    <SelectItem value="android">Android</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </CardHeader>
             <CardContent>
               <div className="space-y-2 text-sm">
