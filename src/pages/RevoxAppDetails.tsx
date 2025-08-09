@@ -243,23 +243,37 @@ const RevoxAppDetails = () => {
                    
                    <p className="text-muted-foreground mb-4">{app.description}</p>
                    
-                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-                     <div>
-                       <span className="font-medium">Version:</span> {app.version}
-                     </div>
-                     <div className="flex items-center gap-1">
-                       <span className="font-medium">Rating:</span>
-                       <div className="flex items-center gap-1">
-                         {renderStars(Math.round(app.currentRating))}
-                         <span>{app.currentRating}</span>
-                         <span className="text-muted-foreground">({app.totalReviews} reviews)</span>
-                       </div>
-                     </div>
-                     <div>
-                       <span className="font-medium">Latest Update:</span>
-                       <p className="text-muted-foreground mt-1">{app.latestUpdate}</p>
-                     </div>
-                   </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                      <div>
+                        <span className="font-medium">Version:</span> {app.version}
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <span className="font-medium">Rating:</span>
+                        <div className="flex items-center gap-1">
+                          {renderStars(Math.round(app.currentRating))}
+                          <span>{app.currentRating}</span>
+                          <span className="text-muted-foreground">({app.totalReviews} reviews)</span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="mt-4">
+                      <span className="font-medium text-sm">Recent Updates:</span>
+                      <div className="mt-2 space-y-2">
+                        <div className="text-sm">
+                          <span className="font-medium">v2.3.1</span>
+                          <span className="text-muted-foreground ml-2">• Fixed critical bug with notification sync and improved performance on iOS 17.</span>
+                        </div>
+                        <div className="text-sm">
+                          <span className="font-medium">v2.3.0</span>
+                          <span className="text-muted-foreground ml-2">• Added dark mode support and enhanced collaboration tools.</span>
+                        </div>
+                        <div className="text-sm">
+                          <span className="font-medium">v2.2.9</span>
+                          <span className="text-muted-foreground ml-2">• Improved sync speed and fixed Android widget rendering issues.</span>
+                        </div>
+                      </div>
+                    </div>
                  </div>
                </div>
                
