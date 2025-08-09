@@ -500,7 +500,7 @@ const RevoxAppDetails = () => {
                         {getFilteredChartData().map((entry, index) => (
                           <Cell 
                             key={`cell-${index}`} 
-                            fill={entry.platform === 'ios' ? '#007AFF' : '#34C759'} 
+                            fill={entry.platform === 'ios' ? '#007AFF' : '#FF9500'} 
                           />
                         ))}
                       </Scatter>
@@ -515,7 +515,7 @@ const RevoxAppDetails = () => {
                       <span>iOS</span>
                     </div>
                     <div className="flex items-center gap-1">
-                      <div className="w-3 h-3 rounded-full bg-[#34C759]"></div>
+                      <div className="w-3 h-3 rounded-full bg-[#FF9500]"></div>
                       <span>Android</span>
                     </div>
                   </div>
