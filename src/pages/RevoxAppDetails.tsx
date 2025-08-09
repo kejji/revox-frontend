@@ -421,23 +421,6 @@ const RevoxAppDetails = () => {
               </CardContent>
             </Card>
 
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium flex items-center gap-2">
-                  <Bell className="w-4 h-4" />
-                  Theme Alerts
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Button size="sm" className="w-full gap-2">
-                  <Plus className="w-4 h-4" />
-                  Create Alert
-                </Button>
-                <div className="mt-3 text-xs text-muted-foreground">
-                  Get notified when specific themes spike in reviews
-                </div>
-              </CardContent>
-            </Card>
           </div>
 
           {/* Reviews Distribution Chart */}
