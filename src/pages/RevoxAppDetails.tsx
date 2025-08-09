@@ -410,19 +410,19 @@ const RevoxAppDetails = () => {
                       <SelectItem value="all">
                         <div className="flex items-center gap-2">
                           <SlidersHorizontal className="w-3 h-3" />
-                          All Platforms
+                          All
                         </div>
                       </SelectItem>
                       <SelectItem value="ios">
                         <div className="flex items-center gap-2">
                           <Apple className="w-3 h-3" />
-                          iOS Only
+                          iOS
                         </div>
                       </SelectItem>
                       <SelectItem value="android">
                         <div className="flex items-center gap-2">
                           <Bot className="w-3 h-3" />
-                          Android Only
+                          Android
                         </div>
                       </SelectItem>
                     </SelectContent>
