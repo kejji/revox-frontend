@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { format } from "date-fns";
 import { 
   ArrowLeft, 
   Download, 
@@ -83,7 +84,7 @@ const RevoxAppDetails = () => {
       title: 'Amazing productivity boost!',
       content: 'This app has completely transformed how our team manages projects. The interface is intuitive and the collaboration features are top-notch.',
       author: 'Sarah M.',
-      date: '2024-01-15',
+      date: '2024-01-15T14:30:00',
       platform: 'ios',
       helpful: 12
     },
@@ -93,7 +94,7 @@ const RevoxAppDetails = () => {
       title: 'Great app, minor issues',
       content: 'Love the features but occasionally crashes when syncing large files. Support team is responsive though.',
       author: 'Mike D.',
-      date: '2024-01-14',
+      date: '2024-01-14T09:15:00',
       platform: 'android',
       helpful: 8
     },
@@ -103,7 +104,7 @@ const RevoxAppDetails = () => {
       title: 'Needs improvement',
       content: 'The latest update broke several features I relied on daily. Please fix the notification system.',
       author: 'Jennifer L.',
-      date: '2024-01-13',
+      date: '2024-01-13T16:45:00',
       platform: 'ios',
       helpful: 15
     }
@@ -452,7 +453,7 @@ const RevoxAppDetails = () => {
                           </div>
                           <div className="flex items-center gap-2 mt-1">
                             <div className="flex">{renderStars(review.rating)}</div>
-                            <span className="text-xs text-muted-foreground">{review.date}</span>
+                            <span className="text-xs text-muted-foreground">{format(new Date(review.date), 'MMM dd, yyyy HH:mm')}</span>
                           </div>
                         </div>
                       </div>
