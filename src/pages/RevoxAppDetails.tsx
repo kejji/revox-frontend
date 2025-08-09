@@ -292,7 +292,17 @@ const RevoxAppDetails = () => {
                            }}
                            className="h-6 gap-1 text-xs"
                          >
-                           Recent Updates section
+                           {updatesExpansion === 'frequency' ? (
+                             <>
+                               <ChevronRight className="w-3 h-3" />
+                               Show Details
+                             </>
+                           ) : (
+                             <>
+                               <ChevronDown className="w-3 h-3" />
+                               Show Frequency
+                             </>
+                           )}
                          </Button>
                        </div>
                        
