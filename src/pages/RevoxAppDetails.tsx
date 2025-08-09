@@ -310,7 +310,7 @@ const RevoxAppDetails = () => {
                          <div className="text-sm text-muted-foreground">
                            <div className="flex items-center gap-2 mb-1">
                              <Calendar className="w-3 h-3" />
-                             <span>12 updates in the last 3 months</span>
+                             <span>1 update per month</span>
                            </div>
                            <div className="text-xs">
                              Last update: {formatDistanceToNow(new Date(allUpdates[0].date), { addSuffix: true })}
