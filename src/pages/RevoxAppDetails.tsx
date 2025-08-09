@@ -191,7 +191,7 @@ const RevoxAppDetails = () => {
               
               <div className="flex-1 space-y-4">
                 <div>
-                  <div className="flex items-center gap-3 mb-2">
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-2">
                     <h1 className="text-3xl font-bold">{app.name}</h1>
                     <div className="flex gap-1">
                       {app.platforms.map(platform => (
