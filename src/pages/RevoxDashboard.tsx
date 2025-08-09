@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { 
   Plus, 
   MoreVertical, 
@@ -59,6 +60,7 @@ interface Widget {
 }
 
 const RevoxDashboard = () => {
+  const navigate = useNavigate();
   const [apps, setApps] = useState<App[]>([
     {
       id: '1',
@@ -234,7 +236,7 @@ const RevoxDashboard = () => {
 
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {apps.map((app) => (
-              <Card key={app.id} className="relative group">
+              <Card key={app.id} className="relative group cursor-pointer hover:shadow-md transition-shadow" onClick={() => navigate(`/revox/app/${app.id}`)}>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-muted rounded-lg flex items-center justify-center">
