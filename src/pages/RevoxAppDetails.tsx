@@ -114,6 +114,7 @@ const RevoxAppDetails = () => {
   const [ratingFilter, setRatingFilter] = useState<string>('all');
   const [searchKeyword, setSearchKeyword] = useState('');
   const [topThemesPlatform, setTopThemesPlatform] = useState<string>('all');
+  const [flopThemesPlatform, setFlopThemesPlatform] = useState<string>('all');
   
   const reviewsPerPage = 10;
 
@@ -247,9 +248,24 @@ const RevoxAppDetails = () => {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">All</SelectItem>
-                    <SelectItem value="ios">iOS</SelectItem>
-                    <SelectItem value="android">Android</SelectItem>
+                    <SelectItem value="all">
+                      <div className="flex items-center gap-2">
+                        <Filter className="w-3 h-3" />
+                        All
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="ios">
+                      <div className="flex items-center gap-2">
+                        <Apple className="w-3 h-3" />
+                        iOS
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="android">
+                      <div className="flex items-center gap-2">
+                        <Bot className="w-3 h-3" />
+                        Android
+                      </div>
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -274,10 +290,37 @@ const RevoxAppDetails = () => {
 
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium flex items-center gap-2">
-                <TrendingDown className="w-4 h-4 text-red-500" />
-                Top 3 Negative Themes
-              </CardTitle>
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                <CardTitle className="text-sm font-medium flex items-center gap-2">
+                  <TrendingDown className="w-4 h-4 text-red-500" />
+                  Top 3 Negative Themes
+                </CardTitle>
+                <Select value={flopThemesPlatform} onValueChange={setFlopThemesPlatform}>
+                  <SelectTrigger className="w-full sm:w-24">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">
+                      <div className="flex items-center gap-2">
+                        <Filter className="w-3 h-3" />
+                        All
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="ios">
+                      <div className="flex items-center gap-2">
+                        <Apple className="w-3 h-3" />
+                        iOS
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="android">
+                      <div className="flex items-center gap-2">
+                        <Bot className="w-3 h-3" />
+                        Android
+                      </div>
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </CardHeader>
             <CardContent>
               <div className="space-y-2 text-sm">
