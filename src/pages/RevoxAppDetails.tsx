@@ -314,7 +314,7 @@ const RevoxAppDetails = () => {
         </Card>
 
         {/* Analytics and Trends Section */}
-        <div className="grid gap-6 lg:grid-cols-3 lg:items-start">
+        <div className="grid gap-6 lg:grid-cols-3">
           {/* Analytics Widgets */}
           <div className="lg:col-span-1 space-y-4">
             <Card>
@@ -459,8 +459,8 @@ const RevoxAppDetails = () => {
                   </Select>
                 </div>
               </CardHeader>
-               <CardContent className="h-full">
-                 <div className="h-80">
+              <CardContent>
+                <div className="h-64">
                   <ResponsiveContainer width="100%" height="100%">
                     <ScatterChart data={getFilteredChartData()}>
                       <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
