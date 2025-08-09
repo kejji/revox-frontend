@@ -223,45 +223,92 @@ const RevoxAppDetails = () => {
                 <Smartphone className="w-10 h-10" />
               </div>
               
-              <div className="flex-1 space-y-4">
-                <div>
-                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-2">
-                    <h1 className="text-3xl font-bold">{app.name}</h1>
-                    <div className="flex gap-1">
-                      {app.platforms.map(platform => (
-                        <Badge key={platform} variant="secondary" className="text-xs">
-                          {platform === 'ios' ? (
-                            <Apple className="w-3 h-3 mr-1" />
-                          ) : (
-                            <Bot className="w-3 h-3 mr-1" />
-                          )}
-                          {platform.toUpperCase()}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-                  
-                  <p className="text-muted-foreground mb-4">{app.description}</p>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-                    <div>
-                      <span className="font-medium">Version:</span> {app.version}
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <span className="font-medium">Rating:</span>
-                      <div className="flex items-center gap-1">
-                        {renderStars(Math.round(app.currentRating))}
-                        <span>{app.currentRating}</span>
-                        <span className="text-muted-foreground">({app.totalReviews} reviews)</span>
-                      </div>
-                    </div>
-                    <div>
-                      <span className="font-medium">Latest Update:</span>
-                      <p className="text-muted-foreground mt-1">{app.latestUpdate}</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
+               <div className="flex-1 space-y-4">
+                 <div>
+                   <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-2">
+                     <h1 className="text-3xl font-bold">{app.name}</h1>
+                     <div className="flex gap-1">
+                       {app.platforms.map(platform => (
+                         <Badge key={platform} variant="secondary" className="text-xs">
+                           {platform === 'ios' ? (
+                             <Apple className="w-3 h-3 mr-1" />
+                           ) : (
+                             <Bot className="w-3 h-3 mr-1" />
+                           )}
+                           {platform.toUpperCase()}
+                         </Badge>
+                       ))}
+                     </div>
+                   </div>
+                   
+                   <p className="text-muted-foreground mb-4">{app.description}</p>
+                   
+                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                     <div>
+                       <span className="font-medium">Version:</span> {app.version}
+                     </div>
+                     <div className="flex items-center gap-1">
+                       <span className="font-medium">Rating:</span>
+                       <div className="flex items-center gap-1">
+                         {renderStars(Math.round(app.currentRating))}
+                         <span>{app.currentRating}</span>
+                         <span className="text-muted-foreground">({app.totalReviews} reviews)</span>
+                       </div>
+                     </div>
+                     <div>
+                       <span className="font-medium">Latest Update:</span>
+                       <p className="text-muted-foreground mt-1">{app.latestUpdate}</p>
+                     </div>
+                   </div>
+                 </div>
+               </div>
+               
+               {/* Alert Management Widget */}
+               <div className="w-80 flex-shrink-0">
+                 <Card>
+                   <CardHeader className="pb-3">
+                     <CardTitle className="text-sm font-medium flex items-center gap-2">
+                       <Bell className="w-4 h-4" />
+                       Alert Status
+                     </CardTitle>
+                   </CardHeader>
+                   <CardContent className="space-y-3">
+                     {/* Active Alerts */}
+                     <div className="space-y-2">
+                       <div className="flex items-center justify-between p-2 bg-muted/50 rounded-lg">
+                         <div className="flex items-center gap-2">
+                           <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                           <span className="text-sm">Rating drops below 4.0</span>
+                         </div>
+                         <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+                           ×
+                         </Button>
+                       </div>
+                       <div className="flex items-center justify-between p-2 bg-muted/50 rounded-lg">
+                         <div className="flex items-center gap-2">
+                           <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+                           <span className="text-sm">Crash mentions spike</span>
+                         </div>
+                         <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+                           ×
+                         </Button>
+                       </div>
+                     </div>
+                     
+                     <Separator />
+                     
+                     {/* Add New Alert */}
+                     <Button size="sm" className="w-full gap-2">
+                       <Plus className="w-4 h-4" />
+                       Create New Alert
+                     </Button>
+                     
+                     <div className="text-xs text-muted-foreground">
+                       Get notified when specific metrics or themes change
+                     </div>
+                   </CardContent>
+                 </Card>
+               </div>
             </div>
           </CardContent>
         </Card>
