@@ -249,7 +249,181 @@ const RevoxAppDetails = () => {
           </CardContent>
         </Card>
 
-        {/* Reviews Section - Moved up for better visibility */}
+        {/* Analytics and Trends Section */}
+        <div className="grid gap-6 lg:grid-cols-3">
+          {/* Analytics Widgets */}
+          <div className="lg:col-span-1 space-y-4">
+            <Card>
+              <CardHeader className="pb-2">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                  <CardTitle className="text-sm font-medium flex items-center gap-2">
+                    <TrendingUp className="w-4 h-4 text-green-500" />
+                    Top 3 Positive Themes
+                  </CardTitle>
+                  <Select value={topThemesPlatform} onValueChange={setTopThemesPlatform}>
+                    <SelectTrigger className="w-full sm:w-24">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">
+                        <div className="flex items-center gap-2">
+                          <SlidersHorizontal className="w-3 h-3" />
+                          All
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="ios">
+                        <div className="flex items-center gap-2">
+                          <Apple className="w-3 h-3" />
+                          iOS
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="android">
+                        <div className="flex items-center gap-2">
+                          <Bot className="w-3 h-3" />
+                          Android
+                        </div>
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span>User Interface</span>
+                    <span className="text-green-500">+89%</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Performance</span>
+                    <span className="text-green-500">+76%</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Features</span>
+                    <span className="text-green-500">+64%</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-2">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                  <CardTitle className="text-sm font-medium flex items-center gap-2">
+                    <TrendingDown className="w-4 h-4 text-red-500" />
+                    Top 3 Negative Themes
+                  </CardTitle>
+                  <Select value={flopThemesPlatform} onValueChange={setFlopThemesPlatform}>
+                    <SelectTrigger className="w-full sm:w-24">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">
+                        <div className="flex items-center gap-2">
+                          <SlidersHorizontal className="w-3 h-3" />
+                          All
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="ios">
+                        <div className="flex items-center gap-2">
+                          <Apple className="w-3 h-3" />
+                          iOS
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="android">
+                        <div className="flex items-center gap-2">
+                          <Bot className="w-3 h-3" />
+                          Android
+                        </div>
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span>Crashes</span>
+                    <span className="text-red-500">-34%</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Sync Issues</span>
+                    <span className="text-red-500">-28%</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Battery Drain</span>
+                    <span className="text-red-500">-19%</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium flex items-center gap-2">
+                  <Bell className="w-4 h-4" />
+                  Theme Alerts
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Button size="sm" className="w-full gap-2">
+                  <Plus className="w-4 h-4" />
+                  Create Alert
+                </Button>
+                <div className="mt-3 text-xs text-muted-foreground">
+                  Get notified when specific themes spike in reviews
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Trends Evolution Widget */}
+          <div className="lg:col-span-2">
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium flex items-center gap-2">
+                  <BarChart3 className="w-4 h-4 text-blue-500" />
+                  Trends Evolution
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="h-64">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={trendData}>
+                      <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                      <XAxis 
+                        dataKey="date" 
+                        className="text-xs"
+                        tick={{ fontSize: 12 }}
+                      />
+                      <YAxis 
+                        domain={[0, 5]}
+                        className="text-xs"
+                        tick={{ fontSize: 12 }}
+                      />
+                      <Line 
+                        type="monotone" 
+                        dataKey="rating" 
+                        stroke="hsl(var(--primary))" 
+                        strokeWidth={2}
+                        dot={{ fill: "hsl(var(--primary))", strokeWidth: 2, r: 4 }}
+                        activeDot={{ r: 6, stroke: "hsl(var(--primary))", strokeWidth: 2 }}
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
+                <div className="mt-4 flex items-center justify-between text-sm text-muted-foreground">
+                  <span>Average rating over the last 7 days</span>
+                  <span className="flex items-center gap-1">
+                    <TrendingUp className="w-3 h-3 text-green-500" />
+                    +0.3 from last week
+                  </span>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+
+        {/* Reviews Section */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -398,180 +572,6 @@ const RevoxAppDetails = () => {
             )}
           </CardContent>
         </Card>
-
-        {/* Analytics and Trends Section */}
-        <div className="grid gap-6 lg:grid-cols-3">
-          {/* Analytics Widgets */}
-          <div className="lg:col-span-1 space-y-4">
-            <Card>
-              <CardHeader className="pb-2">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                  <CardTitle className="text-sm font-medium flex items-center gap-2">
-                    <TrendingUp className="w-4 h-4 text-green-500" />
-                    Top 3 Positive Themes
-                  </CardTitle>
-                  <Select value={topThemesPlatform} onValueChange={setTopThemesPlatform}>
-                    <SelectTrigger className="w-full sm:w-24">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">
-                        <div className="flex items-center gap-2">
-                          <SlidersHorizontal className="w-3 h-3" />
-                          All
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="ios">
-                        <div className="flex items-center gap-2">
-                          <Apple className="w-3 h-3" />
-                          iOS
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="android">
-                        <div className="flex items-center gap-2">
-                          <Bot className="w-3 h-3" />
-                          Android
-                        </div>
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between">
-                    <span>User Interface</span>
-                    <span className="text-green-500">+89%</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Performance</span>
-                    <span className="text-green-500">+76%</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Features</span>
-                    <span className="text-green-500">+64%</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="pb-2">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                  <CardTitle className="text-sm font-medium flex items-center gap-2">
-                    <TrendingDown className="w-4 h-4 text-red-500" />
-                    Top 3 Negative Themes
-                  </CardTitle>
-                  <Select value={flopThemesPlatform} onValueChange={setFlopThemesPlatform}>
-                    <SelectTrigger className="w-full sm:w-24">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">
-                        <div className="flex items-center gap-2">
-                          <SlidersHorizontal className="w-3 h-3" />
-                          All
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="ios">
-                        <div className="flex items-center gap-2">
-                          <Apple className="w-3 h-3" />
-                          iOS
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="android">
-                        <div className="flex items-center gap-2">
-                          <Bot className="w-3 h-3" />
-                          Android
-                        </div>
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between">
-                    <span>Crashes</span>
-                    <span className="text-red-500">-34%</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Sync Issues</span>
-                    <span className="text-red-500">-28%</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Battery Drain</span>
-                    <span className="text-red-500">-19%</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium flex items-center gap-2">
-                  <Bell className="w-4 h-4" />
-                  Theme Alerts
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Button size="sm" className="w-full gap-2">
-                  <Plus className="w-4 h-4" />
-                  Create Alert
-                </Button>
-                <div className="mt-3 text-xs text-muted-foreground">
-                  Get notified when specific themes spike in reviews
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Trends Evolution Widget - Now narrower */}
-          <div className="lg:col-span-2">
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium flex items-center gap-2">
-                  <BarChart3 className="w-4 h-4 text-blue-500" />
-                  Trends Evolution
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="h-64">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={trendData}>
-                      <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-                      <XAxis 
-                        dataKey="date" 
-                        className="text-xs"
-                        tick={{ fontSize: 12 }}
-                      />
-                      <YAxis 
-                        domain={[0, 5]}
-                        className="text-xs"
-                        tick={{ fontSize: 12 }}
-                      />
-                      <Line 
-                        type="monotone" 
-                        dataKey="rating" 
-                        stroke="hsl(var(--primary))" 
-                        strokeWidth={2}
-                        dot={{ fill: "hsl(var(--primary))", strokeWidth: 2, r: 4 }}
-                        activeDot={{ r: 6, stroke: "hsl(var(--primary))", strokeWidth: 2 }}
-                      />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </div>
-                <div className="mt-4 flex items-center justify-between text-sm text-muted-foreground">
-                  <span>Average rating over the last 7 days</span>
-                  <span className="flex items-center gap-1">
-                    <TrendingUp className="w-3 h-3 text-green-500" />
-                    +0.3 from last week
-                  </span>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
 
       </div>
     </div>
