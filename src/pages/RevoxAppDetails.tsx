@@ -20,8 +20,7 @@ import {
   ThumbsUp,
   ThumbsDown,
   SlidersHorizontal,
-  BarChart3,
-  X
+  BarChart3
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -209,54 +208,6 @@ const RevoxAppDetails = () => {
           </div>
           
           <div className="flex items-center gap-4">
-            {/* Alert Management Widget */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm" className="gap-2">
-                  <Bell className="w-4 h-4" />
-                  Alerts (2)
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-80">
-                <div className="p-3">
-                  <div className="flex items-center justify-between mb-3">
-                    <h4 className="font-medium">Theme Alerts</h4>
-                    <Button size="sm" className="gap-1">
-                      <Plus className="w-3 h-3" />
-                      New Alert
-                    </Button>
-                  </div>
-                  
-                  {/* Active Alerts */}
-                  <div className="space-y-2 mb-3">
-                    <div className="flex items-center justify-between p-2 bg-muted/50 rounded-md">
-                      <div className="flex-1">
-                        <div className="text-sm font-medium">Crash mentions</div>
-                        <div className="text-xs text-muted-foreground">Threshold: {'>'}5 mentions/day</div>
-                      </div>
-                      <Button variant="ghost" size="sm" className="h-auto p-1">
-                        <X className="w-3 h-3" />
-                      </Button>
-                    </div>
-                    
-                    <div className="flex items-center justify-between p-2 bg-muted/50 rounded-md">
-                      <div className="flex-1">
-                        <div className="text-sm font-medium">Low ratings spike</div>
-                        <div className="text-xs text-muted-foreground">Threshold: {'>'}10 1-star reviews/day</div>
-                      </div>
-                      <Button variant="ghost" size="sm" className="h-auto p-1">
-                        <X className="w-3 h-3" />
-                      </Button>
-                    </div>
-                  </div>
-                  
-                  <div className="text-xs text-muted-foreground border-t pt-2">
-                    Get notified when specific themes spike in reviews
-                  </div>
-                </div>
-              </DropdownMenuContent>
-            </DropdownMenu>
-            
             <ThemeToggle />
             <LanguageToggle />
           </div>
@@ -419,6 +370,24 @@ const RevoxAppDetails = () => {
                     <span>Battery Drain</span>
                     <span className="text-red-500">-19%</span>
                   </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium flex items-center gap-2">
+                  <Bell className="w-4 h-4" />
+                  Theme Alerts
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Button size="sm" className="w-full gap-2">
+                  <Plus className="w-4 h-4" />
+                  Create Alert
+                </Button>
+                <div className="mt-3 text-xs text-muted-foreground">
+                  Get notified when specific themes spike in reviews
                 </div>
               </CardContent>
             </Card>
