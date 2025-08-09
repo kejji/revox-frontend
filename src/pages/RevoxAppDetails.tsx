@@ -460,13 +460,6 @@ const RevoxAppDetails = () => {
                     
                     <h4 className="font-medium mb-2">{review.title}</h4>
                     <p className="text-sm text-muted-foreground mb-3">{review.content}</p>
-                    
-                    <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                      <button className="flex items-center gap-1 hover:text-foreground">
-                        <ThumbsUp className="w-3 h-3" />
-                        Helpful ({review.helpful})
-                      </button>
-                    </div>
                   </Card>
                 ))}
               </div>
