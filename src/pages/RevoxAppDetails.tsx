@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { format } from "date-fns";
+import { format, formatDistanceToNow } from "date-fns";
 import { 
   ArrowLeft, 
   Download, 
@@ -257,23 +257,38 @@ const RevoxAppDetails = () => {
                       </div>
                     </div>
                     
-                    <div className="mt-4">
-                      <span className="font-medium text-sm">Recent Updates:</span>
-                      <div className="mt-2 space-y-2">
-                        <div className="text-sm">
-                          <span className="font-medium">v2.3.1</span>
-                          <span className="text-muted-foreground ml-2">• Fixed critical bug with notification sync and improved performance on iOS 17.</span>
-                        </div>
-                        <div className="text-sm">
-                          <span className="font-medium">v2.3.0</span>
-                          <span className="text-muted-foreground ml-2">• Added dark mode support and enhanced collaboration tools.</span>
-                        </div>
-                        <div className="text-sm">
-                          <span className="font-medium">v2.2.9</span>
-                          <span className="text-muted-foreground ml-2">• Improved sync speed and fixed Android widget rendering issues.</span>
-                        </div>
-                      </div>
-                    </div>
+                     <div className="mt-4">
+                       <span className="font-medium text-sm">Recent Updates:</span>
+                       <div className="mt-2 space-y-2">
+                         <div className="text-sm">
+                           <div className="flex items-center gap-2">
+                             <span className="font-medium">v2.3.1</span>
+                             <span className="text-xs text-muted-foreground">
+                               {formatDistanceToNow(new Date('2024-01-15'), { addSuffix: true })}
+                             </span>
+                           </div>
+                           <span className="text-muted-foreground">• Fixed critical bug with notification sync and improved performance on iOS 17.</span>
+                         </div>
+                         <div className="text-sm">
+                           <div className="flex items-center gap-2">
+                             <span className="font-medium">v2.3.0</span>
+                             <span className="text-xs text-muted-foreground">
+                               {formatDistanceToNow(new Date('2024-01-08'), { addSuffix: true })}
+                             </span>
+                           </div>
+                           <span className="text-muted-foreground">• Added dark mode support and enhanced collaboration tools.</span>
+                         </div>
+                         <div className="text-sm">
+                           <div className="flex items-center gap-2">
+                             <span className="font-medium">v2.2.9</span>
+                             <span className="text-xs text-muted-foreground">
+                               {formatDistanceToNow(new Date('2024-01-01'), { addSuffix: true })}
+                             </span>
+                           </div>
+                           <span className="text-muted-foreground">• Improved sync speed and fixed Android widget rendering issues.</span>
+                         </div>
+                       </div>
+                     </div>
                  </div>
                </div>
                
