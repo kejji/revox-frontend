@@ -217,51 +217,62 @@ const RevoxAppDetails = () => {
       <div className="p-6 space-y-8">
         {/* App Info Header */}
         <Card>
-          <CardContent className="p-6">
-            <div className="flex items-start gap-6">
-              <div className="w-20 h-20 bg-muted rounded-xl flex items-center justify-center">
-                <Smartphone className="w-10 h-10" />
+          <CardContent className="p-4 sm:p-6">
+            <div className="flex flex-col lg:flex-row gap-4 lg:gap-6">
+              {/* App Icon */}
+              <div className="flex-shrink-0 mx-auto lg:mx-0">
+                <div className="w-16 h-16 sm:w-20 sm:h-20 bg-muted rounded-xl flex items-center justify-center">
+                  <Smartphone className="w-8 h-8 sm:w-10 sm:h-10" />
+                </div>
               </div>
               
-               <div className="flex-1 space-y-4">
-                 <div>
-                   <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-2">
-                     <h1 className="text-3xl font-bold">{app.name}</h1>
-                     <div className="flex gap-1">
-                       {app.platforms.map(platform => (
-                         <Badge key={platform} variant="secondary" className="text-xs">
-                           {platform === 'ios' ? (
-                             <Apple className="w-3 h-3 mr-1" />
-                           ) : (
-                             <Bot className="w-3 h-3 mr-1" />
-                           )}
-                           {platform.toUpperCase()}
-                         </Badge>
-                       ))}
-                     </div>
-                   </div>
-                   
-                   <p className="text-muted-foreground mb-4">{app.description}</p>
-                   
-                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-                     <div>
-                       <span className="font-medium">Version:</span> {app.version}
-                     </div>
-                     <div className="flex items-center gap-1">
-                       <span className="font-medium">Rating:</span>
-                       <div className="flex items-center gap-1">
-                         {renderStars(Math.round(app.currentRating))}
-                         <span>{app.currentRating}</span>
-                         <span className="text-muted-foreground">({app.totalReviews} reviews)</span>
-                       </div>
-                     </div>
-                     <div>
-                       <span className="font-medium">Latest Update:</span>
-                       <p className="text-muted-foreground mt-1">{app.latestUpdate}</p>
-                     </div>
-                   </div>
-                 </div>
+              {/* App Details */}
+              <div className="flex-1 space-y-3 sm:space-y-4 text-center lg:text-left">
+                {/* App Title and Platforms */}
+                <div className="space-y-2">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-center lg:justify-start gap-2 sm:gap-3">
+                    <h1 className="text-2xl sm:text-3xl font-bold">{app.name}</h1>
+                    <div className="flex gap-1 justify-center lg:justify-start">
+                      {app.platforms.map(platform => (
+                        <Badge key={platform} variant="secondary" className="text-xs">
+                          {platform === 'ios' ? (
+                            <Apple className="w-3 h-3 mr-1" />
+                          ) : (
+                            <Bot className="w-3 h-3 mr-1" />
+                          )}
+                          {platform.toUpperCase()}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  <p className="text-muted-foreground text-sm sm:text-base">{app.description}</p>
                 </div>
+                
+                {/* App Metrics */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4 text-sm">
+                  <div className="bg-muted/30 p-3 rounded-lg">
+                    <div className="font-medium text-foreground">Version</div>
+                    <div className="text-muted-foreground">{app.version}</div>
+                  </div>
+                  
+                  <div className="bg-muted/30 p-3 rounded-lg">
+                    <div className="font-medium text-foreground mb-1">Rating</div>
+                    <div className="flex items-center justify-center lg:justify-start gap-1 flex-wrap">
+                      <div className="flex items-center gap-1">
+                        {renderStars(Math.round(app.currentRating))}
+                        <span className="font-medium">{app.currentRating}</span>
+                      </div>
+                      <span className="text-muted-foreground text-xs">({app.totalReviews} reviews)</span>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-muted/30 p-3 rounded-lg sm:col-span-2 xl:col-span-1">
+                    <div className="font-medium text-foreground mb-1">Latest Update</div>
+                    <p className="text-muted-foreground text-xs leading-relaxed">{app.latestUpdate}</p>
+                  </div>
+                </div>
+              </div>
             </div>
           </CardContent>
         </Card>
