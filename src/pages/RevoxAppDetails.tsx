@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { format, formatDistanceToNow } from "date-fns";
+import { format } from "date-fns";
 import { 
   ArrowLeft, 
   Download, 
@@ -20,9 +20,7 @@ import {
   ThumbsUp,
   ThumbsDown,
   SlidersHorizontal,
-  BarChart3,
-  ChevronDown,
-  ChevronRight
+  BarChart3
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -40,7 +38,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Cell } from "recharts";
 
 interface Review {
@@ -123,23 +120,6 @@ const RevoxAppDetails = () => {
   const [topThemesPlatform, setTopThemesPlatform] = useState<string>('all');
   const [flopThemesPlatform, setFlopThemesPlatform] = useState<string>('all');
   const [chartPlatformFilter, setChartPlatformFilter] = useState<string>('all');
-  const [updatesExpansion, setUpdatesExpansion] = useState<'frequency' | 'list' | 'modal'>('frequency');
-  
-  // Mock updates data
-  const allUpdates = [
-    { version: 'v2.3.1', date: '2024-01-15', description: 'Fixed critical bug with notification sync and improved performance on iOS 17.' },
-    { version: 'v2.3.0', date: '2024-01-08', description: 'Added dark mode support and enhanced collaboration tools.' },
-    { version: 'v2.2.9', date: '2024-01-01', description: 'Improved sync speed and fixed Android widget rendering issues.' },
-    { version: 'v2.2.8', date: '2023-12-25', description: 'Holiday theme update and bug fixes for calendar integration.' },
-    { version: 'v2.2.7', date: '2023-12-18', description: 'Enhanced security measures and updated privacy settings.' },
-    { version: 'v2.2.6', date: '2023-12-10', description: 'Fixed memory leak issues and improved battery optimization.' },
-    { version: 'v2.2.5', date: '2023-12-03', description: 'Added offline mode support and improved data synchronization.' },
-    { version: 'v2.2.4', date: '2023-11-28', description: 'Updated UI components and fixed accessibility issues.' },
-    { version: 'v2.2.3', date: '2023-11-20', description: 'Performance improvements and bug fixes for file sharing.' },
-    { version: 'v2.2.2', date: '2023-11-15', description: 'Added new export formats and improved report generation.' },
-    { version: 'v2.2.1', date: '2023-11-08', description: 'Fixed compatibility issues with latest OS versions.' },
-    { version: 'v2.2.0', date: '2023-11-01', description: 'Major update with new dashboard design and analytics features.' }
-  ];
   
   const reviewsPerPage = 10;
 
@@ -263,106 +243,23 @@ const RevoxAppDetails = () => {
                    
                    <p className="text-muted-foreground mb-4">{app.description}</p>
                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                      <div>
-                        <span className="font-medium">Version:</span> {app.version}
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <span className="font-medium">Rating:</span>
-                        <div className="flex items-center gap-1">
-                          {renderStars(Math.round(app.currentRating))}
-                          <span>{app.currentRating}</span>
-                          <span className="text-muted-foreground">({app.totalReviews} reviews)</span>
-                        </div>
-                      </div>
-                    </div>
-                    
-                     <div className="mt-4">
-                       <div className="flex items-center justify-between mb-2">
-                         <span className="font-medium text-sm">Recent Updates:</span>
-                         <Button 
-                           variant="ghost" 
-                           size="sm" 
-                           onClick={() => {
-                             if (updatesExpansion === 'frequency') {
-                               setUpdatesExpansion('list');
-                             } else if (updatesExpansion === 'list') {
-                               setUpdatesExpansion('frequency');
-                             }
-                           }}
-                           className="h-6 gap-1 text-xs"
-                         >
-                           {updatesExpansion === 'frequency' ? (
-                             <>
-                               <ChevronRight className="w-3 h-3" />
-                               Show Details
-                             </>
-                           ) : (
-                             <>
-                               <ChevronDown className="w-3 h-3" />
-                               Show Frequency
-                             </>
-                           )}
-                         </Button>
-                       </div>
-                       
-                       {updatesExpansion === 'frequency' ? (
-                         <div className="text-sm text-muted-foreground">
-                           <div className="flex items-center gap-2 mb-1">
-                             <Calendar className="w-3 h-3" />
-                             <span>1 update per month</span>
-                           </div>
-                           <div className="text-xs">
-                             Last update : 3 days ago
-                           </div>
-                         </div>
-                       ) : (
-                         <div className="space-y-2">
-                           {allUpdates.slice(0, 3).map((update, index) => (
-                             <div key={index} className="text-sm">
-                               <div className="flex items-center gap-2">
-                                 <span className="font-medium">{update.version}</span>
-                                 <span className="text-xs text-muted-foreground">
-                                   {formatDistanceToNow(new Date(update.date), { addSuffix: true })}
-                                 </span>
-                               </div>
-                               <span className="text-muted-foreground">• {update.description}</span>
-                             </div>
-                           ))}
-                           
-                           <Dialog>
-                             <DialogTrigger asChild>
-                               <Button variant="ghost" size="sm" className="h-6 text-xs mt-2">
-                                 View All Updates ({allUpdates.length})
-                               </Button>
-                             </DialogTrigger>
-                             <DialogContent className="max-w-2xl max-h-[80vh] bg-background border z-50">
-                               <DialogHeader>
-                                 <DialogTitle>All Updates for {app.name}</DialogTitle>
-                               </DialogHeader>
-                               <ScrollArea className="h-96 mt-4">
-                                 <div className="space-y-4">
-                                   {allUpdates.map((update, index) => (
-                                     <div key={index} className="border-l-2 border-muted pl-4">
-                                       <div className="flex items-center gap-2 mb-1">
-                                         <span className="font-medium">{update.version}</span>
-                                         <span className="text-xs text-muted-foreground">
-                                           {format(new Date(update.date), 'MMM dd, yyyy')}
-                                         </span>
-                                         <span className="text-xs text-muted-foreground">
-                                           ({formatDistanceToNow(new Date(update.date), { addSuffix: true })})
-                                         </span>
-                                       </div>
-                                       <p className="text-sm text-muted-foreground">{update.description}</p>
-                                     </div>
-                                   ))}
-                                 </div>
-                               </ScrollArea>
-                             </DialogContent>
-                           </Dialog>
-                         </div>
-                       )}
+                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                     <div>
+                       <span className="font-medium">Version:</span> {app.version}
                      </div>
+                     <div className="flex items-center gap-1">
+                       <span className="font-medium">Rating:</span>
+                       <div className="flex items-center gap-1">
+                         {renderStars(Math.round(app.currentRating))}
+                         <span>{app.currentRating}</span>
+                         <span className="text-muted-foreground">({app.totalReviews} reviews)</span>
+                       </div>
+                     </div>
+                     <div>
+                       <span className="font-medium">Latest Update:</span>
+                       <p className="text-muted-foreground mt-1">{app.latestUpdate}</p>
+                     </div>
+                   </div>
                  </div>
                </div>
                
