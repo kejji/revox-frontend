@@ -20,7 +20,8 @@ import {
   ThumbsUp,
   ThumbsDown,
   SlidersHorizontal,
-  BarChart3
+  BarChart3,
+  RefreshCw
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -520,10 +521,29 @@ const RevoxAppDetails = () => {
         {/* Reviews Section */}
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <MessageSquare className="w-5 h-5" />
-              Reviews ({filteredReviews.length})
-            </CardTitle>
+            <div className="flex items-center justify-between">
+              <CardTitle className="flex items-center gap-2">
+                <MessageSquare className="w-5 h-5" />
+                Reviews ({filteredReviews.length})
+              </CardTitle>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => {
+                  // Simulate refresh with animation
+                  const reviewCards = document.querySelectorAll('[data-review-card]');
+                  reviewCards.forEach((card, index) => {
+                    setTimeout(() => {
+                      card.classList.add('animate-fade-in');
+                    }, index * 50);
+                  });
+                }}
+                className="gap-2"
+              >
+                <RefreshCw className="w-4 h-4" />
+                Refresh
+              </Button>
+            </div>
 
             {/* Filters */}
             <div className="flex flex-wrap gap-4 mt-4">
@@ -586,8 +606,8 @@ const RevoxAppDetails = () => {
           <CardContent>
             <ScrollArea className="h-96">
               <div className="space-y-4">
-                {getCurrentPageReviews().map((review) => (
-                  <Card key={review.id} className="p-4">
+                 {getCurrentPageReviews().map((review) => (
+                   <Card key={review.id} className="p-4" data-review-card>
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center gap-3">
                         <Avatar className="w-8 h-8">
