@@ -261,54 +261,7 @@ const RevoxAppDetails = () => {
                      </div>
                    </div>
                  </div>
-               </div>
-               
-               {/* Alert Management Widget */}
-               <div className="w-80 flex-shrink-0">
-                 <Card>
-                   <CardHeader className="pb-3">
-                     <CardTitle className="text-sm font-medium flex items-center gap-2">
-                       <Bell className="w-4 h-4" />
-                       Alert Status
-                     </CardTitle>
-                   </CardHeader>
-                   <CardContent className="space-y-3">
-                     {/* Active Alerts */}
-                     <div className="space-y-2">
-                       <div className="flex items-center justify-between p-2 bg-muted/50 rounded-lg">
-                         <div className="flex items-center gap-2">
-                           <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                           <span className="text-sm">Rating drops below 4.0</span>
-                         </div>
-                         <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
-                           ×
-                         </Button>
-                       </div>
-                       <div className="flex items-center justify-between p-2 bg-muted/50 rounded-lg">
-                         <div className="flex items-center gap-2">
-                           <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
-                           <span className="text-sm">Crash mentions spike</span>
-                         </div>
-                         <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
-                           ×
-                         </Button>
-                       </div>
-                     </div>
-                     
-                     <Separator />
-                     
-                     {/* Add New Alert */}
-                     <Button size="sm" className="w-full gap-2">
-                       <Plus className="w-4 h-4" />
-                       Create New Alert
-                     </Button>
-                     
-                     <div className="text-xs text-muted-foreground">
-                       Get notified when specific metrics or themes change
-                     </div>
-                   </CardContent>
-                 </Card>
-               </div>
+                </div>
             </div>
           </CardContent>
         </Card>
@@ -403,25 +356,70 @@ const RevoxAppDetails = () => {
                   </Select>
                 </div>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between">
-                    <span>Crashes</span>
-                    <span className="text-red-500">-34%</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Sync Issues</span>
-                    <span className="text-red-500">-28%</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Battery Drain</span>
-                    <span className="text-red-500">-19%</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+               <CardContent>
+                 <div className="space-y-2 text-sm">
+                   <div className="flex justify-between">
+                     <span>Crashes</span>
+                     <span className="text-red-500">-34%</span>
+                   </div>
+                   <div className="flex justify-between">
+                     <span>Sync Issues</span>
+                     <span className="text-red-500">-28%</span>
+                   </div>
+                   <div className="flex justify-between">
+                     <span>Battery Drain</span>
+                     <span className="text-red-500">-19%</span>
+                   </div>
+                 </div>
+               </CardContent>
+             </Card>
 
-          </div>
+             {/* Alert Management Widget */}
+             <Card>
+               <CardHeader className="pb-3">
+                 <CardTitle className="text-sm font-medium flex items-center gap-2">
+                   <Bell className="w-4 h-4" />
+                   Alert Status
+                 </CardTitle>
+               </CardHeader>
+               <CardContent className="space-y-3">
+                 {/* Active Alerts */}
+                 <div className="space-y-2">
+                   <div className="flex items-center justify-between p-2 bg-muted/50 rounded-lg">
+                     <div className="flex items-center gap-2">
+                       <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                       <span className="text-sm">Rating drops below 4.0</span>
+                     </div>
+                     <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+                       ×
+                     </Button>
+                   </div>
+                   <div className="flex items-center justify-between p-2 bg-muted/50 rounded-lg">
+                     <div className="flex items-center gap-2">
+                       <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+                       <span className="text-sm">Crash mentions spike</span>
+                     </div>
+                     <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+                       ×
+                     </Button>
+                   </div>
+                 </div>
+                 
+                 <Separator />
+                 
+                 {/* Add New Alert */}
+                 <Button size="sm" className="w-full gap-2">
+                   <Plus className="w-4 h-4" />
+                   Create New Alert
+                 </Button>
+                 
+                 <div className="text-xs text-muted-foreground">
+                   Get notified when specific metrics or themes change
+                 </div>
+               </CardContent>
+             </Card>
+
+           </div>
 
           {/* Reviews Distribution Chart */}
           <div className="lg:col-span-2">
