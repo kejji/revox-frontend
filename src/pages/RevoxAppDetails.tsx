@@ -371,7 +371,7 @@ const RevoxAppDetails = () => {
                  <div className="space-y-2 text-sm">
                    <div className="flex justify-between">
                      <span>Crashes</span>
-                     <span className="text-red-500">-34%</span>
+                     <span className="text-orange-500">-34%</span>
                    </div>
                    <div className="flex justify-between">
                      <span>Sync Issues</span>
