@@ -272,7 +272,7 @@ const RevoxAppDetails = () => {
                        Alert Status
                      </CardTitle>
                    </CardHeader>
-                   <CardContent className="space-y-2">
+                   <CardContent className="space-y-1">
                      {/* Active Alerts */}
                      <div className="space-y-2">
                        <div className="flex items-center justify-between p-2 bg-muted/50 rounded-lg">
