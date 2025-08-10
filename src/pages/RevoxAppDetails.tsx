@@ -39,7 +39,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Cell } from "recharts";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from "recharts";
 
 interface Review {
   id: string;
@@ -164,10 +164,26 @@ const RevoxAppDetails = () => {
     { date: '2024-01-16', rating: 5, platform: 'android', timestamp: new Date('2024-01-16T13:15:00').getTime() }
   ];
 
-  // Filter chart data based on platform
-  const getFilteredChartData = () => {
-    if (chartPlatformFilter === 'all') return reviewsChartData;
-    return reviewsChartData.filter(review => review.platform === chartPlatformFilter);
+  // Calculate average ratings by day
+  const getAverageRatingsByDay = () => {
+    const filteredData = chartPlatformFilter === 'all' 
+      ? reviewsChartData 
+      : reviewsChartData.filter(review => review.platform === chartPlatformFilter);
+    
+    const groupedByDate = filteredData.reduce((acc, review) => {
+      if (!acc[review.date]) {
+        acc[review.date] = [];
+      }
+      acc[review.date].push(review.rating);
+      return acc;
+    }, {} as Record<string, number[]>);
+
+    return Object.entries(groupedByDate)
+      .map(([date, ratings]) => ({
+        date,
+        averageRating: parseFloat((ratings.reduce((sum, rating) => sum + rating, 0) / ratings.length).toFixed(1))
+      }))
+      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
   };
 
   useEffect(() => {
@@ -491,7 +507,7 @@ const RevoxAppDetails = () => {
               <CardContent>
                 <div className="h-80">
                   <ResponsiveContainer width="100%" height="100%">
-                    <ScatterChart data={getFilteredChartData()}>
+                    <LineChart data={getAverageRatingsByDay()}>
                       <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
                       <XAxis 
                         dataKey="date" 
@@ -502,34 +518,28 @@ const RevoxAppDetails = () => {
                         height={60}
                       />
                       <YAxis 
-                        domain={[0.5, 5.5]}
+                        domain={[1, 5]}
                         className="text-xs"
                         tick={{ fontSize: 12 }}
                         tickCount={5}
                         ticks={[1, 2, 3, 4, 5]}
                       />
-                      <Scatter name="iOS Reviews" dataKey="rating" fill="#007AFF">
-                        {getFilteredChartData().map((entry, index) => (
-                          <Cell 
-                            key={`cell-${index}`} 
-                            fill={entry.platform === 'ios' ? '#007AFF' : '#14B8A6'} 
-                          />
-                        ))}
-                      </Scatter>
-                    </ScatterChart>
+                      <Line 
+                        type="monotone" 
+                        dataKey="averageRating" 
+                        stroke="hsl(var(--primary))"
+                        strokeWidth={3}
+                        dot={{ fill: "hsl(var(--primary))", strokeWidth: 2, r: 4 }}
+                        activeDot={{ r: 6, fill: "hsl(var(--primary))" }}
+                      />
+                    </LineChart>
                   </ResponsiveContainer>
                 </div>
                 <div className="mt-4 flex items-center justify-between text-sm text-muted-foreground">
-                  <span>Individual review ratings over time</span>
-                  <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-1">
-                      <div className="w-3 h-3 rounded-full bg-[#007AFF]"></div>
-                      <span>iOS</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <div className="w-3 h-3 rounded-full bg-[#14B8A6]"></div>
-                      <span>Android</span>
-                    </div>
+                  <span>Average rating trend over time</span>
+                  <div className="flex items-center gap-1">
+                    <div className="w-3 h-3 rounded-full bg-primary"></div>
+                    <span>Average Rating</span>
                   </div>
                 </div>
               </CardContent>
