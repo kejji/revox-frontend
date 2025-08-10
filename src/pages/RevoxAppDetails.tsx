@@ -39,7 +39,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Cell } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Cell } from "recharts";
 
 interface Review {
   id: string;
@@ -164,10 +164,22 @@ const RevoxAppDetails = () => {
     { date: '2024-01-16', rating: 5, platform: 'android', timestamp: new Date('2024-01-16T13:15:00').getTime() }
   ];
 
-  // Filter chart data based on platform
-  const getFilteredChartData = () => {
-    if (chartPlatformFilter === 'all') return reviewsChartData;
-    return reviewsChartData.filter(review => review.platform === chartPlatformFilter);
+  // Generate histogram data for rating distribution
+  const getHistogramData = () => {
+    const filteredData = chartPlatformFilter === 'all' ? reviewsChartData : reviewsChartData.filter(review => review.platform === chartPlatformFilter);
+    
+    const ratingCounts = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+    filteredData.forEach(review => {
+      ratingCounts[review.rating as keyof typeof ratingCounts]++;
+    });
+    
+    return [
+      { rating: '1 Star', count: ratingCounts[1], fill: '#ef4444' },
+      { rating: '2 Stars', count: ratingCounts[2], fill: '#f97316' },
+      { rating: '3 Stars', count: ratingCounts[3], fill: '#eab308' },
+      { rating: '4 Stars', count: ratingCounts[4], fill: '#22c55e' },
+      { rating: '5 Stars', count: ratingCounts[5], fill: '#10b981' }
+    ];
   };
 
   useEffect(() => {
@@ -491,45 +503,30 @@ const RevoxAppDetails = () => {
               <CardContent>
                 <div className="h-80">
                   <ResponsiveContainer width="100%" height="100%">
-                    <ScatterChart data={getFilteredChartData()}>
+                    <BarChart data={getHistogramData()}>
                       <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
                       <XAxis 
-                        dataKey="date" 
-                        className="text-xs"
-                        tick={{ fontSize: 10 }}
-                        angle={-45}
-                        textAnchor="end"
-                        height={60}
-                      />
-                      <YAxis 
-                        domain={[0.5, 5.5]}
+                        dataKey="rating" 
                         className="text-xs"
                         tick={{ fontSize: 12 }}
-                        tickCount={5}
-                        ticks={[1, 2, 3, 4, 5]}
                       />
-                      <Scatter name="iOS Reviews" dataKey="rating" fill="#007AFF">
-                        {getFilteredChartData().map((entry, index) => (
-                          <Cell 
-                            key={`cell-${index}`} 
-                            fill={entry.platform === 'ios' ? '#007AFF' : '#14B8A6'} 
-                          />
+                      <YAxis 
+                        className="text-xs"
+                        tick={{ fontSize: 12 }}
+                        label={{ value: 'Number of Reviews', angle: -90, position: 'insideLeft' }}
+                      />
+                      <Bar dataKey="count" radius={[4, 4, 0, 0]}>
+                        {getHistogramData().map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={entry.fill} />
                         ))}
-                      </Scatter>
-                    </ScatterChart>
+                      </Bar>
+                    </BarChart>
                   </ResponsiveContainer>
                 </div>
                 <div className="mt-4 flex items-center justify-between text-sm text-muted-foreground">
-                  <span>Individual review ratings over time</span>
-                  <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-1">
-                      <div className="w-3 h-3 rounded-full bg-[#007AFF]"></div>
-                      <span>iOS</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <div className="w-3 h-3 rounded-full bg-[#14B8A6]"></div>
-                      <span>Android</span>
-                    </div>
+                  <span>Rating distribution histogram</span>
+                  <div className="flex items-center gap-2 text-xs">
+                    <span>Total: {getHistogramData().reduce((sum, item) => sum + item.count, 0)} reviews</span>
                   </div>
                 </div>
               </CardContent>
