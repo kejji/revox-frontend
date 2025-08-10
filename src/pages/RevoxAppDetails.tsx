@@ -337,7 +337,7 @@ const RevoxAppDetails = () => {
               <CardHeader className="pb-2">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                   <CardTitle className="text-sm font-medium flex items-center gap-2">
-                    <TrendingDown className="w-4 h-4 text-red-500" />
+                    <TrendingDown className="w-4 h-4 text-orange-500" />
                     Top 3 Negative Themes
                   </CardTitle>
                   <Select value={flopThemesPlatform} onValueChange={setFlopThemesPlatform}>
@@ -375,11 +375,11 @@ const RevoxAppDetails = () => {
                    </div>
                    <div className="flex justify-between">
                      <span>Sync Issues</span>
-                     <span className="text-red-500">-28%</span>
+                     <span className="text-orange-500">-28%</span>
                    </div>
                    <div className="flex justify-between">
                      <span>Battery Drain</span>
-                     <span className="text-red-500">-19%</span>
+                     <span className="text-orange-500">-19%</span>
                    </div>
                  </div>
                </CardContent>
