@@ -67,7 +67,6 @@ const RevoxAppDetails = () => {
   const { appId } = useParams();
   const navigate = useNavigate();
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [lastUpdated, setLastUpdated] = useState(new Date('2024-01-16T08:30:00')); // Mock last update time
   
   // Mock app data - will be replaced with actual data fetching
   const [app] = useState<App>({
@@ -131,9 +130,6 @@ const RevoxAppDetails = () => {
     
     // Simulate API call delay
     await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Update timestamp to show real-time data
-    setLastUpdated(new Date());
     
     // Add animation to existing review cards
     const reviewCards = document.querySelectorAll('[data-review-card]');
@@ -237,23 +233,6 @@ const RevoxAppDetails = () => {
           </div>
         </div>
       </header>
-
-      {/* Data Status Banner */}
-      <div className="bg-orange-50 dark:bg-orange-950/20 border-b border-orange-200 dark:border-orange-800/30">
-        <div className="px-6 py-3">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-            <div className="flex items-center gap-2 text-orange-700 dark:text-orange-300">
-              <Calendar className="w-4 h-4" />
-              <span className="text-sm font-medium">
-                Data snapshot from {format(lastUpdated, 'MMM dd, yyyy HH:mm')}
-              </span>
-            </div>
-            <div className="text-xs text-orange-600 dark:text-orange-400">
-              This data is updated nightly. Click refresh for real-time information.
-            </div>
-          </div>
-        </div>
-      </div>
 
       <div className="p-6 space-y-8">
         {/* App Info Header */}
