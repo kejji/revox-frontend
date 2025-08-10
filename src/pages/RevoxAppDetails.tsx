@@ -66,6 +66,7 @@ interface App {
 const RevoxAppDetails = () => {
   const { appId } = useParams();
   const navigate = useNavigate();
+  const [isRefreshing, setIsRefreshing] = useState(false);
   
   // Mock app data - will be replaced with actual data fetching
   const [app] = useState<App>({
@@ -123,6 +124,24 @@ const RevoxAppDetails = () => {
   const [chartPlatformFilter, setChartPlatformFilter] = useState<string>('all');
   
   const reviewsPerPage = 10;
+
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    
+    // Simulate API call delay
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // Add animation to existing review cards
+    const reviewCards = document.querySelectorAll('[data-review-card]');
+    reviewCards.forEach((card, index) => {
+      card.classList.remove('animate-fade-in');
+      setTimeout(() => {
+        card.classList.add('animate-fade-in');
+      }, index * 100);
+    });
+    
+    setIsRefreshing(false);
+  };
 
   // Mock individual review data for scatter chart
   const reviewsChartData = [
@@ -521,29 +540,10 @@ const RevoxAppDetails = () => {
         {/* Reviews Section */}
         <Card>
           <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle className="flex items-center gap-2">
-                <MessageSquare className="w-5 h-5" />
-                Reviews ({filteredReviews.length})
-              </CardTitle>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                onClick={() => {
-                  // Simulate refresh with animation
-                  const reviewCards = document.querySelectorAll('[data-review-card]');
-                  reviewCards.forEach((card, index) => {
-                    setTimeout(() => {
-                      card.classList.add('animate-fade-in');
-                    }, index * 50);
-                  });
-                }}
-                className="gap-2"
-              >
-                <RefreshCw className="w-4 h-4" />
-                Refresh
-              </Button>
-            </div>
+            <CardTitle className="flex items-center gap-2">
+              <MessageSquare className="w-5 h-5" />
+              Reviews ({filteredReviews.length})
+            </CardTitle>
 
             {/* Filters */}
             <div className="flex flex-wrap gap-4 mt-4">
@@ -581,6 +581,17 @@ const RevoxAppDetails = () => {
                   <SelectItem value="1">1 Star</SelectItem>
                 </SelectContent>
               </Select>
+
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={handleRefresh}
+                disabled={isRefreshing}
+                className="gap-2"
+              >
+                <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+                {isRefreshing ? 'Refreshing...' : 'Refresh'}
+              </Button>
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
