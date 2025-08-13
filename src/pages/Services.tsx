@@ -15,62 +15,62 @@ export default function Services() {
       title: t("productDiscovery"),
       description: t("productDiscoveryDesc"),
       features: [
-        "Market research and competitive analysis",
-        "User journey mapping and persona development",
-        "Product-market fit validation",
-        "Strategic roadmap creation",
-        "Stakeholder alignment workshops"
+        t("marketResearch"),
+        t("userJourneyMapping"),
+        t("productMarketFit"),
+        t("strategicRoadmap"),
+        t("stakeholderWorkshops")
       ],
-      timeline: "4-8 weeks"
+      timeline: t("fourToEightWeeks")
     },
     {
       icon: Layers,
       title: t("productOwnership"),
       description: t("productOwnershipDesc"),
       features: [
-        "Backlog prioritization and management",
-        "User story writing and acceptance criteria",
-        "Sprint planning and agile ceremonies",
-        "Cross-functional team coordination",
-        "Release planning and go-to-market strategy"
+        t("backlogManagement"),
+        t("userStoryWriting"),
+        t("sprintPlanning"),
+        t("teamCoordination"),
+        t("releasePlanning")
       ],
-      timeline: "Ongoing"
+      timeline: t("ongoing")
     },
     {
       icon: Users,
       title: t("userFeedbackAnalysis"),
       description: t("userFeedbackAnalysisDesc"),
       features: [
-        "App store review analysis",
-        "User interview facilitation",
-        "Feedback categorization and prioritization",
-        "Feature request evaluation",
-        "Customer satisfaction metrics"
+        t("appStoreAnalysis"),
+        t("userInterviews"),
+        t("feedbackCategorization"),
+        t("featureEvaluation"),
+        t("satisfactionMetrics")
       ],
-      timeline: "2-4 weeks"
+      timeline: t("twoToFourWeeks")
     },
     {
       icon: BarChart,
       title: t("mobileStrategy"),
       description: t("mobileStrategyDesc"),
       features: [
-        "Mobile-first product design",
-        "App store optimization (ASO)",
-        "Mobile analytics and KPI tracking",
-        "Cross-platform strategy",
-        "Mobile UX best practices"
+        t("mobileFirstDesign"),
+        t("appStoreOptimization"),
+        t("mobileAnalytics"),
+        t("crossPlatformStrategy"),
+        t("mobileUXPractices")
       ],
-      timeline: "3-6 weeks"
+      timeline: t("threeToSixWeeks")
     }
   ];
 
   const workingMethods = [
-    "Agile and Scrum methodologies",
-    "Design Thinking workshops",
-    "Lean Startup principles",
-    "Data-driven decision making",
-    "Continuous discovery practices",
-    "Remote-first collaboration"
+    t("agileMethodologies"),
+    t("designThinking"),
+    t("leanStartup"),
+    t("dataDriven"),
+    t("continuousDiscovery"),
+    t("remoteCollaboration")
   ];
 
   return (
