@@ -1,27 +1,29 @@
 import { Link } from "react-router-dom";
 import { Linkedin, Mail } from "lucide-react";
-
-const footerLinks = {
-  about: [
-    { name: "About Me", href: "/about" },
-    { name: "Services", href: "/services" },
-    { name: "Blog", href: "/blog" },
-    { name: "Contact", href: "/contact" },
-  ],
-  revox: [
-    { name: "Product", href: "/revox" },
-    { name: "How it Works", href: "/revox/how-it-works" },
-    { name: "Use Cases", href: "/revox/use-cases" },
-    { name: "Pricing", href: "/revox/pricing" },
-  ],
-  legal: [
-    { name: "Privacy Policy", href: "/privacy" },
-    { name: "Terms of Service", href: "/terms" },
-    { name: "GDPR Compliance", href: "/gdpr" },
-  ],
-};
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export function Footer() {
+  const { t } = useLanguage();
+  
+  const footerLinks = {
+    about: [
+      { name: t("footerAboutMe"), href: "/about" },
+      { name: t("footerServices"), href: "/services" },
+      { name: t("footerBlog"), href: "/blog" },
+      { name: t("footerContact"), href: "/contact" },
+    ],
+    revox: [
+      { name: t("footerProduct"), href: "/revox" },
+      { name: t("footerHowItWorks"), href: "/revox/how-it-works" },
+      { name: t("footerUseCases"), href: "/revox/use-cases" },
+      { name: t("footerPricing"), href: "/revox/pricing" },
+    ],
+    legal: [
+      { name: t("footerPrivacyPolicy"), href: "/privacy" },
+      { name: t("footerTermsOfService"), href: "/terms" },
+      { name: t("footerGDPRCompliance"), href: "/gdpr" },
+    ],
+  };
   return (
     <footer className="border-t bg-muted/30">
       <div className="mx-auto max-w-7xl px-4 py-12 lg:px-8">
@@ -32,7 +34,7 @@ export function Footer() {
               Revogate
             </Link>
             <p className="mt-4 text-sm text-muted-foreground">
-              Product Owner services and Revox SaaS platform for better product decisions through user feedback analysis.
+              {t("footerDescription")}
             </p>
             <div className="mt-6 flex space-x-4">
               <a
@@ -54,7 +56,7 @@ export function Footer() {
 
           {/* About Links */}
           <div>
-            <h3 className="text-sm font-semibold text-foreground">About</h3>
+            <h3 className="text-sm font-semibold text-foreground">{t("footerAboutSection")}</h3>
             <ul className="mt-4 space-y-2">
               {footerLinks.about.map((link) => (
                 <li key={link.name}>
@@ -71,7 +73,7 @@ export function Footer() {
 
           {/* Revox Links */}
           <div>
-            <h3 className="text-sm font-semibold text-foreground">Revox</h3>
+            <h3 className="text-sm font-semibold text-foreground">{t("footerRevoxSection")}</h3>
             <ul className="mt-4 space-y-2">
               {footerLinks.revox.map((link) => (
                 <li key={link.name}>
@@ -88,7 +90,7 @@ export function Footer() {
 
           {/* Legal Links */}
           <div>
-            <h3 className="text-sm font-semibold text-foreground">Legal</h3>
+            <h3 className="text-sm font-semibold text-foreground">{t("footerLegalSection")}</h3>
             <ul className="mt-4 space-y-2">
               {footerLinks.legal.map((link) => (
                 <li key={link.name}>
@@ -106,7 +108,7 @@ export function Footer() {
 
         <div className="mt-8 border-t pt-8">
           <p className="text-center text-sm text-muted-foreground">
-            © {new Date().getFullYear()} Revogate. All rights reserved. Built with care for Product Owners.
+            © {new Date().getFullYear()} Revogate. {t("footerCopyright")}
           </p>
         </div>
       </div>

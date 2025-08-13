@@ -225,6 +225,24 @@ export const translations = {
     readyToTransform: "Ready to transform your feedback analysis?",
     readyToTransformDesc: "Join hundreds of Product Owners who are making better decisions with Revox. Start your free trial today.",
     viewPricing: "View Pricing",
+    
+    // Footer
+    footerDescription: "Product Owner services and Revox SaaS platform for better product decisions through user feedback analysis.",
+    footerAboutSection: "About",
+    footerRevoxSection: "Revox", 
+    footerLegalSection: "Legal",
+    footerAboutMe: "About Me",
+    footerServices: "Services",
+    footerBlog: "Blog",
+    footerContact: "Contact",
+    footerProduct: "Product",
+    footerHowItWorks: "How it Works",
+    footerUseCases: "Use Cases",
+    footerPricing: "Pricing",
+    footerPrivacyPolicy: "Privacy Policy",
+    footerTermsOfService: "Terms of Service",
+    footerGDPRCompliance: "GDPR Compliance",
+    footerCopyright: "All rights reserved. Built with care for Product Owners.",
   },
   fr: {
     // Header
@@ -452,6 +470,24 @@ export const translations = {
     readyToTransform: "Prêt à transformer votre analyse de feedback ?",
     readyToTransformDesc: "Rejoignez des centaines de Product Owners qui prennent de meilleures décisions avec Revox. Commencez votre essai gratuit aujourd'hui.",
     viewPricing: "Voir les prix",
+    
+    // Footer
+    footerDescription: "Services de Product Owner et plateforme SaaS Revox pour de meilleures décisions produit grâce à l'analyse des retours utilisateurs.",
+    footerAboutSection: "À propos",
+    footerRevoxSection: "Revox", 
+    footerLegalSection: "Légal",
+    footerAboutMe: "À propos de moi",
+    footerServices: "Services",
+    footerBlog: "Blog",
+    footerContact: "Contact",
+    footerProduct: "Produit",
+    footerHowItWorks: "Comment ça marche",
+    footerUseCases: "Cas d'usage",
+    footerPricing: "Tarifs",
+    footerPrivacyPolicy: "Politique de Confidentialité",
+    footerTermsOfService: "Conditions d'Utilisation",
+    footerGDPRCompliance: "Conformité RGPD",
+    footerCopyright: "Tous droits réservés. Conçu avec soin pour les Product Owners.",
   }
 } as const;
 
