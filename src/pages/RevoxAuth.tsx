@@ -69,13 +69,6 @@ const RevoxAuth = () => {
                         </div>
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="company">{t("authCompany")}</Label>
-                        <div className="relative">
-                          <Building className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-                          <Input id="company" className="pl-10" placeholder={t("companyPlaceholder")} />
-                        </div>
-                      </div>
-                      <div className="space-y-2">
                         <Label htmlFor="email">{t("authEmail")}</Label>
                         <div className="relative">
                           <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
