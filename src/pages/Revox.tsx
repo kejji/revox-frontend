@@ -4,41 +4,38 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 import { ArrowRight, Play, CheckCircle, Star, BarChart, Users, Shield, Zap } from "lucide-react";
-import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function Revox() {
-  const { t } = useLanguage();
-  
   const features = [
     {
       icon: Zap,
-      title: t("automatedCollection"),
-      description: t("automatedCollectionDesc")
+      title: "Automated Collection",
+      description: "Automatically extract and categorize app store reviews from Google Play and Apple App Store"
     },
     {
       icon: BarChart,
-      title: t("smartAnalysis"),
-      description: t("smartAnalysisDesc")
+      title: "Smart Analysis",
+      description: "AI-powered insights that identify patterns, issues, and feature requests in user feedback"
     },
     {
       icon: Users,
-      title: t("revoxTeamCollaboration"),
-      description: t("revoxTeamCollaborationDesc")
+      title: "Team Collaboration",
+      description: "Share insights across product, marketing, and strategy teams with role-based access"
     },
     {
       icon: Shield,
-      title: t("revoxEnterpriseReady"),
-      description: t("enterpriseReadyDesc")
+      title: "Enterprise Ready",
+      description: "GDPR compliant, secure data handling designed for regulated industries"
     }
   ];
 
   const benefits = [
-    t("saveTenHours"),
-    t("identifyIssuesFaster"),
-    t("dataDrivenPrioritization"),
-    t("improveUserSatisfaction"),
-    t("scaleFeedbackAnalysis"),
-    t("generateActionableInsights")
+    "Save 10+ hours per week on manual feedback analysis",
+    "Identify product issues 5x faster than manual processes",
+    "Make data-driven prioritization decisions",
+    "Improve user satisfaction through faster response times",
+    "Scale feedback analysis beyond human capacity",
+    "Generate actionable insights for stakeholders"
   ];
 
   const testimonials = [
@@ -62,25 +59,25 @@ export default function Revox() {
         {/* Hero Section */}
         <div className="text-center mb-20">
           <Badge className="mb-6 bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-            {t("revoxHeroSubtitle")}
+            Built by a Product Owner, for Product Owners
           </Badge>
           <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-7xl mb-8">
-            {t("revoxHeroTitle")}
-            <span className="text-primary"> {t("revoxHeroHighlight")}</span>
+            Turn user feedback into
+            <span className="text-primary"> actionable insights</span>
           </h1>
           <p className="text-xl text-muted-foreground max-w-4xl mx-auto mb-10">
-            {t("revoxHeroDescription")}
+            Revox automatically extracts, analyzes, and monitors user feedback from app stores, helping Product Owners and teams make data-driven decisions that improve user satisfaction.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
             <Button asChild size="lg" className="text-lg px-8 py-6">
               <Link to="/revox/auth">
-                {t("revoxStartFreeTrial")} <ArrowRight className="ml-2 h-5 w-5" />
+                Start Free Trial <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>
             <Button asChild variant="outline" size="lg" className="text-lg px-8 py-6">
               <Link to="/revox/how-it-works">
                 <Play className="mr-2 h-5 w-5" />
-                {t("seeHowItWorks")}
+                See How It Works
               </Link>
             </Button>
           </div>
@@ -89,15 +86,15 @@ export default function Revox() {
           <div className="flex flex-wrap items-center justify-center gap-8 text-sm text-muted-foreground">
             <div className="flex items-center gap-2">
               <Shield className="h-4 w-4" />
-              {t("revoxGdprCompliant")}
+              GDPR Compliant
             </div>
             <div className="flex items-center gap-2">
               <Star className="h-4 w-4" />
-              {t("revoxEnterpriseReady")}
+              Enterprise Ready
             </div>
             <div className="flex items-center gap-2">
               <CheckCircle className="h-4 w-4" />
-              {t("noSetupRequired")}
+              No Setup Required
             </div>
           </div>
         </div>
@@ -106,10 +103,10 @@ export default function Revox() {
         <section className="mb-20">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-foreground mb-4">
-              {t("everythingNeeded")}
+              Everything you need to analyze user feedback
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              {t("everythingNeededDesc")}
+              From automated collection to actionable insights, Revox handles the entire feedback analysis workflow.
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -132,10 +129,10 @@ export default function Revox() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
               <h2 className="text-3xl font-bold text-foreground mb-6">
-                {t("whyChooseRevox")}
+                Why Product Owners choose Revox
               </h2>
               <p className="text-lg text-muted-foreground mb-8">
-                {t("whyChooseRevoxDesc")}
+                Stop spending hours manually analyzing feedback. Let Revox do the heavy lifting so you can focus on what matters: building better products.
               </p>
               <ul className="space-y-3">
                 {benefits.map((benefit, index) => (
@@ -149,9 +146,9 @@ export default function Revox() {
             <div className="bg-gradient-to-br from-primary/10 to-blue-500/10 rounded-xl p-8">
               <div className="text-center">
                 <div className="text-4xl font-bold text-primary mb-2">10x</div>
-                <div className="text-lg font-medium text-foreground mb-4">{t("fasterAnalysis")}</div>
+                <div className="text-lg font-medium text-foreground mb-4">Faster Analysis</div>
                 <p className="text-sm text-muted-foreground">
-                  {t("fasterAnalysisDesc")}
+                  What used to take hours now takes minutes with automated feedback categorization and insight generation.
                 </p>
               </div>
             </div>
@@ -162,10 +159,10 @@ export default function Revox() {
         <section className="mb-20">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-foreground mb-4">
-              {t("trustedByTeams")}
+              Trusted by Product Teams
             </h2>
             <p className="text-lg text-muted-foreground">
-              {t("trustedByTeamsDesc")}
+              See what Product Owners and teams are saying about Revox
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -193,14 +190,14 @@ export default function Revox() {
             <Card className="text-center p-6 hover:border-primary/50 transition-colors">
               <CardHeader>
                 <Users className="h-8 w-8 text-primary mx-auto mb-2" />
-                <CardTitle className="text-lg">{t("productTeams")}</CardTitle>
+                <CardTitle className="text-lg">Product Teams</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-muted-foreground mb-4">
-                  {t("productTeamsDesc")}
+                  Prioritize features based on actual user feedback and identify critical issues faster.
                 </p>
                 <Button asChild variant="outline" size="sm">
-                  <Link to="/revox/use-cases#product-teams">{t("learnMore")}</Link>
+                  <Link to="/revox/use-cases#product-teams">Learn More</Link>
                 </Button>
               </CardContent>
             </Card>
@@ -208,14 +205,14 @@ export default function Revox() {
             <Card className="text-center p-6 hover:border-primary/50 transition-colors">
               <CardHeader>
                 <BarChart className="h-8 w-8 text-primary mx-auto mb-2" />
-                <CardTitle className="text-lg">{t("marketingTeams")}</CardTitle>
+                <CardTitle className="text-lg">Marketing Teams</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-muted-foreground mb-4">
-                  {t("marketingTeamsDesc")}
+                  Understand customer sentiment and identify opportunities for product messaging.
                 </p>
                 <Button asChild variant="outline" size="sm">
-                  <Link to="/revox/use-cases#marketing-teams">{t("learnMore")}</Link>
+                  <Link to="/revox/use-cases#marketing-teams">Learn More</Link>
                 </Button>
               </CardContent>
             </Card>
@@ -223,14 +220,14 @@ export default function Revox() {
             <Card className="text-center p-6 hover:border-primary/50 transition-colors">
               <CardHeader>
                 <Shield className="h-8 w-8 text-primary mx-auto mb-2" />
-                <CardTitle className="text-lg">{t("strategyLeaders")}</CardTitle>
+                <CardTitle className="text-lg">Strategy Leaders</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-muted-foreground mb-4">
-                  {t("strategyLeadersDesc")}
+                  Make informed strategic decisions with comprehensive user feedback analysis.
                 </p>
                 <Button asChild variant="outline" size="sm">
-                  <Link to="/revox/use-cases#strategy-leaders">{t("learnMore")}</Link>
+                  <Link to="/revox/use-cases#strategy-leaders">Learn More</Link>
                 </Button>
               </CardContent>
             </Card>
@@ -240,19 +237,19 @@ export default function Revox() {
         {/* Final CTA */}
         <section className="text-center bg-gradient-to-r from-primary/10 to-blue-500/10 rounded-lg p-12">
           <h2 className="text-3xl font-bold text-foreground mb-4">
-            {t("readyToTransform")}
+            Ready to transform your feedback analysis?
           </h2>
           <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-            {t("readyToTransformDesc")}
+            Join hundreds of Product Owners who are making better decisions with Revox. Start your free trial today.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button asChild size="lg" className="text-lg px-8 py-6">
               <Link to="/contact">
-                {t("revoxStartFreeTrial")} <ArrowRight className="ml-2 h-5 w-5" />
+                Start Free Trial <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>
             <Button asChild variant="outline" size="lg" className="text-lg px-8 py-6">
-              <Link to="/revox/pricing">{t("viewPricing")}</Link>
+              <Link to="/revox/pricing">View Pricing</Link>
             </Button>
           </div>
         </section>

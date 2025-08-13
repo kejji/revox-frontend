@@ -4,10 +4,8 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 import { Calendar, ArrowRight, Clock } from "lucide-react";
-import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function Blog() {
-  const { t } = useLanguage();
   const featuredPost = {
     id: "user-feedback-analysis-revox",
     title: "How Revox Transformed My Approach to User Feedback Analysis",
@@ -85,11 +83,11 @@ export default function Blog() {
         {/* Hero Section */}
         <div className="text-center mb-16">
           <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-6xl mb-6">
-            {t("blogHeroTitle")}
-            <span className="text-primary"> {t("blogHeroHighlight")}</span>
+            Product Insights &
+            <span className="text-primary"> Best Practices</span>
           </h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
-            {t("blogHeroDescription")}
+            Practical insights on mobile product strategy, user feedback analysis, and agile delivery from my experience as a Product Owner.
           </p>
         </div>
 
@@ -108,7 +106,7 @@ export default function Blog() {
 
         {/* Featured Post */}
         <section className="mb-16">
-          <h2 className="text-2xl font-bold text-foreground mb-6">{t("featuredArticle")}</h2>
+          <h2 className="text-2xl font-bold text-foreground mb-6">Featured Article</h2>
           <Card className="border-2 border-primary/20 bg-gradient-to-r from-primary/5 to-blue-500/5">
             <CardHeader>
               <div className="flex flex-col lg:flex-row lg:items-center lg:space-x-6">
@@ -136,7 +134,7 @@ export default function Blog() {
                   </p>
                   <Button asChild>
                     <Link to={`/blog/${featuredPost.id}`}>
-                      {t("readArticle")} <ArrowRight className="ml-2 h-4 w-4" />
+                      Read Article <ArrowRight className="ml-2 h-4 w-4" />
                     </Link>
                   </Button>
                 </div>
@@ -147,7 +145,7 @@ export default function Blog() {
 
         {/* Blog Posts Grid */}
         <section>
-          <h2 className="text-2xl font-bold text-foreground mb-6">{t("latestArticles")}</h2>
+          <h2 className="text-2xl font-bold text-foreground mb-6">Latest Articles</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {blogPosts.map((post) => (
               <Card key={post.id} className="group hover:border-primary/50 transition-colors cursor-pointer">
@@ -178,7 +176,7 @@ export default function Blog() {
                   </div>
                   <Link to={`/blog/${post.id}`} className="block mt-4">
                     <Button variant="ghost" size="sm" className="w-full">
-                      {t("readMore")} <ArrowRight className="ml-2 h-3 w-3" />
+                      Read More <ArrowRight className="ml-2 h-3 w-3" />
                     </Button>
                   </Link>
                 </CardContent>
@@ -190,13 +188,13 @@ export default function Blog() {
         {/* Newsletter CTA */}
         <section className="mt-16 text-center bg-muted/30 rounded-lg p-8">
           <h2 className="text-2xl font-bold text-foreground mb-4">
-            {t("stayUpdated")}
+            Stay Updated
           </h2>
           <p className="text-muted-foreground mb-6">
-            {t("stayUpdatedDesc")}
+            Get the latest insights on product management and mobile strategy delivered to your inbox.
           </p>
           <Button asChild size="lg">
-            <Link to="/contact">{t("subscribeUpdates")}</Link>
+            <Link to="/contact">Subscribe to Updates</Link>
           </Button>
         </section>
       </div>
