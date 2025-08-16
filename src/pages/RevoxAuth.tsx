@@ -1,6 +1,6 @@
 // src/pages/RevoxAuth.tsx
 import { useState } from "react";
-import { signUp, confirmSignUp } from "aws-amplify/auth";
+import { signUp, confirmSignUp, signIn } from "aws-amplify/auth";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -25,9 +25,13 @@ export default function RevoxAuth() {
   const [email,     setEmail]     = useState("");
   const [password,  setPassword]  = useState("");
 
-  // --- Confirm step (visible après signUp)
+  // --- Confirm step (après signUp OU signIn si non confirmé)
   const [needsConfirm, setNeedsConfirm] = useState(false);
   const [code, setCode] = useState("");
+
+  // --- Sign In form
+  const [signinEmail, setSigninEmail] = useState("");
+  const [signinPassword, setSigninPassword] = useState("");
 
   // --- UI state
   const [tab, setTab] = useState<Tab>("signup");
@@ -35,18 +39,16 @@ export default function RevoxAuth() {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
-  // TEMP: on garde cette nav pour l’onglet Sign In (on branchera signIn plus tard)
-  const handleDummyLogin = () => {
-    navigate("/revox/dashboard");
-  };
-
+  // -------------------------
+  // SIGN UP
+  // -------------------------
   async function handleSignup() {
     setErrorMsg(null);
     setSuccessMsg(null);
     setLoading(true);
     try {
       await signUp({
-        username: email, // v6: loginWith.email = true dans amplify.ts
+        username: email, // v6: loginWith.email = true (configuré dans amplify.ts)
         password,
         options: {
           userAttributes: {
@@ -60,6 +62,7 @@ export default function RevoxAuth() {
       setSuccessMsg("We sent you a confirmation code by email.");
     } catch (err: any) {
       if (err?.name === "UsernameExistsException") {
+        // Compte peut-être non confirmé
         setNeedsConfirm(true);
         setErrorMsg("An account already exists with this email. If not confirmed yet, enter the code below.");
       } else if (err?.name === "InvalidPasswordException") {
@@ -72,15 +75,20 @@ export default function RevoxAuth() {
     }
   }
 
+  // -------------------------
+  // CONFIRM
+  // -------------------------
   async function handleConfirm() {
     setErrorMsg(null);
     setSuccessMsg(null);
     setLoading(true);
     try {
-      await confirmSignUp({ username: email, confirmationCode: code });
+      await confirmSignUp({ username: email || signinEmail, confirmationCode: code });
       setSuccessMsg("Account confirmed! You can now sign in.");
       setNeedsConfirm(false);
       setTab("signin");
+      // Pré-remplit l'email de connexion si on vient du signUp
+      if (email && !signinEmail) setSigninEmail(email);
     } catch (err: any) {
       if (err?.name === "CodeMismatchException") {
         setErrorMsg("Invalid code. Please try again.");
@@ -88,6 +96,51 @@ export default function RevoxAuth() {
         setErrorMsg("Code expired. Request a new code.");
       } else {
         setErrorMsg(err?.message || "Confirmation failed.");
+      }
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  // -------------------------
+  // SIGN IN
+  // -------------------------
+  async function handleSignIn() {
+    setErrorMsg(null);
+    setSuccessMsg(null);
+    setLoading(true);
+    try {
+      const res = await signIn({
+        username: signinEmail,
+        password: signinPassword,
+      });
+
+      // Si l'utilisateur n'est pas confirmé, Amplify peut lever "UserNotConfirmedException"
+      // ou renvoyer un nextStep demandant la confirmation.
+      if ((res as any)?.nextStep?.signInStep === "CONFIRM_SIGN_UP") {
+        setNeedsConfirm(true);
+        setTab("signup"); // on réaffiche le panneau confirm dans l’onglet signup
+        setSuccessMsg("Your account is not confirmed yet. Please enter the code we sent by email.");
+        // Utilise l'email côté "confirm"
+        if (!email) setEmail(signinEmail);
+        setLoading(false);
+        return;
+      }
+
+      // Succès : Amplify stocke la session ; notre axios interceptor ajoutera le Bearer automatiquement
+      navigate("/revox/dashboard");
+    } catch (err: any) {
+      if (err?.name === "UserNotConfirmedException") {
+        setNeedsConfirm(true);
+        setTab("signup");
+        setSuccessMsg("Your account is not confirmed yet. Please enter the code we sent by email.");
+        if (!email) setEmail(signinEmail);
+      } else if (err?.name === "NotAuthorizedException") {
+        setErrorMsg("Incorrect email or password.");
+      } else if (err?.name === "UserNotFoundException") {
+        setErrorMsg("No user found with this email.");
+      } else {
+        setErrorMsg(err?.message || "Sign in failed.");
       }
     } finally {
       setLoading(false);
@@ -191,17 +244,16 @@ export default function RevoxAuth() {
                       {errorMsg && <p className="text-sm text-red-600">{errorMsg}</p>}
                       {successMsg && <p className="text-sm text-green-600">{successMsg}</p>}
 
-                      {/* Important: pas de navigation ici */}
                       <Button className="w-full" onClick={handleSignup} disabled={loading} type="button">
                         {t("startFreeTrial")}
                       </Button>
 
-                      {/* Bloc de confirmation (apparaît après signUp) */}
+                      {/* Bloc de confirmation (apparaît après signUp OU suite à signIn non confirmé) */}
                       {needsConfirm && (
                         <div className="mt-6 border-t pt-6">
                           <h4 className="font-medium mb-2">Confirm your email</h4>
                           <p className="text-sm text-muted-foreground mb-3">
-                            Enter the 6-digit code sent to <b>{email}</b>.
+                            Enter the 6-digit code sent to <b>{email || signinEmail}</b>.
                           </p>
                           <div className="space-y-2">
                             <Label htmlFor="confirmCode">Confirmation code</Label>
@@ -230,7 +282,7 @@ export default function RevoxAuth() {
                   </Card>
                 </TabsContent>
 
-                {/* SIGN IN (branché à l’étape suivante) */}
+                {/* SIGN IN */}
                 <TabsContent value="signin">
                   <Card>
                     <CardHeader>
@@ -242,16 +294,36 @@ export default function RevoxAuth() {
                         <Label htmlFor="signin-email">{t("authEmail")}</Label>
                         <div className="relative">
                           <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-4 w-4" />
-                          <Input id="signin-email" type="email" className="pl-10" placeholder={t("emailPlaceholder")} />
+                          <Input
+                            id="signin-email"
+                            type="email"
+                            className="pl-10"
+                            placeholder={t("emailPlaceholder")}
+                            value={signinEmail}
+                            onChange={(e) => setSigninEmail(e.target.value)}
+                            required
+                          />
                         </div>
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="signin-password">{t("authPassword")}</Label>
                         <div className="relative">
                           <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-4 w-4" />
-                          <Input id="signin-password" type="password" className="pl-10" placeholder={t("passwordPlaceholder")} />
+                          <Input
+                            id="signin-password"
+                            type="password"
+                            className="pl-10"
+                            placeholder={t("passwordPlaceholder")}
+                            value={signinPassword}
+                            onChange={(e) => setSigninPassword(e.target.value)}
+                            required
+                          />
                         </div>
                       </div>
+
+                      {errorMsg && tab === "signin" && <p className="text-sm text-red-600">{errorMsg}</p>}
+                      {successMsg && tab === "signin" && <p className="text-sm text-green-600">{successMsg}</p>}
+
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-2">
                           <input type="checkbox" id="remember" className="rounded" />
@@ -261,8 +333,8 @@ export default function RevoxAuth() {
                           {t("forgotPassword")}
                         </Button>
                       </div>
-                      {/* TEMP tant qu'on n'a pas branché signIn */}
-                      <Button className="w-full" onClick={handleDummyLogin} type="button">
+
+                      <Button className="w-full" onClick={handleSignIn} disabled={loading} type="button">
                         {t("signInToRevox")}
                       </Button>
                     </CardContent>
