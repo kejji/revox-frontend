@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { 
-  Plus, 
-  MoreVertical, 
-  Settings, 
-  LogOut, 
-  Star, 
-  TrendingUp, 
-  MessageSquare, 
+import {
+  Plus,
+  MoreVertical,
+  Settings,
+  LogOut,
+  Star,
+  TrendingUp,
+  MessageSquare,
   AlertTriangle,
   Smartphone,
   Zap,
@@ -41,6 +41,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { LanguageToggle } from "@/components/ui/language-toggle";
+import { doSignOut } from "@/lib/auth";
 
 interface App {
   id: string;
@@ -72,7 +73,7 @@ const RevoxDashboard = () => {
       trend: 'up'
     },
     {
-      id: '2', 
+      id: '2',
       name: 'FitTracker',
       icon: '/placeholder.svg',
       platforms: ['ios'],
@@ -83,7 +84,7 @@ const RevoxDashboard = () => {
     {
       id: '3',
       name: 'ShopSmart',
-      icon: '/placeholder.svg', 
+      icon: '/placeholder.svg',
       platforms: ['android'],
       currentRating: 4.6,
       weeklyReviews: 312,
@@ -128,7 +129,7 @@ const RevoxDashboard = () => {
       'alerts': AlertTriangle,
       'rating-comparison': TrendingUp
     };
-    
+
     const Icon = icons[widget.type];
 
     return (
@@ -140,9 +141,9 @@ const RevoxDashboard = () => {
           </CardTitle>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button 
-                variant="ghost" 
-                size="sm" 
+              <Button
+                variant="ghost"
+                size="sm"
                 className="w-8 h-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
               >
                 <Settings className="w-4 h-4" />
@@ -151,7 +152,7 @@ const RevoxDashboard = () => {
             <DropdownMenuContent align="end">
               <DropdownMenuItem>Configure</DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem 
+              <DropdownMenuItem
                 onClick={() => removeWidget(widget.id)}
                 className="text-destructive"
               >
@@ -180,7 +181,7 @@ const RevoxDashboard = () => {
           <div className="flex items-center gap-4">
             <h1 className="text-xl font-semibold">Revox Dashboard</h1>
           </div>
-          
+
           <div className="flex items-center gap-4">
             <ThemeToggle />
             <LanguageToggle />
@@ -208,8 +209,11 @@ const RevoxDashboard = () => {
                   Settings
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <LogOut className="mr-2 h-4 w-4" />
+                <DropdownMenuItem
+                  className="cursor-pointer"
+                  onClick={() => doSignOut(navigate)}
+                >                  
+                <LogOut className="mr-2 h-4 w-4" />
                   Log out
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -247,13 +251,13 @@ const RevoxDashboard = () => {
                       {renderPlatformBadges(app.platforms)}
                     </div>
                   </div>
-                  
+
                   <AlertDialog>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
+                        <Button
+                          variant="ghost"
+                          size="sm"
                           className="w-8 h-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
                         >
                           <MoreVertical className="w-4 h-4" />
@@ -271,7 +275,7 @@ const RevoxDashboard = () => {
                         </AlertDialogTrigger>
                       </DropdownMenuContent>
                     </DropdownMenu>
-                    
+
                     <AlertDialogContent>
                       <AlertDialogHeader>
                         <AlertDialogTitle>Remove {app.name}?</AlertDialogTitle>
@@ -282,7 +286,7 @@ const RevoxDashboard = () => {
                       </AlertDialogHeader>
                       <AlertDialogFooter>
                         <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction 
+                        <AlertDialogAction
                           onClick={() => removeApp(app.id)}
                           className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                         >
@@ -292,16 +296,15 @@ const RevoxDashboard = () => {
                     </AlertDialogContent>
                   </AlertDialog>
                 </CardHeader>
-                
+
                 <CardContent>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <Star className="w-4 h-4 fill-current text-yellow-500" />
                       <span className="font-medium">{app.currentRating}</span>
-                      <TrendingUp className={`w-4 h-4 ${
-                        app.trend === 'up' ? 'text-green-500' : 
+                      <TrendingUp className={`w-4 h-4 ${app.trend === 'up' ? 'text-green-500' :
                         app.trend === 'down' ? 'text-red-500 rotate-180' : 'text-muted-foreground'
-                      }`} />
+                        }`} />
                     </div>
                     <div className="text-right">
                       <p className="text-sm font-medium">{app.weeklyReviews}</p>

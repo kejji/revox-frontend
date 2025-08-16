@@ -1,9 +1,23 @@
 // src/pages/RevoxAuth.tsx
-import { useState } from "react";
-import { signUp, confirmSignUp, signIn } from "aws-amplify/auth";
+import { useEffect, useState } from "react";
+import {
+  signUp,
+  confirmSignUp,
+  signIn,
+  fetchAuthSession,
+  signOut,
+  getCurrentUser,
+} from "aws-amplify/auth";
+
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -39,16 +53,53 @@ export default function RevoxAuth() {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
-  // -------------------------
+  // (optionnel) redirige si déjà connecté
+  useEffect(() => {
+    (async () => {
+      try {
+        const session = await fetchAuthSession();
+        if (session.tokens) {
+          navigate("/revox/dashboard");
+        }
+      } catch {/* pas connecté */}
+    })();
+  }, [navigate]);
+
+  // =========================================
+  // Helpers
+  // =========================================
+  async function ensureSignedOutIfSwitching(targetEmail: string) {
+    try {
+      const session = await fetchAuthSession();
+      if (!session.tokens) return; // pas de session → rien à faire
+
+      // on est connecté : vérifie l'utilisateur courant
+      const user = await getCurrentUser().catch(() => null);
+      const currentUsername = (user?.username || "").toLowerCase();
+
+      if (
+        targetEmail &&
+        currentUsername &&
+        currentUsername !== targetEmail.toLowerCase()
+      ) {
+        // changement d'utilisateur → déconnexion d'abord
+        await signOut();
+      }
+    } catch {
+      // ignore
+    }
+  }
+
+  // =========================================
   // SIGN UP
-  // -------------------------
+  // =========================================
   async function handleSignup() {
     setErrorMsg(null);
     setSuccessMsg(null);
     setLoading(true);
     try {
       await signUp({
-        username: email, // v6: loginWith.email = true (configuré dans amplify.ts)
+        username: email, // v6: loginWith.email = true (configuré dans src/amplify.ts)
         password,
         options: {
           userAttributes: {
@@ -62,7 +113,7 @@ export default function RevoxAuth() {
       setSuccessMsg("We sent you a confirmation code by email.");
     } catch (err: any) {
       if (err?.name === "UsernameExistsException") {
-        // Compte peut-être non confirmé
+        // compte peut-être non confirmé
         setNeedsConfirm(true);
         setErrorMsg("An account already exists with this email. If not confirmed yet, enter the code below.");
       } else if (err?.name === "InvalidPasswordException") {
@@ -75,9 +126,9 @@ export default function RevoxAuth() {
     }
   }
 
-  // -------------------------
+  // =========================================
   // CONFIRM
-  // -------------------------
+  // =========================================
   async function handleConfirm() {
     setErrorMsg(null);
     setSuccessMsg(null);
@@ -87,7 +138,6 @@ export default function RevoxAuth() {
       setSuccessMsg("Account confirmed! You can now sign in.");
       setNeedsConfirm(false);
       setTab("signin");
-      // Pré-remplit l'email de connexion si on vient du signUp
       if (email && !signinEmail) setSigninEmail(email);
     } catch (err: any) {
       if (err?.name === "CodeMismatchException") {
@@ -102,32 +152,38 @@ export default function RevoxAuth() {
     }
   }
 
-  // -------------------------
-  // SIGN IN
-  // -------------------------
+  // =========================================
+  // SIGN IN (corrigé)
+  // =========================================
   async function handleSignIn() {
     setErrorMsg(null);
     setSuccessMsg(null);
     setLoading(true);
     try {
-      const res = await signIn({
-        username: signinEmail,
-        password: signinPassword,
-      });
+      // 1) si déjà connecté avec un autre compte → signOut d'abord
+      await ensureSignedOutIfSwitching(signinEmail);
 
-      // Si l'utilisateur n'est pas confirmé, Amplify peut lever "UserNotConfirmedException"
-      // ou renvoyer un nextStep demandant la confirmation.
-      if ((res as any)?.nextStep?.signInStep === "CONFIRM_SIGN_UP") {
-        setNeedsConfirm(true);
-        setTab("signup"); // on réaffiche le panneau confirm dans l’onglet signup
-        setSuccessMsg("Your account is not confirmed yet. Please enter the code we sent by email.");
-        // Utilise l'email côté "confirm"
-        if (!email) setEmail(signinEmail);
-        setLoading(false);
+      // 2) re-vérifie l'état après éventuel signOut
+      const current = await fetchAuthSession();
+      if (current.tokens) {
+        // session toujours active → c'est probablement le même user
+        navigate("/revox/dashboard");
         return;
       }
 
-      // Succès : Amplify stocke la session ; notre axios interceptor ajoutera le Bearer automatiquement
+      // 3) tente la connexion
+      const res = await signIn({ username: signinEmail, password: signinPassword });
+
+      // compte non confirmé → bascule sur panneau Confirm
+      if ((res as any)?.nextStep?.signInStep === "CONFIRM_SIGN_UP") {
+        setNeedsConfirm(true);
+        setTab("signup");
+        setSuccessMsg("Your account is not confirmed yet. Please enter the code we sent by email.");
+        if (!email) setEmail(signinEmail);
+        return;
+      }
+
+      // 4) succès
       navigate("/revox/dashboard");
     } catch (err: any) {
       if (err?.name === "UserNotConfirmedException") {
@@ -139,6 +195,8 @@ export default function RevoxAuth() {
         setErrorMsg("Incorrect email or password.");
       } else if (err?.name === "UserNotFoundException") {
         setErrorMsg("No user found with this email.");
+      } else if (err?.name === "UserAlreadyAuthenticatedException") {
+        navigate("/revox/dashboard");
       } else {
         setErrorMsg(err?.message || "Sign in failed.");
       }
@@ -152,13 +210,15 @@ export default function RevoxAuth() {
       <section className="py-20 bg-gradient-to-br from-primary/5 via-background to-blue-500/5">
         <div className="mx-auto max-w-4xl px-4 lg:px-8">
           {/* Back button */}
-          <div className="mb-8">
+          <div className="mb-8 flex items-center gap-2">
             <Button asChild variant="ghost">
               <Link to="/">
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 {t("backToHome")}
               </Link>
             </Button>
+            {/* (optionnel) un bouton pour forcer la déconnexion en test */}
+            {/* <Button variant="outline" onClick={() => signOut()} type="button">Sign out</Button> */}
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
@@ -212,7 +272,7 @@ export default function RevoxAuth() {
                       <div className="space-y-2">
                         <Label htmlFor="email">{t("authEmail")}</Label>
                         <div className="relative">
-                          <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-4 w-4" />
+                          <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                           <Input
                             id="email"
                             type="email"
@@ -228,7 +288,7 @@ export default function RevoxAuth() {
                       <div className="space-y-2">
                         <Label htmlFor="password">{t("authPassword")}</Label>
                         <div className="relative">
-                          <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-4 w-4" />
+                          <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                           <Input
                             id="password"
                             type="password"
@@ -293,7 +353,7 @@ export default function RevoxAuth() {
                       <div className="space-y-2">
                         <Label htmlFor="signin-email">{t("authEmail")}</Label>
                         <div className="relative">
-                          <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-4 w-4" />
+                          <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                           <Input
                             id="signin-email"
                             type="email"
@@ -308,7 +368,7 @@ export default function RevoxAuth() {
                       <div className="space-y-2">
                         <Label htmlFor="signin-password">{t("authPassword")}</Label>
                         <div className="relative">
-                          <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-4 w-4" />
+                          <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                           <Input
                             id="signin-password"
                             type="password"
