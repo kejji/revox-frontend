@@ -7,6 +7,6 @@ export async function doSignOut(navigate: NavigateFunction) {
   } catch (err) {
     console.error("Sign out failed:", err);
   } finally {
-    navigate("/revox/auth");
+    navigate("/revox/auth", { state: { tab: "signin" } });
   }
 }

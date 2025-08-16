@@ -23,7 +23,7 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { ArrowLeft, Mail, Lock, Shield, Globe } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
@@ -32,6 +32,7 @@ type Tab = "signup" | "signin";
 export default function RevoxAuth() {
   const { t } = useLanguage();
   const navigate = useNavigate();
+  const location = useLocation();
 
   // --- Sign Up form
   const [firstName, setFirstName] = useState("");
@@ -48,7 +49,7 @@ export default function RevoxAuth() {
   const [signinPassword, setSigninPassword] = useState("");
 
   // --- UI state
-  const [tab, setTab] = useState<Tab>("signup");
+  const [tab, setTab] = useState<Tab>(location.state?.tab || "signup");
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
