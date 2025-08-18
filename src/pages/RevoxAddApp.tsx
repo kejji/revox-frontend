@@ -360,7 +360,7 @@ const handleFollowApps = async () => {
                                   ) : (
                                     <Bot className="h-4 w-4" />
                                   )}
-                                  {platform === "ios" ? "App Store (iOS)" : "Google Play (Android)"}
+                                  {platform === "ios" ? "iOS" : "Android"}
                                 </label>
                               </div>
                             ))}
