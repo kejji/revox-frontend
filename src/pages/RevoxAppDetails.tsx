@@ -407,66 +407,6 @@ export default function RevoxAppDetails() {
             </Card>
           </div>
 
-          {/* Rating Chart */}
-          <Card>
-            <CardHeader className="pb-4">
-              <div className="flex items-center justify-between">
-                <CardTitle className="flex items-center gap-2 text-base font-medium">
-                  <div className="w-3 h-3 bg-primary rounded-sm" />
-                  Reviews Distribution
-                </CardTitle>
-                <Select value={chartPlatformFilter} onValueChange={setChartPlatformFilter}>
-                  <SelectTrigger className="w-20 h-7 text-xs border-0 bg-muted">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All</SelectItem>
-                    <SelectItem value="ios">iOS</SelectItem>
-                    <SelectItem value="android">Android</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </CardHeader>
-            <CardContent className="pt-0">
-              <div className="h-80">
-                <ChartContainer config={chartConfig}>
-                  <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={mockRatingData}>
-                      <XAxis 
-                        dataKey="date" 
-                        tick={{ fontSize: 11 }}
-                        tickFormatter={(value) => new Date(value).toLocaleDateString('en-US', { month: 'short', year: '2-digit' })}
-                        axisLine={false}
-                        tickLine={false}
-                      />
-                      <YAxis 
-                        domain={[1, 5]} 
-                        tick={{ fontSize: 11 }}
-                        axisLine={false}
-                        tickLine={false}
-                      />
-                      <ChartTooltip content={<ChartTooltipContent />} />
-                      <Line
-                        type="monotone"
-                        dataKey="rating"
-                        stroke="var(--color-rating)"
-                        strokeWidth={2}
-                        dot={{ fill: "var(--color-rating)", strokeWidth: 2, r: 4 }}
-                        activeDot={{ r: 6 }}
-                      />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </ChartContainer>
-              </div>
-              <div className="mt-4 flex items-center justify-between text-xs text-muted-foreground">
-                <span>Average rating trend over time</span>
-                <div className="flex items-center gap-1">
-                  <div className="w-2 h-2 bg-primary rounded-full" />
-                  <span>Average Rating</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
 
 
           {/* Reviews Section */}
