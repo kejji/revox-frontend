@@ -257,22 +257,17 @@ export default function RevoxDashboard() {
                         ) : (
                           <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-muted to-muted/50 border-2 border-border/50" />
                         )}
-                        
-                        {/* Platform badge overlay */}
-                        <div className="absolute -bottom-1 -right-1 bg-background border-2 border-background rounded-full p-1">
-                          {app.platform === 'ios' ? 
-                            <Apple className="h-3 w-3 text-foreground" /> : 
-                            <Bot className="h-3 w-3 text-foreground" />
-                          }
-                        </div>
                       </div>
 
                       <div className="min-w-0 flex-1">
                         <div className="font-semibold text-base truncate group-hover:text-primary transition-colors duration-200" title={app.name || app.bundleId}>
                           {app.name || app.bundleId}
                         </div>
-                        <div className="text-sm text-muted-foreground mt-1 capitalize">
-                          {app.platform} App
+                        <div className="flex items-center gap-2 mt-2">
+                          <Badge variant="secondary" className="text-xs flex items-center gap-1">
+                            {app.platform === 'ios' ? <Apple className="h-3 w-3" /> : <Bot className="h-3 w-3" />}
+                            {app.platform.toUpperCase()}
+                          </Badge>
                         </div>
                       </div>
                       
