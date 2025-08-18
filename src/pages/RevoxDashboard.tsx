@@ -12,7 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Settings, LogOut, Star, Trash2, ChevronRight, Smartphone, Apple } from "lucide-react";
+import { Settings, LogOut, Star, Trash2, ChevronRight, Bot, Apple } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { LanguageToggle } from "@/components/ui/language-toggle";
 import { Link, useNavigate } from "react-router-dom";
@@ -237,7 +237,7 @@ export default function RevoxDashboard() {
                           </div>
                           <div className="flex items-center gap-2 mt-1">
                             <Badge variant="secondary" className="text-xs flex items-center gap-1">
-                              {app.platform === 'ios' ? <Apple className="h-3 w-3" /> : <Smartphone className="h-3 w-3" />}
+                              {app.platform === 'ios' ? <Apple className="h-3 w-3" /> : <Bot className="h-3 w-3" />}
                               {app.platform.toUpperCase()}
                             </Badge>
                           </div>
