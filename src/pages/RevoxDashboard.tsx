@@ -12,7 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Settings, LogOut, Star, Trash2, ChevronRight, Bot, Apple, MoreVertical } from "lucide-react";
+import { Settings, LogOut, Star, Trash2, ChevronRight, Bot, Apple, MoreVertical, Plus } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { LanguageToggle } from "@/components/ui/language-toggle";
 import { Link, useNavigate } from "react-router-dom";
@@ -180,17 +180,12 @@ export default function RevoxDashboard() {
           </div>
         </div>
 
-        {/* ===== Sous-header (titre section + bouton Add) ===== */}
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <h2 className="text-lg font-semibold">Your Apps</h2>
-            <p className="text-sm text-muted-foreground">
-              Monitor feedback from {apps ? apps.length : 0} apps
-            </p>
-          </div>
-          <Button asChild>
-            <Link to="/revox/add">+ Add New App</Link>
-          </Button>
+        {/* ===== Sous-header (titre section) ===== */}
+        <div className="mb-4">
+          <h2 className="text-lg font-semibold">Your Apps</h2>
+          <p className="text-sm text-muted-foreground">
+            Monitor feedback from {apps ? apps.length : 0} apps
+          </p>
         </div>
 
         {/* ===== Contenu ===== */}
@@ -208,7 +203,7 @@ export default function RevoxDashboard() {
           </div>
         )}
 
-        {!loading && !err && apps && apps.length > 0 && (
+        {!loading && !err && apps && (
           <div className="grid gap-6 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
             {apps.map((app) => (
               <Card 
@@ -301,6 +296,37 @@ export default function RevoxDashboard() {
                 </CardContent>
               </Card>
             ))}
+            
+            {/* Add New App Card */}
+            <Card className="group relative overflow-hidden border-2 border-dashed border-border/50 hover:border-primary/50 shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-[1.02] bg-gradient-to-br from-muted/20 to-muted/10">
+              <CardContent className="p-0">
+                <Link 
+                  to="/revox/add"
+                  className="flex flex-col items-center justify-center p-6 h-full min-h-[200px] hover:bg-accent/30 transition-colors duration-200 cursor-pointer text-center"
+                >
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 border-2 border-primary/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-200">
+                    <Plus className="h-6 w-6 text-primary" />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <h3 className="font-semibold text-base group-hover:text-primary transition-colors duration-200">
+                      Add New App
+                    </h3>
+                    <p className="text-sm text-muted-foreground">
+                      Start monitoring a new app's feedback and reviews
+                    </p>
+                  </div>
+                  
+                  <div className="mt-4 pt-4 border-t border-border/50 w-full">
+                    <div className="text-xs text-muted-foreground">
+                      <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                        Click to add →
+                      </span>
+                    </div>
+                  </div>
+                </Link>
+              </CardContent>
+            </Card>
           </div>
         )}
       </section>
