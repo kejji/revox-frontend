@@ -202,15 +202,6 @@ export default function RevoxDashboard() {
           <div className="border rounded-xl p-6 text-red-600">{err}</div>
         )}
 
-        {!loading && !err && apps && apps.length === 0 && (
-          <div className="border rounded-xl p-8 text-center">
-            <p className="mb-3">You don’t follow any app yet.</p>
-            <Button asChild>
-              <Link to="/revox/add">+ Add your first app</Link>
-            </Button>
-          </div>
-        )}
-
         {!loading && !err && apps && (
           <div className="grid gap-6 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
             {apps.map((app) => (
