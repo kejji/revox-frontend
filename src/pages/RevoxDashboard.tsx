@@ -260,7 +260,7 @@ export default function RevoxDashboard() {
                         <div className="flex items-center gap-2 mt-2">
                           <Badge variant="secondary" className="text-xs flex items-center gap-1">
                             {app.platform === 'ios' ? <Apple className="h-3 w-3" /> : <Bot className="h-3 w-3" />}
-                            {app.platform.toUpperCase()}
+                            {app.platform === 'ios' ? 'iOS' : 'Android'}
                           </Badge>
                         </div>
                       </div>
