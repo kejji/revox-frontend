@@ -266,10 +266,7 @@ export default function RevoxDashboard() {
                   {/* Delete button section */}
                   <div className="px-5 pb-4 pt-0">
                     <Separator className="mb-3" />
-                    <div className="flex justify-between items-center">
-                      <span className="text-xs text-muted-foreground truncate" title={app.bundleId}>
-                        {app.bundleId}
-                      </span>
+                    <div className="flex justify-end">
                       <Button
                         variant="ghost"
                         size="sm"
