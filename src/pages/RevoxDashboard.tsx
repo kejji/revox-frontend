@@ -12,7 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Settings, LogOut, Star, Trash2 } from "lucide-react";
+import { Settings, LogOut, Star } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { LanguageToggle } from "@/components/ui/language-toggle";
 import { Link, useNavigate } from "react-router-dom";
@@ -105,26 +105,6 @@ export default function RevoxDashboard() {
       mounted = false;
     };
   }, []);
-
-  // Delete app function
-  const handleDeleteApp = async (app: FollowedApp) => {
-    try {
-      await api.delete("/follow-app", {
-        data: {
-          bundleId: app.bundleId,
-          platform: app.platform,
-        },
-      });
-      // Update local state
-      setApps((prevApps) => 
-        prevApps ? prevApps.filter(
-          (a) => !(a.bundleId === app.bundleId && a.platform === app.platform)
-        ) : null
-      );
-    } catch (e: any) {
-      setErr(e?.response?.data?.message || e?.message || "Failed to delete app.");
-    }
-  };
 
   // Initiales pour l'avatar fallback (ex: "John Doe" => "JD", sinon email => "JD")
   const initials = (() => {
@@ -249,28 +229,18 @@ export default function RevoxDashboard() {
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-2">
-                      <Button
-                        asChild
-                        variant="outline"
-                        size="sm"
-                        title="Open app details"
+                    <Button
+                      asChild
+                      variant="outline"
+                      size="sm"
+                      title="Open app details"
+                    >
+                      <Link
+                        to={`/revox/apps/${app.platform}/${encodeURIComponent(app.bundleId)}`}
                       >
-                        <Link
-                          to={`/revox/apps/${app.platform}/${encodeURIComponent(app.bundleId)}`}
-                        >
-                          View
-                        </Link>
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        title="Delete app"
-                        onClick={() => handleDeleteApp(app)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
+                        View
+                      </Link>
+                    </Button>
                   </div>
 
                   <Separator className="my-4" />
