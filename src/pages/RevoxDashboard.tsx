@@ -304,8 +304,8 @@ export default function RevoxDashboard() {
                   className="flex flex-col items-center justify-center p-8 h-full min-h-[200px] transition-all duration-200 cursor-pointer text-center"
                 >
                   {/* Simple plus icon */}
-                  <div className="w-12 h-12 rounded-full border-2 border-muted-foreground/30 flex items-center justify-center mb-4 group-hover:border-muted-foreground/50 transition-colors duration-200">
-                    <Plus className="h-6 w-6 text-muted-foreground group-hover:text-foreground transition-colors duration-200" />
+                  <div className="w-12 h-12 flex items-center justify-center mb-4">
+                    <Plus className="h-8 w-8 text-muted-foreground group-hover:text-foreground transition-colors duration-200" />
                   </div>
 
                   <div className="space-y-2">
