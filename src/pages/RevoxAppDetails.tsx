@@ -296,17 +296,17 @@ export default function RevoxAppDetails() {
           </Card>
 
           {/* Analytics Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Positive Themes */}
             <Card>
-              <CardHeader className="pb-3">
+              <CardHeader className="pb-4">
                 <div className="flex items-center justify-between">
-                  <CardTitle className="flex items-center gap-2 text-lg">
-                    <TrendingUp className="h-5 w-5 text-green-500" />
+                  <CardTitle className="flex items-center gap-2 text-base font-medium">
+                    <TrendingUp className="h-4 w-4 text-green-600" />
                     Top 3 Positive Themes
                   </CardTitle>
                   <Select defaultValue="all">
-                    <SelectTrigger className="w-20 h-8 text-xs">
+                    <SelectTrigger className="w-16 h-7 text-xs border-0 bg-muted">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -317,15 +317,12 @@ export default function RevoxAppDetails() {
                   </Select>
                 </div>
               </CardHeader>
-              <CardContent>
+              <CardContent className="pt-0">
                 <div className="space-y-4">
                   {mockPositiveThemes.map((theme, index) => (
-                    <div key={index} className="space-y-2">
-                      <div className="flex items-center justify-between text-sm">
-                        <span>{theme.theme}</span>
-                        <span className="text-green-500 font-medium">+{theme.percentage}%</span>
-                      </div>
-                      <Progress value={theme.percentage} className="h-2" />
+                    <div key={index} className="flex items-center justify-between">
+                      <span className="text-sm text-foreground">{theme.theme}</span>
+                      <span className="text-sm font-medium text-green-600">+{theme.percentage}%</span>
                     </div>
                   ))}
                 </div>
@@ -334,14 +331,14 @@ export default function RevoxAppDetails() {
 
             {/* Negative Themes */}
             <Card>
-              <CardHeader className="pb-3">
+              <CardHeader className="pb-4">
                 <div className="flex items-center justify-between">
-                  <CardTitle className="flex items-center gap-2 text-lg">
-                    <TrendingDown className="h-5 w-5 text-red-500" />
+                  <CardTitle className="flex items-center gap-2 text-base font-medium">
+                    <TrendingDown className="h-4 w-4 text-orange-600" />
                     Top 3 Negative Themes
                   </CardTitle>
                   <Select defaultValue="all">
-                    <SelectTrigger className="w-20 h-8 text-xs">
+                    <SelectTrigger className="w-16 h-7 text-xs border-0 bg-muted">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -352,32 +349,74 @@ export default function RevoxAppDetails() {
                   </Select>
                 </div>
               </CardHeader>
-              <CardContent>
+              <CardContent className="pt-0">
                 <div className="space-y-4">
                   {mockNegativeThemes.map((theme, index) => (
-                    <div key={index} className="space-y-2">
-                      <div className="flex items-center justify-between text-sm">
-                        <span>{theme.theme}</span>
-                        <span className="text-red-500 font-medium">-{theme.percentage}%</span>
-                      </div>
-                      <Progress value={theme.percentage} className="h-2" />
+                    <div key={index} className="flex items-center justify-between">
+                      <span className="text-sm text-foreground">{theme.theme}</span>
+                      <span className="text-sm font-medium text-orange-600">-{theme.percentage}%</span>
                     </div>
                   ))}
                 </div>
+              </CardContent>
+            </Card>
+
+            {/* Alert Status */}
+            <Card>
+              <CardHeader className="pb-4">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="flex items-center gap-2 text-base font-medium">
+                    <AlertTriangle className="h-4 w-4 text-orange-500" />
+                    Alert Status
+                  </CardTitle>
+                  <Button size="sm" variant="outline" onClick={handleCreateAlert} className="h-7 text-xs gap-1">
+                    <Plus className="h-3 w-3" />
+                    Create New Alert
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent className="pt-0">
+                <div className="space-y-3">
+                  {mockAlerts.map((alert) => (
+                    <div key={alert.id} className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className={`w-1.5 h-1.5 rounded-full ${
+                          alert.type === 'error' ? 'bg-red-500' : 'bg-orange-500'
+                        }`} />
+                        <span className="text-sm text-foreground">{alert.message}</span>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleRemoveAlert(alert.id)}
+                        className="h-6 w-6 p-0 hover:bg-muted"
+                      >
+                        <X className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+                <Button 
+                  className="w-full mt-4 bg-primary text-primary-foreground hover:bg-primary/90" 
+                  onClick={handleCreateAlert}
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Create New Alert
+                </Button>
               </CardContent>
             </Card>
           </div>
 
           {/* Rating Chart */}
           <Card>
-            <CardHeader className="pb-3">
+            <CardHeader className="pb-4">
               <div className="flex items-center justify-between">
-                <CardTitle className="flex items-center gap-2 text-lg">
-                  <div className="w-4 h-4 bg-chart-1 rounded-sm" />
+                <CardTitle className="flex items-center gap-2 text-base font-medium">
+                  <div className="w-3 h-3 bg-primary rounded-sm" />
                   Reviews Distribution
                 </CardTitle>
                 <Select value={chartPlatformFilter} onValueChange={setChartPlatformFilter}>
-                  <SelectTrigger className="w-32 h-8 text-xs">
+                  <SelectTrigger className="w-20 h-7 text-xs border-0 bg-muted">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -388,19 +427,23 @@ export default function RevoxAppDetails() {
                 </Select>
               </div>
             </CardHeader>
-            <CardContent>
+            <CardContent className="pt-0">
               <div className="h-80">
                 <ChartContainer config={chartConfig}>
                   <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={mockRatingData}>
                       <XAxis 
                         dataKey="date" 
-                        tick={{ fontSize: 12 }}
+                        tick={{ fontSize: 11 }}
                         tickFormatter={(value) => new Date(value).toLocaleDateString('en-US', { month: 'short', year: '2-digit' })}
+                        axisLine={false}
+                        tickLine={false}
                       />
                       <YAxis 
                         domain={[1, 5]} 
-                        tick={{ fontSize: 12 }}
+                        tick={{ fontSize: 11 }}
+                        axisLine={false}
+                        tickLine={false}
                       />
                       <ChartTooltip content={<ChartTooltipContent />} />
                       <Line
@@ -415,56 +458,16 @@ export default function RevoxAppDetails() {
                   </ResponsiveContainer>
                 </ChartContainer>
               </div>
-              <div className="mt-4 text-sm text-muted-foreground">
-                Average rating trend over time
-                <span className="ml-4 inline-flex items-center gap-1">
-                  <div className="w-2 h-2 bg-chart-1 rounded-full" />
-                  Average Rating
-                </span>
+              <div className="mt-4 flex items-center justify-between text-xs text-muted-foreground">
+                <span>Average rating trend over time</span>
+                <div className="flex items-center gap-1">
+                  <div className="w-2 h-2 bg-primary rounded-full" />
+                  <span>Average Rating</span>
+                </div>
               </div>
             </CardContent>
           </Card>
 
-          {/* Alerts */}
-          <Card>
-            <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
-                <CardTitle className="flex items-center gap-2 text-lg">
-                  <AlertTriangle className="h-5 w-5 text-orange-500" />
-                  Alert Status
-                </CardTitle>
-                <Button size="sm" onClick={handleCreateAlert} className="gap-2">
-                  <Plus className="h-4 w-4" />
-                  Create New Alert
-                </Button>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                {mockAlerts.map((alert) => (
-                  <div key={alert.id} className="flex items-center justify-between p-3 rounded-lg border bg-card">
-                    <div className="flex items-center gap-3">
-                      <div className={`w-2 h-2 rounded-full ${
-                        alert.type === 'error' ? 'bg-red-500' : 'bg-orange-500'
-                      }`} />
-                      <span className="text-sm">{alert.message}</span>
-                    </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleRemoveAlert(alert.id)}
-                      className="h-6 w-6 p-0"
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
-                  </div>
-                ))}
-              </div>
-              <p className="text-xs text-muted-foreground mt-4">
-                Get notified when specific metrics or themes change
-              </p>
-            </CardContent>
-          </Card>
 
           {/* Reviews Section */}
           <Card>
