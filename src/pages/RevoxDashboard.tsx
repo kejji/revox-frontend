@@ -12,7 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Settings, LogOut, Star, Trash2, ChevronRight, Bot, Apple } from "lucide-react";
+import { Settings, LogOut, Star, Trash2, ChevronRight, Bot, Apple, MoreVertical } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { LanguageToggle } from "@/components/ui/language-toggle";
 import { Link, useNavigate } from "react-router-dom";
@@ -209,78 +209,102 @@ export default function RevoxDashboard() {
         )}
 
         {!loading && !err && apps && apps.length > 0 && (
-          <div className="grid gap-4 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
+          <div className="grid gap-6 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
             {apps.map((app) => (
-              <Card key={`${app.platform}#${app.bundleId}`} className="overflow-hidden hover:shadow-md transition-shadow">
+              <Card 
+                key={`${app.platform}#${app.bundleId}`} 
+                className="group relative overflow-hidden border-0 shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-[1.02] bg-gradient-to-br from-card to-card/50"
+              >
                 <CardContent className="p-0">
+                  {/* Delete button - positioned absolutely */}
+                  <div className="absolute top-3 right-3 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground bg-background/80 backdrop-blur-sm hover:bg-background/90"
+                        >
+                          <MoreVertical className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem
+                          className="text-destructive focus:text-destructive cursor-pointer"
+                          onClick={() => handleDeleteApp(app)}
+                        >
+                          <Trash2 className="mr-2 h-4 w-4" />
+                          Remove app
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+
                   {/* Clickable main content area */}
                   <Link 
                     to={`/revox/apps/${app.platform}/${encodeURIComponent(app.bundleId)}`}
-                    className="block p-5 hover:bg-accent/50 transition-colors"
+                    className="block p-6 hover:bg-accent/30 transition-colors duration-200 cursor-pointer"
                   >
                     {/* Header section */}
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex items-center gap-3 min-w-0 flex-1">
+                    <div className="flex items-center gap-4 mb-6">
+                      <div className="relative">
                         {app.icon ? (
                           <img
                             src={app.icon}
                             alt=""
-                            className="w-10 h-10 rounded-lg object-cover border flex-shrink-0"
+                            className="w-12 h-12 rounded-xl object-cover border-2 border-border/50 shadow-sm group-hover:shadow-md transition-shadow duration-200"
                           />
                         ) : (
-                          <div className="w-10 h-10 rounded-lg bg-muted flex-shrink-0" />
+                          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-muted to-muted/50 border-2 border-border/50" />
                         )}
+                        
+                        {/* Platform badge overlay */}
+                        <div className="absolute -bottom-1 -right-1 bg-background border-2 border-background rounded-full p-1">
+                          {app.platform === 'ios' ? 
+                            <Apple className="h-3 w-3 text-foreground" /> : 
+                            <Bot className="h-3 w-3 text-foreground" />
+                          }
+                        </div>
+                      </div>
 
-                        <div className="min-w-0 flex-1">
-                          <div className="font-medium text-sm truncate" title={app.name || app.bundleId}>
-                            {app.name || app.bundleId}
-                          </div>
-                          <div className="flex items-center gap-2 mt-1">
-                            <Badge variant="secondary" className="text-xs flex items-center gap-1">
-                              {app.platform === 'ios' ? <Apple className="h-3 w-3" /> : <Bot className="h-3 w-3" />}
-                              {app.platform.toUpperCase()}
-                            </Badge>
-                          </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="font-semibold text-base truncate group-hover:text-primary transition-colors duration-200" title={app.name || app.bundleId}>
+                          {app.name || app.bundleId}
+                        </div>
+                        <div className="text-sm text-muted-foreground mt-1 capitalize">
+                          {app.platform} App
                         </div>
                       </div>
                       
-                      <ChevronRight className="h-4 w-4 text-muted-foreground flex-shrink-0 ml-2" />
+                      <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all duration-200 flex-shrink-0" />
                     </div>
 
                     {/* Stats section */}
-                    <div className="flex items-center justify-between text-sm">
-                      <div className="flex items-center gap-1">
-                        <Star className="h-4 w-4 text-yellow-500" />
-                        <span>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2 bg-muted/50 rounded-full px-3 py-1.5">
+                        <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />
+                        <span className="font-medium text-sm">
                           {typeof app.rating === "number" ? app.rating.toFixed(1) : "—"}
                         </span>
                       </div>
-                      <div className="text-xs text-muted-foreground">
+                      
+                      <div className="text-xs text-muted-foreground font-medium">
                         {typeof app.reviewsThisWeek === "number"
-                          ? `${app.reviewsThisWeek} reviews`
-                          : "No reviews"}
+                          ? `${app.reviewsThisWeek} reviews this week`
+                          : "No recent reviews"}
+                      </div>
+                    </div>
+
+                    {/* Call to action hint */}
+                    <div className="mt-4 pt-4 border-t border-border/50">
+                      <div className="flex items-center justify-between text-xs text-muted-foreground">
+                        <span>View detailed analytics</span>
+                        <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                          Click to explore →
+                        </span>
                       </div>
                     </div>
                   </Link>
-                  
-                  {/* Delete button section */}
-                  <div className="px-5 pb-4 pt-0">
-                    <Separator className="mb-3" />
-                    <div className="flex justify-end">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          handleDeleteApp(app);
-                        }}
-                        className="h-7 w-7 p-0 text-muted-foreground hover:text-destructive"
-                        title="Remove app"
-                      >
-                        <Trash2 className="h-3.5 w-3.5" />
-                      </Button>
-                    </div>
-                  </div>
                 </CardContent>
               </Card>
             ))}
