@@ -46,7 +46,11 @@ export default function RevoxDashboard() {
 
   // Handle browser back button to navigate to /revox
   useEffect(() => {
-    const handlePopState = () => {
+    // Push current state to ensure we have a history entry
+    window.history.pushState(null, "", window.location.pathname);
+    
+    const handlePopState = (event: PopStateEvent) => {
+      event.preventDefault();
       navigate("/revox", { replace: true });
     };
 
