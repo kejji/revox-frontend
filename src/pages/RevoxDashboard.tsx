@@ -48,7 +48,7 @@ export default function RevoxDashboard() {
   useEffect(() => {
     // Push current state to ensure we have a history entry
     window.history.pushState(null, "", window.location.pathname);
-    
+
     const handlePopState = (event: PopStateEvent) => {
       event.preventDefault();
       navigate("/revox", { replace: true });
@@ -69,7 +69,7 @@ export default function RevoxDashboard() {
         // Attributs standards Cognito: email, given_name, family_name, ...
         const attrs = await fetchUserAttributes().catch(() => ({} as any));
         const email = (attrs as any)?.email || user.username || "";
-        const fullname = [ (attrs as any)?.given_name, (attrs as any)?.family_name ]
+        const fullname = [(attrs as any)?.given_name, (attrs as any)?.family_name]
           .filter(Boolean)
           .join(" ")
           .trim();
@@ -89,8 +89,16 @@ export default function RevoxDashboard() {
   // Delete app handler
   const handleDeleteApp = async (app: FollowedApp) => {
     try {
-      await api.delete(`/follow-app/${app.platform}/${encodeURIComponent(app.bundleId)}`);
-      setApps(prev => prev ? prev.filter(a => !(a.platform === app.platform && a.bundleId === app.bundleId)) : null);
+      await api.delete("/follow-app", {
+        data: {
+          platform: app.platform,
+          bundleId: app.bundleId,
+        },
+      });
+
+      setApps((prev) =>
+        prev ? prev.filter((a) => !(a.platform === app.platform && a.bundleId === app.bundleId)) : null
+      );
     } catch (e: any) {
       setErr(e?.response?.data?.message || e?.message || "Failed to delete app.");
     }
@@ -206,8 +214,8 @@ export default function RevoxDashboard() {
         {!loading && !err && apps && (
           <div className="grid gap-6 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
             {apps.map((app) => (
-              <Card 
-                key={`${app.platform}#${app.bundleId}`} 
+              <Card
+                key={`${app.platform}#${app.bundleId}`}
                 className="group relative overflow-hidden border-0 shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-[1.02] bg-gradient-to-br from-card to-card/50"
               >
                 <CardContent className="p-0">
@@ -236,7 +244,7 @@ export default function RevoxDashboard() {
                   </div>
 
                   {/* Clickable main content area */}
-                  <Link 
+                  <Link
                     to={`/revox/apps/${app.platform}/${encodeURIComponent(app.bundleId)}`}
                     className="block p-6 hover:bg-accent/30 transition-colors duration-200 cursor-pointer"
                   >
@@ -275,7 +283,7 @@ export default function RevoxDashboard() {
                           {typeof app.rating === "number" ? app.rating.toFixed(1) : "—"}
                         </span>
                       </div>
-                      
+
                       <div className="text-xs text-muted-foreground font-medium">
                         {typeof app.reviewsThisWeek === "number"
                           ? `${app.reviewsThisWeek} reviews this week`
@@ -296,22 +304,22 @@ export default function RevoxDashboard() {
                 </CardContent>
               </Card>
             ))}
-            
+
             {/* Add New App Card */}
             <Card className="group relative overflow-hidden border border-border/60 hover:border-primary/40 shadow-sm hover:shadow-xl transition-all duration-300 hover:scale-[1.02] bg-gradient-to-br from-background to-muted/30">
               <CardContent className="p-0">
-                <Link 
+                <Link
                   to="/revox/add"
                   className="flex flex-col items-center justify-center p-8 h-full min-h-[200px] transition-all duration-200 cursor-pointer text-center relative"
                 >
                   {/* Background pattern */}
                   <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  
+
                   {/* Plus icon with modern styling */}
                   <div className="relative w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/10 to-primary/20 border border-primary/20 flex items-center justify-center mb-6 group-hover:shadow-lg group-hover:shadow-primary/20 transition-all duration-300">
                     <Plus className="h-8 w-8 text-primary group-hover:scale-110 transition-transform duration-200" />
                   </div>
-                  
+
                   <div className="relative space-y-3">
                     <h3 className="font-semibold text-lg group-hover:text-primary transition-colors duration-200">
                       Add New App
@@ -320,7 +328,7 @@ export default function RevoxDashboard() {
                       Connect your app to start collecting and analyzing user feedback
                     </p>
                   </div>
-                  
+
                   {/* Subtle arrow indicator */}
                   <div className="relative mt-6 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
                     <div className="flex items-center gap-2 text-xs text-primary font-medium">
