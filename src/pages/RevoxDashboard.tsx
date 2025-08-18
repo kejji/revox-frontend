@@ -44,6 +44,18 @@ export default function RevoxDashboard() {
   const [userName, setUserName] = useState<string>("");
   const [userEmail, setUserEmail] = useState<string>("");
 
+  // Handle browser back button to navigate to /revox
+  useEffect(() => {
+    const handlePopState = () => {
+      navigate("/revox", { replace: true });
+    };
+
+    window.addEventListener("popstate", handlePopState);
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, [navigate]);
+
   // Récupère l'utilisateur connecté (nom + email)
   useEffect(() => {
     let mounted = true;
