@@ -297,37 +297,24 @@ export default function RevoxDashboard() {
             ))}
 
             {/* Add New App Card */}
-            <Card className="group relative overflow-hidden border border-border/60 hover:border-primary/40 shadow-sm hover:shadow-xl transition-all duration-300 hover:scale-[1.02] bg-gradient-to-br from-background to-muted/30">
+            <Card className="group relative overflow-hidden border border-border hover:border-border/80 shadow-sm hover:shadow-md transition-all duration-200">
               <CardContent className="p-0">
                 <Link
                   to="/revox/add"
-                  className="flex flex-col items-center justify-center p-8 h-full min-h-[200px] transition-all duration-200 cursor-pointer text-center relative"
+                  className="flex flex-col items-center justify-center p-8 h-full min-h-[200px] transition-all duration-200 cursor-pointer text-center"
                 >
-                  {/* Background pattern */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
-                  {/* Plus icon with modern styling */}
-                  <div className="relative w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/10 to-primary/20 border border-primary/20 flex items-center justify-center mb-6 group-hover:shadow-lg group-hover:shadow-primary/20 transition-all duration-300">
-                    <Plus className="h-8 w-8 text-primary group-hover:scale-110 transition-transform duration-200" />
+                  {/* Simple plus icon */}
+                  <div className="w-12 h-12 rounded-full border-2 border-muted-foreground/30 flex items-center justify-center mb-4 group-hover:border-muted-foreground/50 transition-colors duration-200">
+                    <Plus className="h-6 w-6 text-muted-foreground group-hover:text-foreground transition-colors duration-200" />
                   </div>
 
-                  <div className="relative space-y-3">
-                    <h3 className="font-semibold text-lg group-hover:text-primary transition-colors duration-200">
+                  <div className="space-y-2">
+                    <h3 className="font-medium text-base">
                       Add New App
                     </h3>
-                    <p className="text-sm text-muted-foreground max-w-[200px] leading-relaxed">
-                      Connect your app to start collecting and analyzing user feedback
+                    <p className="text-sm text-muted-foreground max-w-[180px]">
+                      Connect your app to start monitoring feedback
                     </p>
-                  </div>
-
-                  {/* Subtle arrow indicator */}
-                  <div className="relative mt-6 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
-                    <div className="flex items-center gap-2 text-xs text-primary font-medium">
-                      <span>Get Started</span>
-                      <div className="w-4 h-4 rounded-full bg-primary/20 flex items-center justify-center">
-                        <Plus className="h-2 w-2 text-primary" />
-                      </div>
-                    </div>
                   </div>
                 </Link>
               </CardContent>
