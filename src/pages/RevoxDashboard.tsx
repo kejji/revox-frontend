@@ -12,8 +12,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Languages, Settings, LogOut, Star } from "lucide-react";
+import { Settings, LogOut, Star } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { LanguageToggle } from "@/components/ui/language-toggle";
 import { Link, useNavigate } from "react-router-dom";
 
 import { api } from "@/api";
@@ -112,10 +113,8 @@ export default function RevoxDashboard() {
             {/* Theme Toggle */}
             <ThemeToggle />
 
-            {/* Icône Langue */}
-            <Button variant="ghost" size="icon" title="Language">
-              <Languages className="h-5 w-5" />
-            </Button>
+            {/* Language Toggle */}
+            <LanguageToggle />
 
             {/* Menu avatar */}
             <DropdownMenu>
