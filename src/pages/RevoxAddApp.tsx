@@ -26,18 +26,19 @@ import { searchApps, type SearchAppItem } from "@/api";
 
 // Types for app search results
 type SearchedApp = {
-  bundleId: string;
   name: string;
   icon?: string;
   rating?: number;
   platforms: ("ios" | "android")[];
   description?: string;
+  bundleIds: { platform: "ios" | "android"; bundleId: string }[];
 };
 
 // Types for follow selections
 type FollowSelection = {
-  bundleId: string;
+  name: string;
   platforms: ("ios" | "android")[];
+  bundleIds: { platform: "ios" | "android"; bundleId: string }[];
 };
 
 export default function RevoxAddApp() {
@@ -74,31 +75,35 @@ export default function RevoxAddApp() {
       // ✅ appelle GET /search-app?query=...
       const flat: SearchAppItem[] = await searchApps(query.trim());
 
-      // ✅ groupage par bundleId pour produire ton modèle SearchedApp
-      const byBundle = new Map<string, SearchedApp>();
+      // ✅ groupage par nom pour produire ton modèle SearchedApp
+      const byName = new Map<string, SearchedApp>();
 
       for (const item of flat) {
         const platform = item.store === "ios" ? "ios" : "android";
 
-        if (!byBundle.has(item.bundleId)) {
-          byBundle.set(item.bundleId, {
-            bundleId: item.bundleId,
+        if (!byName.has(item.name)) {
+          byName.set(item.name, {
             name: item.name,
             icon: item.icon,
             platforms: [platform],
+            bundleIds: [{ platform, bundleId: item.bundleId }],
           });
         } else {
-          const existing = byBundle.get(item.bundleId)!;
+          const existing = byName.get(item.name)!;
           // Mets à jour le nom/icon si l’élément existant n’en a pas
-          if (!existing.name && item.name) existing.name = item.name;
+          
           if (!existing.icon && item.icon) existing.icon = item.icon;
           if (!existing.platforms.includes(platform)) {
             existing.platforms.push(platform);
           }
+          // Ajoute le bundleId pour cette plateforme s'il n'existe pas déjà
+          if (!existing.bundleIds.some(b => b.platform === platform && b.bundleId === item.bundleId)) {
+            existing.bundleIds.push({ platform, bundleId: item.bundleId });
+          }
         }
       }
 
-      setSearchResults(Array.from(byBundle.values()));
+      setSearchResults(Array.from(byName.values()));
       setHasSearched(true);
       // Optionnel: reset les sélections si on lance une nouvelle recherche
       setFollowSelections(new Map());
@@ -115,8 +120,8 @@ export default function RevoxAddApp() {
     }
   };
 
-  const handlePlatformSelection = (bundleId: string, platform: "ios" | "android", checked: boolean) => {
-    const current = followSelections.get(bundleId) || { bundleId, platforms: [] };
+  const handlePlatformSelection = (appName: string, platform: "ios" | "android", checked: boolean, appBundleIds: { platform: "ios" | "android"; bundleId: string }[]) => {
+    const current = followSelections.get(appName) || { name: appName, platforms: [], bundleIds: appBundleIds };
 
     if (checked) {
       // Add platform if not already included
@@ -130,9 +135,9 @@ export default function RevoxAddApp() {
 
     const newSelections = new Map(followSelections);
     if (current.platforms.length > 0) {
-      newSelections.set(bundleId, current);
+      newSelections.set(appName, current);
     } else {
-      newSelections.delete(bundleId);
+      newSelections.delete(appName);
     }
 
     setFollowSelections(newSelections);
@@ -145,10 +150,13 @@ const handleFollowApps = async () => {
   try {
     // 1) Aplatis les sélections en une liste de { platform, bundleId }
     const payloads = Array.from(followSelections.values()).flatMap((selection) =>
-      selection.platforms.map((platform) => ({
-        bundleId: selection.bundleId,
-        platform, // "ios" | "android"
-      }))
+      selection.platforms.map((platform) => {
+        const bundleInfo = selection.bundleIds.find(b => b.platform === platform);
+        return {
+          bundleId: bundleInfo?.bundleId || '',
+          platform, // "ios" | "android"
+        };
+      }).filter(p => p.bundleId) // Filter out empty bundleIds
     );
 
     // 2) Envoi un POST par app sélectionnée
@@ -275,12 +283,12 @@ const handleFollowApps = async () => {
               ) : (
                 <div className="space-y-4">
                   {searchResults.map((app) => {
-                    const selection = followSelections.get(app.bundleId);
+                    const selection = followSelections.get(app.name);
                     const isIosSelected = selection?.platforms.includes("ios") || false;
                     const isAndroidSelected = selection?.platforms.includes("android") || false;
 
                     return (
-                      <div key={app.bundleId} className="border rounded-lg p-4">
+                      <div key={app.name} className="border rounded-lg p-4">
                         {/* App Info */}
                         <div className="flex items-start gap-3 mb-3">
                           {app.icon ? (
@@ -297,7 +305,6 @@ const handleFollowApps = async () => {
 
                           <div className="flex-1 min-w-0">
                             <h3 className="font-medium text-sm">{app.name}</h3>
-                            <p className="text-xs text-muted-foreground mb-2">{app.bundleId}</p>
 
                             {app.description && (
                               <p className="text-xs text-muted-foreground line-clamp-2 mb-2">
@@ -338,14 +345,14 @@ const handleFollowApps = async () => {
                             {app.platforms.map((platform) => (
                               <div key={platform} className="flex items-center space-x-2">
                                 <Checkbox
-                                  id={`${app.bundleId}-${platform}`}
+                                  id={`${app.name}-${platform}`}
                                   checked={platform === "ios" ? isIosSelected : isAndroidSelected}
                                   onCheckedChange={(checked) =>
-                                    handlePlatformSelection(app.bundleId, platform, checked as boolean)
+                                    handlePlatformSelection(app.name, platform, checked as boolean, app.bundleIds)
                                   }
                                 />
                                 <label
-                                  htmlFor={`${app.bundleId}-${platform}`}
+                                  htmlFor={`${app.name}-${platform}`}
                                   className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 flex items-center gap-2 cursor-pointer"
                                 >
                                   {platform === "ios" ? (
