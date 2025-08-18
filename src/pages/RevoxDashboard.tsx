@@ -217,20 +217,27 @@ export default function RevoxDashboard() {
               >
                 <CardContent className="p-0">
                   {/* Delete button - positioned absolutely */}
-                  <div className="absolute top-4 right-4 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        handleDeleteApp(app);
-                      }}
-                      className="h-8 w-8 p-0 text-muted-foreground hover:text-destructive bg-background/80 backdrop-blur-sm hover:bg-background/90"
-                      title="Remove app"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
+                  <div className="absolute top-3 right-3 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground bg-background/80 backdrop-blur-sm hover:bg-background/90"
+                        >
+                          <MoreVertical className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem
+                          className="text-destructive focus:text-destructive cursor-pointer"
+                          onClick={() => handleDeleteApp(app)}
+                        >
+                          <Trash2 className="mr-2 h-4 w-4" />
+                          Remove app
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </div>
 
                   {/* Clickable main content area */}
