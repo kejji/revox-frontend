@@ -1,225 +1,35 @@
-// src/pages/RevoxAuth.tsx
-import { useEffect, useState } from "react";
-import {
-  signUp,
-  confirmSignUp,
-  signIn,
-  fetchAuthSession,
-  signOut,
-  getCurrentUser,
-} from "aws-amplify/auth";
-
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
-import { Link, useNavigate, useLocation } from "react-router-dom";
-import { ArrowLeft, Mail, Lock, Shield, Globe } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { ArrowLeft, Mail, Lock, User, Building, Zap, Shield, Globe } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
-type Tab = "signup" | "signin";
-
-export default function RevoxAuth() {
+const RevoxAuth = () => {
   const { t } = useLanguage();
   const navigate = useNavigate();
-  const location = useLocation();
 
-  // --- Sign Up form
-  const [firstName, setFirstName] = useState("");
-  const [lastName,  setLastName]  = useState("");
-  const [email,     setEmail]     = useState("");
-  const [password,  setPassword]  = useState("");
-
-  // --- Confirm step (après signUp OU signIn si non confirmé)
-  const [needsConfirm, setNeedsConfirm] = useState(false);
-  const [code, setCode] = useState("");
-
-  // --- Sign In form
-  const [signinEmail, setSigninEmail] = useState("");
-  const [signinPassword, setSigninPassword] = useState("");
-
-  // --- UI state
-  const [tab, setTab] = useState<Tab>(location.state?.tab || "signup");
-  const [loading, setLoading] = useState(false);
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [successMsg, setSuccessMsg] = useState<string | null>(null);
-
-  // (optionnel) redirige si déjà connecté
-  useEffect(() => {
-    (async () => {
-      try {
-        const session = await fetchAuthSession();
-        if (session.tokens) {
-          navigate("/revox/dashboard");
-        }
-      } catch {/* pas connecté */}
-    })();
-  }, [navigate]);
-
-  // =========================================
-  // Helpers
-  // =========================================
-  async function ensureSignedOutIfSwitching(targetEmail: string) {
-    try {
-      const session = await fetchAuthSession();
-      if (!session.tokens) return; // pas de session → rien à faire
-
-      // on est connecté : vérifie l'utilisateur courant
-      const user = await getCurrentUser().catch(() => null);
-      const currentUsername = (user?.username || "").toLowerCase();
-
-      if (
-        targetEmail &&
-        currentUsername &&
-        currentUsername !== targetEmail.toLowerCase()
-      ) {
-        // changement d'utilisateur → déconnexion d'abord
-        await signOut();
-      }
-    } catch {
-      // ignore
-    }
-  }
-
-  // =========================================
-  // SIGN UP
-  // =========================================
-  async function handleSignup() {
-    setErrorMsg(null);
-    setSuccessMsg(null);
-    setLoading(true);
-    try {
-      await signUp({
-        username: email, // v6: loginWith.email = true (configuré dans src/amplify.ts)
-        password,
-        options: {
-          userAttributes: {
-            email,
-            ...(firstName ? { given_name: firstName } : {}),
-            ...(lastName  ? { family_name: lastName } : {}),
-          },
-        },
-      });
-      setNeedsConfirm(true);
-      setSuccessMsg("We sent you a confirmation code by email.");
-    } catch (err: any) {
-      if (err?.name === "UsernameExistsException") {
-        // compte peut-être non confirmé
-        setNeedsConfirm(true);
-        setErrorMsg("An account already exists with this email. If not confirmed yet, enter the code below.");
-      } else if (err?.name === "InvalidPasswordException") {
-        setErrorMsg("Password does not meet the policy.");
-      } else {
-        setErrorMsg(err?.message || "Signup failed.");
-      }
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  // =========================================
-  // CONFIRM
-  // =========================================
-  async function handleConfirm() {
-    setErrorMsg(null);
-    setSuccessMsg(null);
-    setLoading(true);
-    try {
-      await confirmSignUp({ username: email || signinEmail, confirmationCode: code });
-      setSuccessMsg("Account confirmed! You can now sign in.");
-      setNeedsConfirm(false);
-      setTab("signin");
-      if (email && !signinEmail) setSigninEmail(email);
-    } catch (err: any) {
-      if (err?.name === "CodeMismatchException") {
-        setErrorMsg("Invalid code. Please try again.");
-      } else if (err?.name === "ExpiredCodeException") {
-        setErrorMsg("Code expired. Request a new code.");
-      } else {
-        setErrorMsg(err?.message || "Confirmation failed.");
-      }
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  // =========================================
-  // SIGN IN (corrigé)
-  // =========================================
-  async function handleSignIn() {
-    setErrorMsg(null);
-    setSuccessMsg(null);
-    setLoading(true);
-    try {
-      // 1) si déjà connecté avec un autre compte → signOut d'abord
-      await ensureSignedOutIfSwitching(signinEmail);
-
-      // 2) re-vérifie l'état après éventuel signOut
-      const current = await fetchAuthSession();
-      if (current.tokens) {
-        // session toujours active → c'est probablement le même user
-        navigate("/revox/dashboard");
-        return;
-      }
-
-      // 3) tente la connexion
-      const res = await signIn({ username: signinEmail, password: signinPassword });
-
-      // compte non confirmé → bascule sur panneau Confirm
-      if ((res as any)?.nextStep?.signInStep === "CONFIRM_SIGN_UP") {
-        setNeedsConfirm(true);
-        setTab("signup");
-        setSuccessMsg("Your account is not confirmed yet. Please enter the code we sent by email.");
-        if (!email) setEmail(signinEmail);
-        return;
-      }
-
-      // 4) succès
-      navigate("/revox/dashboard");
-    } catch (err: any) {
-      if (err?.name === "UserNotConfirmedException") {
-        setNeedsConfirm(true);
-        setTab("signup");
-        setSuccessMsg("Your account is not confirmed yet. Please enter the code we sent by email.");
-        if (!email) setEmail(signinEmail);
-      } else if (err?.name === "NotAuthorizedException") {
-        setErrorMsg("Incorrect email or password.");
-      } else if (err?.name === "UserNotFoundException") {
-        setErrorMsg("No user found with this email.");
-      } else if (err?.name === "UserAlreadyAuthenticatedException") {
-        navigate("/revox/dashboard");
-      } else {
-        setErrorMsg(err?.message || "Sign in failed.");
-      }
-    } finally {
-      setLoading(false);
-    }
-  }
-
+  const handleLogin = () => {
+    navigate('/revox/dashboard');
+  };
+  
   return (
     <Layout>
       <section className="py-20 bg-gradient-to-br from-primary/5 via-background to-blue-500/5">
         <div className="mx-auto max-w-4xl px-4 lg:px-8">
           {/* Back button */}
-          <div className="mb-8 flex items-center gap-2">
+          <div className="mb-8">
             <Button asChild variant="ghost">
               <Link to="/">
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 {t("backToHome")}
               </Link>
             </Button>
-            {/* (optionnel) un bouton pour forcer la déconnexion en test */}
-            {/* <Button variant="outline" onClick={() => signOut()} type="button">Sign out</Button> */}
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
@@ -235,13 +45,12 @@ export default function RevoxAuth() {
                 </p>
               </div>
 
-              <Tabs value={tab} onValueChange={(v) => setTab(v as Tab)} className="w-full">
+              <Tabs defaultValue="signup" className="w-full">
                 <TabsList className="grid w-full grid-cols-2">
                   <TabsTrigger value="signup">{t("signUp")}</TabsTrigger>
                   <TabsTrigger value="signin">{t("signIn")}</TabsTrigger>
                 </TabsList>
-
-                {/* SIGN UP */}
+                
                 <TabsContent value="signup">
                   <Card>
                     <CardHeader>
@@ -252,98 +61,38 @@ export default function RevoxAuth() {
                       <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
                           <Label htmlFor="firstName">{t("authFirstName")}</Label>
-                          <Input
-                            id="firstName"
-                            placeholder={t("firstNamePlaceholder")}
-                            value={firstName}
-                            onChange={(e) => setFirstName(e.target.value)}
-                          />
+                          <Input id="firstName" placeholder={t("firstNamePlaceholder")} />
                         </div>
                         <div className="space-y-2">
                           <Label htmlFor="lastName">{t("authLastName")}</Label>
-                          <Input
-                            id="lastName"
-                            placeholder={t("lastNamePlaceholder")}
-                            value={lastName}
-                            onChange={(e) => setLastName(e.target.value)}
-                          />
+                          <Input id="lastName" placeholder={t("lastNamePlaceholder")} />
                         </div>
                       </div>
-
                       <div className="space-y-2">
                         <Label htmlFor="email">{t("authEmail")}</Label>
                         <div className="relative">
                           <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-                          <Input
-                            id="email"
-                            type="email"
-                            className="pl-10"
-                            placeholder={t("emailPlaceholder")}
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                          />
+                          <Input id="email" type="email" className="pl-10" placeholder={t("emailPlaceholder")} />
                         </div>
                       </div>
-
                       <div className="space-y-2">
                         <Label htmlFor="password">{t("authPassword")}</Label>
                         <div className="relative">
                           <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-                          <Input
-                            id="password"
-                            type="password"
-                            className="pl-10"
-                            placeholder={t("passwordPlaceholder")}
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                          />
+                          <Input id="password" type="password" className="pl-10" placeholder={t("passwordPlaceholder")} />
                         </div>
                       </div>
-
-                      {errorMsg && <p className="text-sm text-red-600">{errorMsg}</p>}
-                      {successMsg && <p className="text-sm text-green-600">{successMsg}</p>}
-
-                      <Button className="w-full" onClick={handleSignup} disabled={loading} type="button">
+                      <Button className="w-full" onClick={handleLogin}>
+                        <Zap className="mr-2 h-4 w-4" />
                         {t("startFreeTrial")}
                       </Button>
-
-                      {/* Bloc de confirmation (apparaît après signUp OU suite à signIn non confirmé) */}
-                      {needsConfirm && (
-                        <div className="mt-6 border-t pt-6">
-                          <h4 className="font-medium mb-2">Confirm your email</h4>
-                          <p className="text-sm text-muted-foreground mb-3">
-                            Enter the 6-digit code sent to <b>{email || signinEmail}</b>.
-                          </p>
-                          <div className="space-y-2">
-                            <Label htmlFor="confirmCode">Confirmation code</Label>
-                            <Input
-                              id="confirmCode"
-                              placeholder="123456"
-                              value={code}
-                              onChange={(e) => setCode(e.target.value)}
-                            />
-                          </div>
-                          <div className="mt-3 flex gap-2">
-                            <Button onClick={handleConfirm} disabled={loading} type="button">
-                              Confirm
-                            </Button>
-                            <Button variant="outline" onClick={() => setNeedsConfirm(false)} type="button">
-                              Edit email
-                            </Button>
-                          </div>
-                        </div>
-                      )}
-
                       <p className="text-xs text-muted-foreground text-center">
                         {t("signUpTerms")}
                       </p>
                     </CardContent>
                   </Card>
                 </TabsContent>
-
-                {/* SIGN IN */}
+                
                 <TabsContent value="signin">
                   <Card>
                     <CardHeader>
@@ -355,47 +104,26 @@ export default function RevoxAuth() {
                         <Label htmlFor="signin-email">{t("authEmail")}</Label>
                         <div className="relative">
                           <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-                          <Input
-                            id="signin-email"
-                            type="email"
-                            className="pl-10"
-                            placeholder={t("emailPlaceholder")}
-                            value={signinEmail}
-                            onChange={(e) => setSigninEmail(e.target.value)}
-                            required
-                          />
+                          <Input id="signin-email" type="email" className="pl-10" placeholder={t("emailPlaceholder")} />
                         </div>
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="signin-password">{t("authPassword")}</Label>
                         <div className="relative">
                           <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-                          <Input
-                            id="signin-password"
-                            type="password"
-                            className="pl-10"
-                            placeholder={t("passwordPlaceholder")}
-                            value={signinPassword}
-                            onChange={(e) => setSigninPassword(e.target.value)}
-                            required
-                          />
+                          <Input id="signin-password" type="password" className="pl-10" placeholder={t("passwordPlaceholder")} />
                         </div>
                       </div>
-
-                      {errorMsg && tab === "signin" && <p className="text-sm text-red-600">{errorMsg}</p>}
-                      {successMsg && tab === "signin" && <p className="text-sm text-green-600">{successMsg}</p>}
-
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-2">
                           <input type="checkbox" id="remember" className="rounded" />
                           <Label htmlFor="remember" className="text-sm">{t("rememberMe")}</Label>
                         </div>
-                        <Button variant="link" className="px-0 text-sm" type="button">
+                        <Button variant="link" className="px-0 text-sm">
                           {t("forgotPassword")}
                         </Button>
                       </div>
-
-                      <Button className="w-full" onClick={handleSignIn} disabled={loading} type="button">
+                      <Button className="w-full" onClick={handleLogin}>
                         {t("signInToRevox")}
                       </Button>
                     </CardContent>
@@ -453,4 +181,6 @@ export default function RevoxAuth() {
       </section>
     </Layout>
   );
-}
+};
+
+export default RevoxAuth;
