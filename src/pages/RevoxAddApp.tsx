@@ -11,11 +11,13 @@ import {
   Search,
   Smartphone,
   Apple,
+  Bot,
   Star,
   ArrowLeft,
   Loader2,
   CheckCircle,
-  Plus
+  Plus,
+  X
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { api } from "@/api";
@@ -222,16 +224,35 @@ const handleFollowApps = async () => {
           </CardHeader>
           <CardContent>
             <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Enter app name to search..."
+                placeholder="Search for apps by name..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pr-10"
+                className="pl-10 pr-10"
               />
+              {searchQuery && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="absolute right-1 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0"
+                  onClick={() => setSearchQuery("")}
+                >
+                  <X className="h-3 w-3" />
+                </Button>
+              )}
               {isSearching && (
-                <Loader2 className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 animate-spin text-muted-foreground" />
+                <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                  <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+                </div>
               )}
             </div>
+            {isSearching && (
+              <div className="mt-3 flex items-center gap-2 text-sm text-muted-foreground">
+                <Loader2 className="h-3 w-3 animate-spin" />
+                Searching app stores...
+              </div>
+            )}
           </CardContent>
         </Card>
 
@@ -294,13 +315,13 @@ const handleFollowApps = async () => {
 
                               <div className="flex gap-1">
                                 {app.platforms.map((platform) => (
-                                  <Badge key={platform} variant="secondary" className="text-xs">
+                                  <Badge key={platform} variant="secondary" className="text-xs flex items-center gap-1">
                                     {platform === "ios" ? (
-                                      <Apple className="h-3 w-3 mr-1" />
+                                      <Apple className="h-3 w-3" />
                                     ) : (
-                                      <Smartphone className="h-3 w-3 mr-1" />
+                                      <Bot className="h-3 w-3" />
                                     )}
-                                    {platform.toUpperCase()}
+                                    {platform === "ios" ? "iOS" : "Android"}
                                   </Badge>
                                 ))}
                               </div>
@@ -325,14 +346,14 @@ const handleFollowApps = async () => {
                                 />
                                 <label
                                   htmlFor={`${app.bundleId}-${platform}`}
-                                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 flex items-center gap-1 cursor-pointer"
+                                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 flex items-center gap-2 cursor-pointer"
                                 >
                                   {platform === "ios" ? (
                                     <Apple className="h-4 w-4" />
                                   ) : (
-                                    <Smartphone className="h-4 w-4" />
+                                    <Bot className="h-4 w-4" />
                                   )}
-                                  {platform === "ios" ? "App Store" : "Google Play"}
+                                  {platform === "ios" ? "App Store (iOS)" : "Google Play (Android)"}
                                 </label>
                               </div>
                             ))}
@@ -378,11 +399,19 @@ const handleFollowApps = async () => {
         )}
 
         {/* Help Text */}
-        {!hasSearched && (
+        {!hasSearched && searchQuery.length === 0 && (
           <Alert>
             <AlertDescription>
               Search for apps by name to find them on both the App Store and Google Play.
               You can follow apps on one or both platforms depending on your needs.
+            </AlertDescription>
+          </Alert>
+        )}
+
+        {hasSearched && searchResults.length === 0 && searchQuery.length > 0 && (
+          <Alert>
+            <AlertDescription>
+              No apps found for "{searchQuery}". Try searching with different keywords or check the spelling.
             </AlertDescription>
           </Alert>
         )}
