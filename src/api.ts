@@ -28,3 +28,17 @@ api.interceptors.request.use(async (config: InternalAxiosRequestConfig) => {
   }
   return config;
 });
+
+export type SearchAppItem = {
+  store: "ios" | "android";
+  name: string;
+  bundleId: string;
+  icon?: string;
+};
+
+export async function searchApps(query: string): Promise<SearchAppItem[]> {
+  const { data } = await api.get<SearchAppItem[]>("/search-app", {
+    params: { query },
+  });
+  return data ?? [];
+}

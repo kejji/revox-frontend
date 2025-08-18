@@ -7,12 +7,12 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { 
-  Search, 
-  Smartphone, 
-  Apple, 
-  Star, 
-  ArrowLeft, 
+import {
+  Search,
+  Smartphone,
+  Apple,
+  Star,
+  ArrowLeft,
   Loader2,
   CheckCircle,
   Plus
@@ -20,6 +20,7 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import { api } from "@/api";
 import { useToast } from "@/hooks/use-toast";
+import { searchApps, type SearchAppItem } from "@/api";
 
 // Types for app search results
 type SearchedApp = {
@@ -40,7 +41,7 @@ type FollowSelection = {
 export default function RevoxAddApp() {
   const navigate = useNavigate();
   const { toast } = useToast();
-  
+
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<SearchedApp[]>([]);
   const [isSearching, setIsSearching] = useState(false);
@@ -65,12 +66,40 @@ export default function RevoxAddApp() {
 
   const performSearch = async (query: string) => {
     if (!query) return;
-    
+
     setIsSearching(true);
     try {
-      const { data } = await api.get(`/search-apps?q=${encodeURIComponent(query)}`);
-      setSearchResults(data.results || []);
+      // ✅ appelle GET /search-app?query=...
+      const flat: SearchAppItem[] = await searchApps(query.trim());
+
+      // ✅ groupage par bundleId pour produire ton modèle SearchedApp
+      const byBundle = new Map<string, SearchedApp>();
+
+      for (const item of flat) {
+        const platform = item.store === "ios" ? "ios" : "android";
+
+        if (!byBundle.has(item.bundleId)) {
+          byBundle.set(item.bundleId, {
+            bundleId: item.bundleId,
+            name: item.name,
+            icon: item.icon,
+            platforms: [platform],
+          });
+        } else {
+          const existing = byBundle.get(item.bundleId)!;
+          // Mets à jour le nom/icon si l’élément existant n’en a pas
+          if (!existing.name && item.name) existing.name = item.name;
+          if (!existing.icon && item.icon) existing.icon = item.icon;
+          if (!existing.platforms.includes(platform)) {
+            existing.platforms.push(platform);
+          }
+        }
+      }
+
+      setSearchResults(Array.from(byBundle.values()));
       setHasSearched(true);
+      // Optionnel: reset les sélections si on lance une nouvelle recherche
+      setFollowSelections(new Map());
     } catch (error: any) {
       toast({
         title: "Search failed",
@@ -86,7 +115,7 @@ export default function RevoxAddApp() {
 
   const handlePlatformSelection = (bundleId: string, platform: "ios" | "android", checked: boolean) => {
     const current = followSelections.get(bundleId) || { bundleId, platforms: [] };
-    
+
     if (checked) {
       // Add platform if not already included
       if (!current.platforms.includes(platform)) {
@@ -103,44 +132,64 @@ export default function RevoxAddApp() {
     } else {
       newSelections.delete(bundleId);
     }
-    
+
     setFollowSelections(newSelections);
   };
 
-  const handleFollowApps = async () => {
-    if (followSelections.size === 0) return;
+const handleFollowApps = async () => {
+  if (followSelections.size === 0) return;
 
-    setIsFollowing(true);
-    try {
-      // Convert selections to API format
-      const appsToFollow = Array.from(followSelections.values()).flatMap(selection =>
-        selection.platforms.map(platform => ({
-          bundleId: selection.bundleId,
-          platform
-        }))
-      );
+  setIsFollowing(true);
+  try {
+    // 1) Aplatis les sélections en une liste de { platform, bundleId }
+    const payloads = Array.from(followSelections.values()).flatMap((selection) =>
+      selection.platforms.map((platform) => ({
+        bundleId: selection.bundleId,
+        platform, // "ios" | "android"
+      }))
+    );
 
-      await api.post("/follow-app", { apps: appsToFollow });
-      
+    // 2) Envoi un POST par app sélectionnée
+    const results = await Promise.allSettled(
+      payloads.map((p) => api.post("/follow-app", p))
+    );
+
+    const succeeded = results.filter((r) => r.status === "fulfilled").length;
+    const failed = results.length - succeeded;
+
+    if (failed === 0) {
       toast({
         title: "Success!",
-        description: `Following ${appsToFollow.length} app${appsToFollow.length > 1 ? 's' : ''}`,
+        description: `Following ${succeeded} app${succeeded > 1 ? "s" : ""}.`,
       });
-      
+      // Retour au dashboard
       navigate("/revox/dashboard");
-    } catch (error: any) {
+    } else if (succeeded > 0) {
+      toast({
+        title: "Partial success",
+        description: `Followed ${succeeded} app${succeeded > 1 ? "s" : ""}, ${failed} failed.`,
+        variant: "default",
+      });
+    } else {
       toast({
         title: "Failed to follow apps",
-        description: error?.response?.data?.message || "An error occurred",
+        description: "No app could be followed. Please try again.",
         variant: "destructive",
       });
-    } finally {
-      setIsFollowing(false);
     }
-  };
+  } catch (error: any) {
+    toast({
+      title: "Failed to follow apps",
+      description: error?.response?.data?.message || "An error occurred",
+      variant: "destructive",
+    });
+  } finally {
+    setIsFollowing(false);
+  }
+};
 
   const selectedCount = Array.from(followSelections.values()).reduce(
-    (total, selection) => total + selection.platforms.length, 
+    (total, selection) => total + selection.platforms.length,
     0
   );
 
@@ -208,7 +257,7 @@ export default function RevoxAddApp() {
                     const selection = followSelections.get(app.bundleId);
                     const isIosSelected = selection?.platforms.includes("ios") || false;
                     const isAndroidSelected = selection?.platforms.includes("android") || false;
-                    
+
                     return (
                       <div key={app.bundleId} className="border rounded-lg p-4">
                         {/* App Info */}
@@ -224,17 +273,17 @@ export default function RevoxAddApp() {
                               <Smartphone className="h-6 w-6 text-muted-foreground" />
                             </div>
                           )}
-                          
+
                           <div className="flex-1 min-w-0">
                             <h3 className="font-medium text-sm">{app.name}</h3>
                             <p className="text-xs text-muted-foreground mb-2">{app.bundleId}</p>
-                            
+
                             {app.description && (
                               <p className="text-xs text-muted-foreground line-clamp-2 mb-2">
                                 {app.description}
                               </p>
                             )}
-                            
+
                             <div className="flex items-center gap-3">
                               {app.rating && (
                                 <div className="flex items-center gap-1">
@@ -242,7 +291,7 @@ export default function RevoxAddApp() {
                                   <span className="text-xs">{app.rating.toFixed(1)}</span>
                                 </div>
                               )}
-                              
+
                               <div className="flex gap-1">
                                 {app.platforms.map((platform) => (
                                   <Badge key={platform} variant="secondary" className="text-xs">
@@ -270,7 +319,7 @@ export default function RevoxAddApp() {
                                 <Checkbox
                                   id={`${app.bundleId}-${platform}`}
                                   checked={platform === "ios" ? isIosSelected : isAndroidSelected}
-                                  onCheckedChange={(checked) => 
+                                  onCheckedChange={(checked) =>
                                     handlePlatformSelection(app.bundleId, platform, checked as boolean)
                                   }
                                 />
@@ -311,7 +360,7 @@ export default function RevoxAddApp() {
                     Ready to start monitoring feedback
                   </p>
                 </div>
-                <Button 
+                <Button
                   onClick={handleFollowApps}
                   disabled={isFollowing}
                   className="gap-2"
@@ -332,7 +381,7 @@ export default function RevoxAddApp() {
         {!hasSearched && (
           <Alert>
             <AlertDescription>
-              Search for apps by name to find them on both the App Store and Google Play. 
+              Search for apps by name to find them on both the App Store and Google Play.
               You can follow apps on one or both platforms depending on your needs.
             </AlertDescription>
           </Alert>
