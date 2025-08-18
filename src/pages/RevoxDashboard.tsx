@@ -298,30 +298,36 @@ export default function RevoxDashboard() {
             ))}
             
             {/* Add New App Card */}
-            <Card className="group relative overflow-hidden border-2 border-dashed border-border/50 hover:border-primary/50 shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-[1.02] bg-gradient-to-br from-muted/20 to-muted/10">
+            <Card className="group relative overflow-hidden border border-border/60 hover:border-primary/40 shadow-sm hover:shadow-xl transition-all duration-300 hover:scale-[1.02] bg-gradient-to-br from-background to-muted/30">
               <CardContent className="p-0">
                 <Link 
                   to="/revox/add"
-                  className="flex flex-col items-center justify-center p-6 h-full min-h-[200px] hover:bg-accent/30 transition-colors duration-200 cursor-pointer text-center"
+                  className="flex flex-col items-center justify-center p-8 h-full min-h-[200px] transition-all duration-200 cursor-pointer text-center relative"
                 >
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 border-2 border-primary/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-200">
-                    <Plus className="h-6 w-6 text-primary" />
+                  {/* Background pattern */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  
+                  {/* Plus icon with modern styling */}
+                  <div className="relative w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/10 to-primary/20 border border-primary/20 flex items-center justify-center mb-6 group-hover:shadow-lg group-hover:shadow-primary/20 transition-all duration-300">
+                    <Plus className="h-8 w-8 text-primary group-hover:scale-110 transition-transform duration-200" />
                   </div>
                   
-                  <div className="space-y-2">
-                    <h3 className="font-semibold text-base group-hover:text-primary transition-colors duration-200">
+                  <div className="relative space-y-3">
+                    <h3 className="font-semibold text-lg group-hover:text-primary transition-colors duration-200">
                       Add New App
                     </h3>
-                    <p className="text-sm text-muted-foreground">
-                      Start monitoring a new app's feedback and reviews
+                    <p className="text-sm text-muted-foreground max-w-[200px] leading-relaxed">
+                      Connect your app to start collecting and analyzing user feedback
                     </p>
                   </div>
                   
-                  <div className="mt-4 pt-4 border-t border-border/50 w-full">
-                    <div className="text-xs text-muted-foreground">
-                      <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                        Click to add →
-                      </span>
+                  {/* Subtle arrow indicator */}
+                  <div className="relative mt-6 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+                    <div className="flex items-center gap-2 text-xs text-primary font-medium">
+                      <span>Get Started</span>
+                      <div className="w-4 h-4 rounded-full bg-primary/20 flex items-center justify-center">
+                        <Plus className="h-2 w-2 text-primary" />
+                      </div>
                     </div>
                   </div>
                 </Link>
