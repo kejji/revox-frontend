@@ -12,7 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Settings, LogOut, Star } from "lucide-react";
+import { Settings, LogOut, Star, Trash2, ChevronRight } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { LanguageToggle } from "@/components/ui/language-toggle";
 import { Link, useNavigate } from "react-router-dom";
@@ -85,6 +85,16 @@ export default function RevoxDashboard() {
       mounted = false;
     };
   }, []);
+
+  // Delete app handler
+  const handleDeleteApp = async (app: FollowedApp) => {
+    try {
+      await api.delete(`/follow-app/${app.platform}/${encodeURIComponent(app.bundleId)}`);
+      setApps(prev => prev ? prev.filter(a => !(a.platform === app.platform && a.bundleId === app.bundleId)) : null);
+    } catch (e: any) {
+      setErr(e?.response?.data?.message || e?.message || "Failed to delete app.");
+    }
+  };
 
   // Charge la liste des apps suivies
   useEffect(() => {
@@ -201,62 +211,76 @@ export default function RevoxDashboard() {
         {!loading && !err && apps && apps.length > 0 && (
           <div className="grid gap-4 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
             {apps.map((app) => (
-              <Card key={`${app.platform}#${app.bundleId}`} className="overflow-hidden">
-                <CardContent className="p-5">
-                  {/* Ligne du haut : icône + titre + badges + bouton View */}
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      {app.icon ? (
-                        <img
-                          src={app.icon}
-                          alt=""
-                          className="w-9 h-9 rounded-md object-cover border"
-                        />
-                      ) : (
-                        <div className="w-9 h-9 rounded-md bg-muted" />
-                      )}
+              <Card key={`${app.platform}#${app.bundleId}`} className="overflow-hidden hover:shadow-md transition-shadow">
+                <CardContent className="p-0">
+                  {/* Clickable main content area */}
+                  <Link 
+                    to={`/revox/apps/${app.platform}/${encodeURIComponent(app.bundleId)}`}
+                    className="block p-5 hover:bg-accent/50 transition-colors"
+                  >
+                    {/* Header section */}
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-center gap-3 min-w-0 flex-1">
+                        {app.icon ? (
+                          <img
+                            src={app.icon}
+                            alt=""
+                            className="w-10 h-10 rounded-lg object-cover border flex-shrink-0"
+                          />
+                        ) : (
+                          <div className="w-10 h-10 rounded-lg bg-muted flex-shrink-0" />
+                        )}
 
-                      <div>
-                        <div className="font-medium">{app.name || app.bundleId}</div>
-                        <div className="flex items-center gap-2 mt-1">
-                          <Badge variant="secondary" className="uppercase">
-                            {app.platform}
-                          </Badge>
-                          <span className="text-xs text-muted-foreground">
-                            {app.bundleId}
-                          </span>
+                        <div className="min-w-0 flex-1">
+                          <div className="font-medium text-sm truncate" title={app.name || app.bundleId}>
+                            {app.name || app.bundleId}
+                          </div>
+                          <div className="flex items-center gap-2 mt-1">
+                            <Badge variant="secondary" className="text-xs uppercase">
+                              {app.platform}
+                            </Badge>
+                          </div>
                         </div>
                       </div>
+                      
+                      <ChevronRight className="h-4 w-4 text-muted-foreground flex-shrink-0 ml-2" />
                     </div>
 
-                    <Button
-                      asChild
-                      variant="outline"
-                      size="sm"
-                      title="Open app details"
-                    >
-                      <Link
-                        to={`/revox/apps/${app.platform}/${encodeURIComponent(app.bundleId)}`}
-                      >
-                        View
-                      </Link>
-                    </Button>
-                  </div>
-
-                  <Separator className="my-4" />
-
-                  {/* Ligne du bas : note + volume semaine (si dispo) */}
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-1 text-sm">
-                      <Star className="h-4 w-4 text-yellow-500" />
-                      <span>
-                        {typeof app.rating === "number" ? app.rating.toFixed(1) : "—"}
+                    {/* Stats section */}
+                    <div className="flex items-center justify-between text-sm">
+                      <div className="flex items-center gap-1">
+                        <Star className="h-4 w-4 text-yellow-500" />
+                        <span>
+                          {typeof app.rating === "number" ? app.rating.toFixed(1) : "—"}
+                        </span>
+                      </div>
+                      <div className="text-xs text-muted-foreground">
+                        {typeof app.reviewsThisWeek === "number"
+                          ? `${app.reviewsThisWeek} reviews`
+                          : "No reviews"}
+                      </div>
+                    </div>
+                  </Link>
+                  
+                  {/* Delete button section */}
+                  <div className="px-5 pb-4 pt-0">
+                    <Separator className="mb-3" />
+                    <div className="flex justify-between items-center">
+                      <span className="text-xs text-muted-foreground truncate" title={app.bundleId}>
+                        {app.bundleId}
                       </span>
-                    </div>
-                    <div className="text-xs text-muted-foreground">
-                      {typeof app.reviewsThisWeek === "number"
-                        ? `${app.reviewsThisWeek} reviews this week`
-                        : "reviews this week"}
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleDeleteApp(app);
+                        }}
+                        className="h-7 w-7 p-0 text-muted-foreground hover:text-destructive"
+                        title="Remove app"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </Button>
                     </div>
                   </div>
                 </CardContent>
