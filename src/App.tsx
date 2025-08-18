@@ -47,7 +47,7 @@ const App = () => (
           <Route path="/revox/auth" element={<RevoxAuth />} />
           <Route path="/revox/dashboard" element={<RevoxDashboard />} />
           <Route path="/revox/add" element={<RevoxAddApp />} />
-          <Route path="/revox/app/:appId" element={<RevoxAppDetails />} />
+          <Route path="/revox/apps/:platform/:bundleId" element={<RevoxAppDetails />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

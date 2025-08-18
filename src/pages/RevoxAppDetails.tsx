@@ -1,718 +1,575 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { format } from "date-fns";
-import { 
-  ArrowLeft, 
-  Download, 
-  Filter, 
-  Star, 
-  Calendar,
-  Smartphone,
-  Apple,
-  Bot,
-  Search,
-  FileText,
-  Plus,
-  Bell,
-  TrendingUp,
-  TrendingDown,
-  MessageSquare,
-  ThumbsUp,
-  ThumbsDown,
-  SlidersHorizontal,
-  BarChart3,
-  RefreshCw
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Layout } from "@/components/layout/Layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Separator } from "@/components/ui/separator";
+import { Progress } from "@/components/ui/progress";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  ResponsiveContainer,
+} from "recharts";
+import {
+  ArrowLeft,
+  Star,
+  TrendingUp,
+  TrendingDown,
+  AlertTriangle,
+  Search,
+  Download,
+  RefreshCw,
+  MoreVertical,
+  X,
+  Plus,
+  Apple,
+  Bot,
+} from "lucide-react";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { LanguageToggle } from "@/components/ui/language-toggle";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from "recharts";
 
-interface Review {
-  id: string;
-  rating: number;
-  title: string;
-  content: string;
-  author: string;
-  date: string;
-  platform: 'ios' | 'android';
-  helpful: number;
-}
+// Mock data - replace with real API calls
+const mockApp = {
+  id: "taskflow-pro",
+  name: "TaskFlow Pro",
+  description: "A comprehensive task management app that helps teams collaborate efficiently and track project progress in real-time.",
+  version: "2.3.1",
+  rating: 4.2,
+  totalReviews: 1847,
+  latestUpdate: "Fixed critical bug with notification sync and improved performance on iOS 17.",
+  platforms: ["ios", "android"] as const,
+  icon: null,
+};
 
-interface App {
-  id: string;
-  name: string;
-  description: string;
-  version: string;
-  latestUpdate: string;
-  platforms: ('ios' | 'android')[];
-  currentRating: number;
-  totalReviews: number;
-}
+const mockPositiveThemes = [
+  { theme: "User Interface", percentage: 89, trend: "up" },
+  { theme: "Performance", percentage: 76, trend: "up" },
+  { theme: "Features", percentage: 64, trend: "up" },
+];
 
-const RevoxAppDetails = () => {
-  const { appId } = useParams();
+const mockNegativeThemes = [
+  { theme: "Crashes", percentage: 34, trend: "down" },
+  { theme: "Sync Issues", percentage: 28, trend: "down" },
+  { theme: "Battery Drain", percentage: 19, trend: "down" },
+];
+
+const mockAlerts = [
+  {
+    id: 1,
+    type: "warning",
+    message: "Rating drops below 4.0",
+    active: true,
+  },
+  {
+    id: 2,
+    type: "error", 
+    message: "Crash mentions spike",
+    active: true,
+  },
+];
+
+const mockRatingData = [
+  { date: "2024-01-15", rating: 4.0 },
+  { date: "2024-02-15", rating: 3.8 },
+  { date: "2024-03-15", rating: 4.1 },
+  { date: "2024-04-15", rating: 1.8 },
+  { date: "2024-05-15", rating: 4.5 },
+  { date: "2024-06-15", rating: 4.3 },
+  { date: "2024-07-15", rating: 4.7 },
+];
+
+const mockReviews = [
+  {
+    id: 1,
+    author: "Sarah M.",
+    platform: "ios",
+    rating: 5,
+    date: "Jan 15, 2024 14:30",
+    title: "Amazing productivity boost!",
+    content: "This app has completely transformed how our team manages projects. The interface is intuitive and the collaboration features are top-notch.",
+    helpful: 12,
+  },
+  {
+    id: 2,
+    author: "Mike D.",
+    platform: "android",
+    rating: 4,
+    date: "Jan 14, 2024 09:15",
+    title: "Great app, minor issues",
+    content: "Love the features but occasionally crashes when syncing large files. Support team is responsive though.",
+    helpful: 8,
+  },
+  {
+    id: 3,
+    author: "Jennifer L.",
+    platform: "ios",
+    rating: 2,
+    date: "Jan 13, 2024 16:45",
+    title: "Needs improvement",
+    content: "Good concept but the app is buggy and drains battery quickly. Hope they fix these issues soon.",
+    helpful: 3,
+  },
+];
+
+const chartConfig = {
+  rating: {
+    label: "Average Rating",
+    color: "hsl(var(--chart-1))",
+  },
+};
+
+export default function RevoxAppDetails() {
+  const { platform, bundleId } = useParams<{ platform: string; bundleId: string }>();
   const navigate = useNavigate();
-  const [isRefreshing, setIsRefreshing] = useState(false);
   
-  // Mock app data - will be replaced with actual data fetching
-  const [app] = useState<App>({
-    id: appId || '1',
-    name: 'TaskFlow Pro',
-    description: 'A comprehensive task management app that helps teams collaborate efficiently and track project progress in real-time.',
-    version: '2.3.1',
-    latestUpdate: 'Fixed critical bug with notification sync and improved performance on iOS 17.',
-    platforms: ['ios', 'android'],
-    currentRating: 4.2,
-    totalReviews: 1847
-  });
+  const [app, setApp] = useState(mockApp);
+  const [reviews, setReviews] = useState(mockReviews);
+  const [filteredReviews, setFilteredReviews] = useState(mockReviews);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [platformFilter, setPlatformFilter] = useState("all");
+  const [ratingFilter, setRatingFilter] = useState("all");
+  const [chartPlatformFilter, setChartPlatformFilter] = useState("all");
 
-  // Mock reviews data
-  const [reviews] = useState<Review[]>([
-    {
-      id: '1',
-      rating: 5,
-      title: 'Amazing productivity boost!',
-      content: 'This app has completely transformed how our team manages projects. The interface is intuitive and the collaboration features are top-notch.',
-      author: 'Sarah M.',
-      date: '2024-01-15T14:30:00',
-      platform: 'ios',
-      helpful: 12
-    },
-    {
-      id: '2',
-      rating: 4,
-      title: 'Great app, minor issues',
-      content: 'Love the features but occasionally crashes when syncing large files. Support team is responsive though.',
-      author: 'Mike D.',
-      date: '2024-01-14T09:15:00',
-      platform: 'android',
-      helpful: 8
-    },
-    {
-      id: '3',
-      rating: 2,
-      title: 'Needs improvement',
-      content: 'The latest update broke several features I relied on daily. Please fix the notification system.',
-      author: 'Jennifer L.',
-      date: '2024-01-13T16:45:00',
-      platform: 'ios',
-      helpful: 15
-    }
-  ]);
-
-  const [filteredReviews, setFilteredReviews] = useState(reviews);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [platformFilter, setPlatformFilter] = useState<string>('all');
-  const [ratingFilter, setRatingFilter] = useState<string>('all');
-  const [searchKeyword, setSearchKeyword] = useState('');
-  const [topThemesPlatform, setTopThemesPlatform] = useState<string>('all');
-  const [flopThemesPlatform, setFlopThemesPlatform] = useState<string>('all');
-  const [chartPlatformFilter, setChartPlatformFilter] = useState<string>('all');
-  
-  const reviewsPerPage = 10;
-
-  const handleRefresh = async () => {
-    setIsRefreshing(true);
-    
-    // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Add animation to existing review cards
-    const reviewCards = document.querySelectorAll('[data-review-card]');
-    reviewCards.forEach((card, index) => {
-      card.classList.remove('animate-fade-in');
-      setTimeout(() => {
-        card.classList.add('animate-fade-in');
-      }, index * 100);
-    });
-    
-    setIsRefreshing(false);
-  };
-
-  // Mock individual review data for scatter chart
-  const reviewsChartData = [
-    { date: '2024-01-10', rating: 5, platform: 'ios', timestamp: new Date('2024-01-10T08:30:00').getTime() },
-    { date: '2024-01-10', rating: 4, platform: 'android', timestamp: new Date('2024-01-10T10:15:00').getTime() },
-    { date: '2024-01-10', rating: 3, platform: 'ios', timestamp: new Date('2024-01-10T14:20:00').getTime() },
-    { date: '2024-01-11', rating: 2, platform: 'android', timestamp: new Date('2024-01-11T09:45:00').getTime() },
-    { date: '2024-01-11', rating: 5, platform: 'ios', timestamp: new Date('2024-01-11T11:30:00').getTime() },
-    { date: '2024-01-11', rating: 4, platform: 'ios', timestamp: new Date('2024-01-11T16:00:00').getTime() },
-    { date: '2024-01-12', rating: 5, platform: 'android', timestamp: new Date('2024-01-12T12:15:00').getTime() },
-    { date: '2024-01-12', rating: 3, platform: 'ios', timestamp: new Date('2024-01-12T13:45:00').getTime() },
-    { date: '2024-01-12', rating: 4, platform: 'android', timestamp: new Date('2024-01-12T17:30:00').getTime() },
-    { date: '2024-01-13', rating: 1, platform: 'ios', timestamp: new Date('2024-01-13T07:20:00').getTime() },
-    { date: '2024-01-13', rating: 2, platform: 'android', timestamp: new Date('2024-01-13T15:10:00').getTime() },
-    { date: '2024-01-14', rating: 4, platform: 'ios', timestamp: new Date('2024-01-14T09:15:00').getTime() },
-    { date: '2024-01-14', rating: 5, platform: 'android', timestamp: new Date('2024-01-14T14:30:00').getTime() },
-    { date: '2024-01-15', rating: 5, platform: 'ios', timestamp: new Date('2024-01-15T11:45:00').getTime() },
-    { date: '2024-01-15', rating: 3, platform: 'android', timestamp: new Date('2024-01-15T16:20:00').getTime() },
-    { date: '2024-01-16', rating: 4, platform: 'ios', timestamp: new Date('2024-01-16T10:30:00').getTime() },
-    { date: '2024-01-16', rating: 5, platform: 'android', timestamp: new Date('2024-01-16T13:15:00').getTime() }
-  ];
-
-  // Calculate average ratings by day
-  const getAverageRatingsByDay = () => {
-    const filteredData = chartPlatformFilter === 'all' 
-      ? reviewsChartData 
-      : reviewsChartData.filter(review => review.platform === chartPlatformFilter);
-    
-    const groupedByDate = filteredData.reduce((acc, review) => {
-      if (!acc[review.date]) {
-        acc[review.date] = [];
-      }
-      acc[review.date].push(review.rating);
-      return acc;
-    }, {} as Record<string, number[]>);
-
-    return Object.entries(groupedByDate)
-      .map(([date, ratings]) => ({
-        date,
-        averageRating: parseFloat((ratings.reduce((sum, rating) => sum + rating, 0) / ratings.length).toFixed(1))
-      }))
-      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-  };
-
+  // Filter reviews based on search and filters
   useEffect(() => {
-    let filtered = [...reviews];
-    
-    if (platformFilter !== 'all') {
-      filtered = filtered.filter(review => review.platform === platformFilter);
-    }
-    
-    if (ratingFilter !== 'all') {
-      filtered = filtered.filter(review => review.rating === parseInt(ratingFilter));
-    }
-    
-    if (searchKeyword) {
-      filtered = filtered.filter(review => 
-        review.title.toLowerCase().includes(searchKeyword.toLowerCase()) ||
-        review.content.toLowerCase().includes(searchKeyword.toLowerCase())
+    let filtered = reviews;
+
+    if (searchTerm) {
+      filtered = filtered.filter(
+        review =>
+          review.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          review.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          review.author.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
-    
-    setFilteredReviews(filtered);
-    setCurrentPage(1);
-  }, [platformFilter, ratingFilter, searchKeyword, reviews]);
 
-  const getCurrentPageReviews = () => {
-    const startIndex = (currentPage - 1) * reviewsPerPage;
-    return filteredReviews.slice(startIndex, startIndex + reviewsPerPage);
+    if (platformFilter !== "all") {
+      filtered = filtered.filter(review => review.platform === platformFilter);
+    }
+
+    if (ratingFilter !== "all") {
+      const rating = parseInt(ratingFilter);
+      filtered = filtered.filter(review => review.rating === rating);
+    }
+
+    setFilteredReviews(filtered);
+  }, [reviews, searchTerm, platformFilter, ratingFilter]);
+
+  const handleRefresh = () => {
+    // Mock refresh - in real app, refetch data
+    console.log("Refreshing data...");
   };
 
-  const totalPages = Math.ceil(filteredReviews.length / reviewsPerPage);
+  const handleExport = () => {
+    // Mock export functionality
+    console.log("Exporting reviews...");
+  };
+
+  const handleCreateAlert = () => {
+    // Mock create alert functionality
+    console.log("Creating new alert...");
+  };
+
+  const handleRemoveAlert = (alertId: number) => {
+    // Mock remove alert functionality
+    console.log("Removing alert:", alertId);
+  };
 
   const renderStars = (rating: number) => {
     return Array.from({ length: 5 }, (_, i) => (
-      <Star 
-        key={i} 
-        className={`w-4 h-4 ${i < rating ? 'fill-yellow-400 text-yellow-400' : 'text-muted-foreground'}`} 
+      <Star
+        key={i}
+        className={`h-4 w-4 ${
+          i < rating ? "text-yellow-500 fill-yellow-500" : "text-muted-foreground"
+        }`}
       />
     ));
   };
 
-  const handleExport = (format: 'csv' | 'pdf') => {
-    // Export functionality to be implemented
-    console.log(`Exporting reviews as ${format}`);
-  };
-
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b bg-card">
-        <div className="flex h-16 items-center justify-between px-6">
-          <div className="flex items-center gap-4">
-            <Button variant="ghost" size="sm" onClick={() => navigate('/revox/dashboard')}>
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Dashboard
-            </Button>
-            <Separator orientation="vertical" className="h-6" />
-            <h1 className="text-xl font-semibold">{app.name}</h1>
+    <Layout showTopbar={false}>
+      <div className="min-h-screen bg-background">
+        {/* Header */}
+        <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
+          <div className="flex h-16 items-center justify-between px-6">
+            <div className="flex items-center gap-4">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => navigate("/revox/dashboard")}
+                className="gap-2"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                Back to Dashboard
+              </Button>
+              <div className="h-6 w-px bg-border" />
+              <h1 className="font-semibold text-lg">{app.name}</h1>
+            </div>
+            <div className="flex items-center gap-2">
+              <ThemeToggle />
+              <LanguageToggle />
+            </div>
           </div>
-          
-          <div className="flex items-center gap-4">
-            <ThemeToggle />
-            <LanguageToggle />
-          </div>
-        </div>
-      </header>
+        </header>
 
-      <div className="p-6 space-y-8">
-        {/* App Info Header */}
-        <Card>
-          <CardContent className="p-4 sm:p-6">
-            <div className="flex flex-col lg:flex-row gap-4 lg:gap-6">
-              {/* App Icon */}
-              <div className="flex-shrink-0 mx-auto lg:mx-0">
-                <div className="w-16 h-16 sm:w-20 sm:h-20 bg-muted rounded-xl flex items-center justify-center">
-                  <Smartphone className="w-8 h-8 sm:w-10 sm:h-10" />
-                </div>
-              </div>
-              
-              {/* App Details */}
-              <div className="flex-1 space-y-3 sm:space-y-4 text-center lg:text-left">
-                {/* App Title and Platforms */}
-                <div className="space-y-2">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-center lg:justify-start gap-2 sm:gap-3">
-                    <h1 className="text-2xl sm:text-3xl font-bold">{app.name}</h1>
-                    <div className="flex gap-1 justify-center lg:justify-start">
-                      {app.platforms.map(platform => (
-                        <Badge key={platform} variant="secondary" className="text-xs">
-                          {platform === 'ios' ? (
-                            <Apple className="w-3 h-3 mr-1" />
-                          ) : (
-                            <Bot className="w-3 h-3 mr-1" />
-                          )}
-                          {platform.toUpperCase()}
-                        </Badge>
-                      ))}
+        <div className="container mx-auto p-6 max-w-7xl space-y-6">
+          {/* App Info Card */}
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-start gap-6">
+                <div className="flex-shrink-0">
+                  {app.icon ? (
+                    <img
+                      src={app.icon}
+                      alt={app.name}
+                      className="w-20 h-20 rounded-2xl border-2 border-border/50 shadow-sm"
+                    />
+                  ) : (
+                    <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-muted to-muted/50 border-2 border-border/50 flex items-center justify-center">
+                      <span className="text-2xl font-bold text-muted-foreground">
+                        {app.name.substring(0, 2).toUpperCase()}
+                      </span>
                     </div>
-                  </div>
-                  
-                  <p className="text-muted-foreground text-sm sm:text-base">{app.description}</p>
+                  )}
                 </div>
                 
-                {/* App Metrics */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4 text-sm">
-                  <div className="bg-muted/30 p-3 rounded-lg">
-                    <div className="font-medium text-foreground">Version</div>
-                    <div className="text-muted-foreground">{app.version}</div>
-                  </div>
-                  
-                  <div className="bg-muted/30 p-3 rounded-lg">
-                    <div className="font-medium text-foreground mb-1">Rating</div>
-                    <div className="flex items-center justify-center lg:justify-start gap-1 flex-wrap">
-                      <div className="flex items-center gap-1">
-                        {renderStars(Math.round(app.currentRating))}
-                        <span className="font-medium">{app.currentRating}</span>
+                <div className="flex-1 space-y-4">
+                  <div>
+                    <div className="flex items-center gap-3 mb-2">
+                      <h2 className="text-2xl font-bold">{app.name}</h2>
+                      <div className="flex gap-2">
+                        {app.platforms.includes("ios") && (
+                          <Badge variant="secondary" className="flex items-center gap-1">
+                            <Apple className="h-3 w-3" />
+                            iOS
+                          </Badge>
+                        )}
+                        {app.platforms.includes("android") && (
+                          <Badge variant="secondary" className="flex items-center gap-1">
+                            <Bot className="h-3 w-3" />
+                            Android
+                          </Badge>
+                        )}
                       </div>
-                      <span className="text-muted-foreground text-xs">({app.totalReviews} reviews)</span>
                     </div>
+                    <p className="text-muted-foreground leading-relaxed">{app.description}</p>
                   </div>
-                  
-                  <div className="bg-muted/30 p-3 rounded-lg sm:col-span-2 xl:col-span-1">
-                    <div className="font-medium text-foreground mb-1">Latest Update</div>
-                    <p className="text-muted-foreground text-xs leading-relaxed">{app.latestUpdate}</p>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                      <h3 className="font-medium text-sm text-muted-foreground mb-1">Version</h3>
+                      <p className="font-medium">{app.version}</p>
+                    </div>
+                    <div>
+                      <h3 className="font-medium text-sm text-muted-foreground mb-1">Rating</h3>
+                      <div className="flex items-center gap-2">
+                        <div className="flex">{renderStars(Math.floor(app.rating))}</div>
+                        <span className="font-medium">{app.rating}</span>
+                        <span className="text-sm text-muted-foreground">({app.totalReviews} reviews)</span>
+                      </div>
+                    </div>
+                    <div>
+                      <h3 className="font-medium text-sm text-muted-foreground mb-1">Latest Update</h3>
+                      <p className="text-sm">{app.latestUpdate}</p>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
 
-        {/* Analytics and Trends Section */}
-        <div className="grid gap-6 lg:grid-cols-3 lg:items-start">
-          {/* Analytics Widgets */}
-          <div className="lg:col-span-1 space-y-4">
+          {/* Analytics Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Positive Themes */}
             <Card>
-              <CardHeader className="pb-2">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                  <CardTitle className="text-sm font-medium flex items-center gap-2">
-                    <TrendingUp className="w-4 h-4 text-green-500" />
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <TrendingUp className="h-5 w-5 text-green-500" />
                     Top 3 Positive Themes
                   </CardTitle>
-                  <Select value={topThemesPlatform} onValueChange={setTopThemesPlatform}>
-                    <SelectTrigger className="w-full sm:w-24">
+                  <Select defaultValue="all">
+                    <SelectTrigger className="w-20 h-8 text-xs">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">
-                        <div className="flex items-center gap-2">
-                          <SlidersHorizontal className="w-3 h-3" />
-                          All
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="ios">
-                        <div className="flex items-center gap-2">
-                          <Apple className="w-3 h-3" />
-                          iOS
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="android">
-                        <div className="flex items-center gap-2">
-                          <Bot className="w-3 h-3" />
-                          Android
-                        </div>
-                      </SelectItem>
+                      <SelectItem value="all">All</SelectItem>
+                      <SelectItem value="ios">iOS</SelectItem>
+                      <SelectItem value="android">Android</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between">
-                    <span>User Interface</span>
-                    <span className="text-green-500">+89%</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Performance</span>
-                    <span className="text-green-500">+76%</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Features</span>
-                    <span className="text-green-500">+64%</span>
-                  </div>
+                <div className="space-y-4">
+                  {mockPositiveThemes.map((theme, index) => (
+                    <div key={index} className="space-y-2">
+                      <div className="flex items-center justify-between text-sm">
+                        <span>{theme.theme}</span>
+                        <span className="text-green-500 font-medium">+{theme.percentage}%</span>
+                      </div>
+                      <Progress value={theme.percentage} className="h-2" />
+                    </div>
+                  ))}
                 </div>
               </CardContent>
             </Card>
 
+            {/* Negative Themes */}
             <Card>
-              <CardHeader className="pb-2">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                  <CardTitle className="text-sm font-medium flex items-center gap-2">
-                    <TrendingDown className="w-4 h-4 text-orange-500" />
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <TrendingDown className="h-5 w-5 text-red-500" />
                     Top 3 Negative Themes
                   </CardTitle>
-                  <Select value={flopThemesPlatform} onValueChange={setFlopThemesPlatform}>
-                    <SelectTrigger className="w-full sm:w-24">
+                  <Select defaultValue="all">
+                    <SelectTrigger className="w-20 h-8 text-xs">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">
-                        <div className="flex items-center gap-2">
-                          <SlidersHorizontal className="w-3 h-3" />
-                          All
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="ios">
-                        <div className="flex items-center gap-2">
-                          <Apple className="w-3 h-3" />
-                          iOS
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="android">
-                        <div className="flex items-center gap-2">
-                          <Bot className="w-3 h-3" />
-                          Android
-                        </div>
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </CardHeader>
-               <CardContent>
-                 <div className="space-y-2 text-sm">
-                   <div className="flex justify-between">
-                     <span>Crashes</span>
-                     <span className="text-orange-500">-34%</span>
-                   </div>
-                   <div className="flex justify-between">
-                     <span>Sync Issues</span>
-                     <span className="text-orange-500">-28%</span>
-                   </div>
-                   <div className="flex justify-between">
-                     <span>Battery Drain</span>
-                     <span className="text-orange-500">-19%</span>
-                   </div>
-                 </div>
-               </CardContent>
-             </Card>
-
-             {/* Alert Management Widget */}
-             <Card>
-               <CardHeader className="pb-3">
-                 <CardTitle className="text-sm font-medium flex items-center gap-2">
-                   <Bell className="w-4 h-4" />
-                   Alert Status
-                 </CardTitle>
-               </CardHeader>
-               <CardContent className="space-y-3">
-                 {/* Active Alerts */}
-                 <div className="space-y-2">
-                   <div className="flex items-center justify-between p-2 bg-muted/50 rounded-lg">
-                     <div className="flex items-center gap-2">
-                       <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                       <span className="text-sm">Rating drops below 4.0</span>
-                     </div>
-                     <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
-                       ×
-                     </Button>
-                   </div>
-                   <div className="flex items-center justify-between p-2 bg-muted/50 rounded-lg">
-                     <div className="flex items-center gap-2">
-                       <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
-                       <span className="text-sm">Crash mentions spike</span>
-                     </div>
-                     <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
-                       ×
-                     </Button>
-                   </div>
-                 </div>
-                 
-                 <Separator />
-                 
-                 {/* Add New Alert */}
-                 <Button size="sm" className="w-full gap-2">
-                   <Plus className="w-4 h-4" />
-                   Create New Alert
-                 </Button>
-                 
-                 <div className="text-xs text-muted-foreground">
-                   Get notified when specific metrics or themes change
-                 </div>
-               </CardContent>
-             </Card>
-
-           </div>
-
-          {/* Reviews Distribution Chart */}
-          <div className="lg:col-span-2">
-            <Card>
-              <CardHeader className="pb-2">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                  <CardTitle className="text-sm font-medium flex items-center gap-2">
-                    <BarChart3 className="w-4 h-4 text-blue-500" />
-                    Reviews Distribution
-                  </CardTitle>
-                  <Select value={chartPlatformFilter} onValueChange={setChartPlatformFilter}>
-                    <SelectTrigger className="w-full sm:w-32">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">
-                        <div className="flex items-center gap-2">
-                          <SlidersHorizontal className="w-3 h-3" />
-                          All
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="ios">
-                        <div className="flex items-center gap-2">
-                          <Apple className="w-3 h-3" />
-                          iOS
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="android">
-                        <div className="flex items-center gap-2">
-                          <Bot className="w-3 h-3" />
-                          Android
-                        </div>
-                      </SelectItem>
+                      <SelectItem value="all">All</SelectItem>
+                      <SelectItem value="ios">iOS</SelectItem>
+                      <SelectItem value="android">Android</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="h-80">
+                <div className="space-y-4">
+                  {mockNegativeThemes.map((theme, index) => (
+                    <div key={index} className="space-y-2">
+                      <div className="flex items-center justify-between text-sm">
+                        <span>{theme.theme}</span>
+                        <span className="text-red-500 font-medium">-{theme.percentage}%</span>
+                      </div>
+                      <Progress value={theme.percentage} className="h-2" />
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Rating Chart */}
+          <Card>
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between">
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <div className="w-4 h-4 bg-chart-1 rounded-sm" />
+                  Reviews Distribution
+                </CardTitle>
+                <Select value={chartPlatformFilter} onValueChange={setChartPlatformFilter}>
+                  <SelectTrigger className="w-32 h-8 text-xs">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All</SelectItem>
+                    <SelectItem value="ios">iOS</SelectItem>
+                    <SelectItem value="android">Android</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="h-80">
+                <ChartContainer config={chartConfig}>
                   <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={getAverageRatingsByDay()}>
-                      <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                    <LineChart data={mockRatingData}>
                       <XAxis 
                         dataKey="date" 
-                        className="text-xs"
-                        tick={{ fontSize: 10 }}
-                        angle={-45}
-                        textAnchor="end"
-                        height={60}
+                        tick={{ fontSize: 12 }}
+                        tickFormatter={(value) => new Date(value).toLocaleDateString('en-US', { month: 'short', year: '2-digit' })}
                       />
                       <YAxis 
-                        domain={[1, 5]}
-                        className="text-xs"
+                        domain={[1, 5]} 
                         tick={{ fontSize: 12 }}
-                        tickCount={5}
-                        ticks={[1, 2, 3, 4, 5]}
                       />
-                      <Line 
-                        type="monotone" 
-                        dataKey="averageRating" 
-                        stroke="hsl(var(--primary))"
-                        strokeWidth={3}
-                        dot={{ fill: "hsl(var(--primary))", strokeWidth: 2, r: 4 }}
-                        activeDot={{ r: 6, fill: "hsl(var(--primary))" }}
+                      <ChartTooltip content={<ChartTooltipContent />} />
+                      <Line
+                        type="monotone"
+                        dataKey="rating"
+                        stroke="var(--color-rating)"
+                        strokeWidth={2}
+                        dot={{ fill: "var(--color-rating)", strokeWidth: 2, r: 4 }}
+                        activeDot={{ r: 6 }}
                       />
                     </LineChart>
                   </ResponsiveContainer>
-                </div>
-                <div className="mt-4 flex items-center justify-between text-sm text-muted-foreground">
-                  <span>Average rating trend over time</span>
-                  <div className="flex items-center gap-1">
-                    <div className="w-3 h-3 rounded-full bg-primary"></div>
-                    <span>Average Rating</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-
-        {/* Reviews Section */}
-        <Card>
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle className="flex items-center gap-2">
-                <MessageSquare className="w-5 h-5" />
-                Reviews ({filteredReviews.length})
-              </CardTitle>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                onClick={handleRefresh}
-                disabled={isRefreshing}
-                className="gap-2"
-              >
-                <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
-                {isRefreshing ? 'Refreshing...' : 'Refresh'}
-              </Button>
-            </div>
-
-            {/* Filters */}
-            <div className="flex flex-wrap gap-4 mt-4">
-              <div className="flex items-center gap-2">
-                <Search className="w-4 h-4" />
-                <Input
-                  placeholder="Search reviews..."
-                  value={searchKeyword}
-                  onChange={(e) => setSearchKeyword(e.target.value)}
-                  className="w-64"
-                />
+                </ChartContainer>
               </div>
-              
-              <Select value={platformFilter} onValueChange={setPlatformFilter}>
-                <SelectTrigger className="w-32">
-                  <SelectValue placeholder="Platform" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Platforms</SelectItem>
-                  <SelectItem value="ios">iOS</SelectItem>
-                  <SelectItem value="android">Android</SelectItem>
-                </SelectContent>
-              </Select>
+              <div className="mt-4 text-sm text-muted-foreground">
+                Average rating trend over time
+                <span className="ml-4 inline-flex items-center gap-1">
+                  <div className="w-2 h-2 bg-chart-1 rounded-full" />
+                  Average Rating
+                </span>
+              </div>
+            </CardContent>
+          </Card>
 
-              <Select value={ratingFilter} onValueChange={setRatingFilter}>
-                <SelectTrigger className="w-32">
-                  <SelectValue placeholder="Rating" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Ratings</SelectItem>
-                  <SelectItem value="5">5 Stars</SelectItem>
-                  <SelectItem value="4">4 Stars</SelectItem>
-                  <SelectItem value="3">3 Stars</SelectItem>
-                  <SelectItem value="2">2 Stars</SelectItem>
-                  <SelectItem value="1">1 Star</SelectItem>
-                </SelectContent>
-              </Select>
-
-
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="sm" className="gap-2">
-                    <Download className="w-4 h-4" />
-                    Export
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <DropdownMenuItem onClick={() => handleExport('csv')}>
-                    <FileText className="w-4 h-4 mr-2" />
-                    Export as CSV
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => handleExport('pdf')}>
-                    <FileText className="w-4 h-4 mr-2" />
-                    Export as PDF
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          </CardHeader>
-
-          <CardContent>
-            <ScrollArea className="h-96">
-              <div className="space-y-4">
-                 {getCurrentPageReviews().map((review) => (
-                   <Card key={review.id} className="p-4" data-review-card>
-                    <div className="flex items-start justify-between mb-3">
-                      <div className="flex items-center gap-3">
-                        <Avatar className="w-8 h-8">
-                          <AvatarFallback>{review.author.charAt(0)}</AvatarFallback>
-                        </Avatar>
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <span className="font-medium text-sm">{review.author}</span>
-                            <Badge variant="outline" className="text-xs">
-                              {review.platform === 'ios' ? (
-                                <Apple className="w-3 h-3 mr-1" />
-                              ) : (
-                                <Bot className="w-3 h-3 mr-1" />
-                              )}
-                              {review.platform.toUpperCase()}
-                            </Badge>
-                          </div>
-                          <div className="flex items-center gap-2 mt-1">
-                            <div className="flex">{renderStars(review.rating)}</div>
-                            <span className="text-xs text-muted-foreground">{format(new Date(review.date), 'MMM dd, yyyy HH:mm')}</span>
-                          </div>
-                        </div>
-                      </div>
+          {/* Alerts */}
+          <Card>
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between">
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <AlertTriangle className="h-5 w-5 text-orange-500" />
+                  Alert Status
+                </CardTitle>
+                <Button size="sm" onClick={handleCreateAlert} className="gap-2">
+                  <Plus className="h-4 w-4" />
+                  Create New Alert
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {mockAlerts.map((alert) => (
+                  <div key={alert.id} className="flex items-center justify-between p-3 rounded-lg border bg-card">
+                    <div className="flex items-center gap-3">
+                      <div className={`w-2 h-2 rounded-full ${
+                        alert.type === 'error' ? 'bg-red-500' : 'bg-orange-500'
+                      }`} />
+                      <span className="text-sm">{alert.message}</span>
                     </div>
-                    
-                    <h4 className="font-medium mb-2">{review.title}</h4>
-                    <p className="text-sm text-muted-foreground mb-3">{review.content}</p>
-                  </Card>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleRemoveAlert(alert.id)}
+                      className="h-6 w-6 p-0"
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
                 ))}
               </div>
-            </ScrollArea>
+              <p className="text-xs text-muted-foreground mt-4">
+                Get notified when specific metrics or themes change
+              </p>
+            </CardContent>
+          </Card>
 
-            {/* Pagination */}
-            {totalPages > 1 && (
-              <div className="flex items-center justify-between mt-6">
-                <p className="text-sm text-muted-foreground">
-                  Showing {(currentPage - 1) * reviewsPerPage + 1} to {Math.min(currentPage * reviewsPerPage, filteredReviews.length)} of {filteredReviews.length} reviews
-                </p>
-                
-                <div className="flex gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setCurrentPage(currentPage - 1)}
-                    disabled={currentPage === 1}
-                  >
-                    Previous
+          {/* Reviews Section */}
+          <Card>
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-lg">Reviews ({filteredReviews.length})</CardTitle>
+                <div className="flex items-center gap-2">
+                  <Button size="sm" variant="outline" onClick={handleRefresh} className="gap-2">
+                    <RefreshCw className="h-4 w-4" />
+                    Refresh
                   </Button>
-                  
-                  <div className="flex items-center gap-1">
-                    {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                      const page = i + 1;
-                      return (
-                        <Button
-                          key={page}
-                          variant={currentPage === page ? "default" : "outline"}
-                          size="sm"
-                          onClick={() => setCurrentPage(page)}
-                        >
-                          {page}
-                        </Button>
-                      );
-                    })}
-                  </div>
-                  
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setCurrentPage(currentPage + 1)}
-                    disabled={currentPage === totalPages}
-                  >
-                    Next
+                  <Button size="sm" variant="outline" onClick={handleExport} className="gap-2">
+                    <Download className="h-4 w-4" />
+                    Export
                   </Button>
                 </div>
               </div>
-            )}
-          </CardContent>
-        </Card>
+            </CardHeader>
+            <CardContent>
+              {/* Filters */}
+              <div className="flex flex-col sm:flex-row gap-4 mb-6">
+                <div className="relative flex-1">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder="Search reviews..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-10"
+                  />
+                </div>
+                <Select value={platformFilter} onValueChange={setPlatformFilter}>
+                  <SelectTrigger className="w-full sm:w-40">
+                    <SelectValue placeholder="All Platforms" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Platforms</SelectItem>
+                    <SelectItem value="ios">iOS</SelectItem>
+                    <SelectItem value="android">Android</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Select value={ratingFilter} onValueChange={setRatingFilter}>
+                  <SelectTrigger className="w-full sm:w-40">
+                    <SelectValue placeholder="All Ratings" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Ratings</SelectItem>
+                    <SelectItem value="5">5 Stars</SelectItem>
+                    <SelectItem value="4">4 Stars</SelectItem>
+                    <SelectItem value="3">3 Stars</SelectItem>
+                    <SelectItem value="2">2 Stars</SelectItem>
+                    <SelectItem value="1">1 Star</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
 
+              {/* Reviews List */}
+              <ScrollArea className="h-96">
+                <div className="space-y-4 pr-4">
+                  {filteredReviews.map((review) => (
+                    <div key={review.id} className="border rounded-lg p-4 space-y-3">
+                      <div className="flex items-start justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center font-medium text-sm">
+                            {review.author.charAt(0)}
+                          </div>
+                          <div>
+                            <div className="flex items-center gap-2 text-sm">
+                              <span className="font-medium">{review.author}</span>
+                              <Badge variant="secondary" className="flex items-center gap-1 h-5 text-xs">
+                                {review.platform === 'ios' ? (
+                                  <Apple className="h-3 w-3" />
+                                ) : (
+                                  <Bot className="h-3 w-3" />
+                                )}
+                                {review.platform === 'ios' ? 'iOS' : 'Android'}
+                              </Badge>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          {review.date}
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center gap-2">
+                        <div className="flex">{renderStars(review.rating)}</div>
+                        <span className="text-sm text-muted-foreground">
+                          {review.rating}/5
+                        </span>
+                      </div>
+
+                      <div>
+                        <h4 className="font-medium text-sm mb-1">{review.title}</h4>
+                        <p className="text-sm text-muted-foreground leading-relaxed">
+                          {review.content}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </ScrollArea>
+            </CardContent>
+          </Card>
+        </div>
       </div>
-    </div>
+    </Layout>
   );
-};
-
-export default RevoxAppDetails;
+}
