@@ -375,10 +375,10 @@ const handleFollowApps = async () => {
           </Card>
         )}
 
-        {/* Follow Button */}
+        {/* Sticky Follow Button */}
         {selectedCount > 0 && (
-          <Card>
-            <CardContent className="p-4">
+          <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border p-4 animate-fade-in z-50">
+            <div className="max-w-4xl mx-auto">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="font-medium">
@@ -392,6 +392,7 @@ const handleFollowApps = async () => {
                   onClick={handleFollowApps}
                   disabled={isFollowing}
                   className="gap-2"
+                  size="lg"
                 >
                   {isFollowing ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
@@ -401,27 +402,29 @@ const handleFollowApps = async () => {
                   Follow App{selectedCount > 1 ? 's' : ''}
                 </Button>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         )}
 
         {/* Help Text */}
-        {!hasSearched && searchQuery.length === 0 && (
-          <Alert>
-            <AlertDescription>
-              Search for apps by name to find them on both the App Store and Google Play.
-              You can follow apps on one or both platforms depending on your needs.
-            </AlertDescription>
-          </Alert>
-        )}
+        <div className={selectedCount > 0 ? "pb-24" : ""}>
+          {!hasSearched && searchQuery.length === 0 && (
+            <Alert>
+              <AlertDescription>
+                Search for apps by name to find them on both the App Store and Google Play.
+                You can follow apps on one or both platforms depending on your needs.
+              </AlertDescription>
+            </Alert>
+          )}
 
-        {hasSearched && searchResults.length === 0 && searchQuery.length > 0 && (
-          <Alert>
-            <AlertDescription>
-              No apps found for "{searchQuery}". Try searching with different keywords or check the spelling.
-            </AlertDescription>
-          </Alert>
-        )}
+          {hasSearched && searchResults.length === 0 && searchQuery.length > 0 && (
+            <Alert>
+              <AlertDescription>
+                No apps found for "{searchQuery}". Try searching with different keywords or check the spelling.
+              </AlertDescription>
+            </Alert>
+          )}
+        </div>
       </section>
     </Layout>
   );
