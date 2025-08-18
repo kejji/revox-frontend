@@ -1,14 +1,26 @@
+// src/components/layout/Header.tsx
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Menu, X } from "lucide-react";
+import { Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { LanguageToggle } from "@/components/ui/language-toggle";
 import { useLanguage } from "@/contexts/LanguageContext";
 
-export function Header() {
+export type HeaderProps = {
+  /** Affiche/masque la topbar globale. Par défaut: true */
+  showTopbar?: boolean;
+};
+
+/** Header global du site (Lovable). 
+ * Ajout minimal: prop showTopbar pour pouvoir le masquer sur certaines pages (ex: Dashboard).
+ */
+export function Header({ showTopbar = true }: HeaderProps) {
+  // 👉 si on veut cacher le header global (pour éviter un double header), on ne rend rien
+  if (!showTopbar) return null;
+
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
   const { t } = useLanguage();
@@ -53,10 +65,12 @@ export function Header() {
                     onClick={() => setMobileMenuOpen(false)}
                     className={cn(
                       "px-3 py-2 rounded-md text-lg font-medium transition-all duration-200",
-                      isActive(item.href) 
-                        ? "bg-primary/10 text-primary border border-primary/20" 
+                      isActive(item.href)
+                        ? "bg-primary/10 text-primary border border-primary/20"
                         : "text-foreground hover:text-primary hover:bg-primary/5",
-                      item.isProduct && !isActive(item.href) && "text-blue-600 dark:text-blue-400"
+                      item.isProduct &&
+                        !isActive(item.href) &&
+                        "text-blue-600 dark:text-blue-400"
                     )}
                   >
                     {item.name}
@@ -87,10 +101,12 @@ export function Header() {
               to={item.href}
               className={cn(
                 "px-3 py-2 rounded-md text-sm font-medium transition-all duration-200",
-                isActive(item.href) 
-                  ? "bg-primary/10 text-primary border border-primary/20" 
+                isActive(item.href)
+                  ? "bg-primary/10 text-primary border border-primary/20"
                   : "text-foreground hover:text-primary hover:bg-primary/5",
-                item.isProduct && !isActive(item.href) && "text-blue-600 dark:text-blue-400 hover:text-blue-500"
+                item.isProduct &&
+                  !isActive(item.href) &&
+                  "text-blue-600 dark:text-blue-400 hover:text-blue-500"
               )}
             >
               {item.name}
