@@ -1,19 +1,20 @@
-import { ReactNode } from "react";
+// src/components/layout/Layout.tsx
+import * as React from "react";
 import { Header } from "./Header";
-import { Footer } from "./Footer";
 
-interface LayoutProps {
-  children: ReactNode;
-}
+export type LayoutProps = {
+  children: React.ReactNode;
+  /** Affiche la topbar globale (Header). Par défaut: true */
+  showTopbar?: boolean;
+};
 
-export function Layout({ children }: LayoutProps) {
+export function Layout({ children, showTopbar = true }: LayoutProps) {
   return (
     <div className="min-h-screen flex flex-col">
-      <Header />
-      <main className="flex-1">
-        {children}
-      </main>
-      <Footer />
+      <Header showTopbar={showTopbar} />
+      <main className="flex-1">{children}</main>
     </div>
   );
 }
+
+export default Layout;
