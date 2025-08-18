@@ -270,8 +270,6 @@ export default function RevoxDashboard() {
                           </Badge>
                         </div>
                       </div>
-                      
-                      <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all duration-200 flex-shrink-0" />
                     </div>
 
                     {/* Stats section */}
