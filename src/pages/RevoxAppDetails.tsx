@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
+// src/pages/RevoxAppDetails.tsx
+import { useEffect, useMemo, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
@@ -16,18 +16,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  ResponsiveContainer,
-} from "recharts";
-import {
   ArrowLeft,
   Star,
   TrendingUp,
@@ -36,7 +24,6 @@ import {
   Search,
   Download,
   RefreshCw,
-  MoreVertical,
   X,
   Plus,
   Apple,
@@ -44,164 +31,209 @@ import {
 } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { LanguageToggle } from "@/components/ui/language-toggle";
+import { api } from "@/api";
 
-// Mock data - replace with real API calls
+// -------- Types alignés avec le backend --------
+type ReviewItem = {
+  app_name?: string;
+  platform: "ios" | "android";
+  date: string;            // ISO
+  rating: number;          // 1..5
+  text?: string;
+  user_name?: string;
+  app_version?: string;
+  bundle_id: string;
+};
+
+type ReviewsResponse = {
+  items: ReviewItem[];
+  nextCursor?: string | null;
+  count?: number;
+};
+
+// Données d’en-tête (mock pour l’instant)
 const mockApp = {
-  id: "taskflow-pro",
   name: "TaskFlow Pro",
-  description: "A comprehensive task management app that helps teams collaborate efficiently and track project progress in real-time.",
+  description:
+    "A comprehensive task management app that helps teams collaborate efficiently and track project progress in real-time.",
   version: "2.3.1",
   rating: 4.2,
   totalReviews: 1847,
-  latestUpdate: "Fixed critical bug with notification sync and improved performance on iOS 17.",
+  latestUpdate:
+    "Fixed critical bug with notification sync and improved performance on iOS 17.",
   platforms: ["ios", "android"] as const,
-  icon: null,
+  icon: null as string | null,
 };
 
 const mockPositiveThemes = [
-  { theme: "User Interface", percentage: 89, trend: "up" },
-  { theme: "Performance", percentage: 76, trend: "up" },
-  { theme: "Features", percentage: 64, trend: "up" },
+  { theme: "User Interface", percentage: 89 },
+  { theme: "Performance", percentage: 76 },
+  { theme: "Features", percentage: 64 },
 ];
-
 const mockNegativeThemes = [
-  { theme: "Crashes", percentage: 34, trend: "down" },
-  { theme: "Sync Issues", percentage: 28, trend: "down" },
-  { theme: "Battery Drain", percentage: 19, trend: "down" },
+  { theme: "Crashes", percentage: 34 },
+  { theme: "Sync Issues", percentage: 28 },
+  { theme: "Battery Drain", percentage: 19 },
 ];
-
 const mockAlerts = [
-  {
-    id: 1,
-    type: "warning",
-    message: "Rating drops below 4.0",
-    active: true,
-  },
-  {
-    id: 2,
-    type: "error", 
-    message: "Crash mentions spike",
-    active: true,
-  },
+  { id: 1, type: "warning" as const, message: "Rating drops below 4.0", active: true },
+  { id: 2, type: "error" as const, message: "Crash mentions spike", active: true },
 ];
 
-const mockRatingData = [
-  { date: "2024-01-15", rating: 4.0 },
-  { date: "2024-02-15", rating: 3.8 },
-  { date: "2024-03-15", rating: 4.1 },
-  { date: "2024-04-15", rating: 1.8 },
-  { date: "2024-05-15", rating: 4.5 },
-  { date: "2024-06-15", rating: 4.3 },
-  { date: "2024-07-15", rating: 4.7 },
-];
-
-const mockReviews = [
-  {
-    id: 1,
-    author: "Sarah M.",
-    platform: "ios",
-    rating: 5,
-    date: "Jan 15, 2024 14:30",
-    title: "Amazing productivity boost!",
-    content: "This app has completely transformed how our team manages projects. The interface is intuitive and the collaboration features are top-notch.",
-    helpful: 12,
-  },
-  {
-    id: 2,
-    author: "Mike D.",
-    platform: "android",
-    rating: 4,
-    date: "Jan 14, 2024 09:15",
-    title: "Great app, minor issues",
-    content: "Love the features but occasionally crashes when syncing large files. Support team is responsive though.",
-    helpful: 8,
-  },
-  {
-    id: 3,
-    author: "Jennifer L.",
-    platform: "ios",
-    rating: 2,
-    date: "Jan 13, 2024 16:45",
-    title: "Needs improvement",
-    content: "Good concept but the app is buggy and drains battery quickly. Hope they fix these issues soon.",
-    helpful: 3,
-  },
-];
-
-const chartConfig = {
-  rating: {
-    label: "Average Rating",
-    color: "hsl(var(--chart-1))",
-  },
-};
+const PAGE_SIZE = 10;
 
 export default function RevoxAppDetails() {
-  const { platform, bundleId } = useParams<{ platform: string; bundleId: string }>();
   const navigate = useNavigate();
-  
-  const [app, setApp] = useState(mockApp);
-  const [reviews, setReviews] = useState(mockReviews);
-  const [filteredReviews, setFilteredReviews] = useState(mockReviews);
+  const { platform, bundleId } = useParams<{ platform: "ios" | "android"; bundleId: string }>();
+
+  // Header app (mock)
+  const [app] = useState(mockApp);
+
+  // Reviews + pagination
+  const [reviews, setReviews] = useState<ReviewItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [err, setErr] = useState<string | null>(null);
+
+  const [cursor, setCursor] = useState<string | undefined>(undefined);
+  const [hasMore, setHasMore] = useState<boolean>(false);
+  const [loadingMore, setLoadingMore] = useState<boolean>(false);
+
+  // Filtres UI (client)
   const [searchTerm, setSearchTerm] = useState("");
-  const [platformFilter, setPlatformFilter] = useState("all");
-  const [ratingFilter, setRatingFilter] = useState("all");
-  const [chartPlatformFilter, setChartPlatformFilter] = useState("all");
+  const [platformFilter, setPlatformFilter] = useState<"all" | "ios" | "android">("all");
+  const [ratingFilter, setRatingFilter] = useState<"all" | "1" | "2" | "3" | "4" | "5">("all");
 
-  // Filter reviews based on search and filters
-  useEffect(() => {
-    let filtered = reviews;
-
-    if (searchTerm) {
-      filtered = filtered.filter(
-        review =>
-          review.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          review.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          review.author.toLowerCase().includes(searchTerm.toLowerCase())
-      );
+  // --- Chargement initial (reset) ---
+  async function fetchReviewsInitial() {
+    if (!platform || !bundleId) return;
+    setLoading(true);
+    setErr(null);
+    try {
+      const { data } = await api.get<ReviewsResponse>("/reviews", {
+        params: {
+          platform,
+          bundleId,
+          limit: PAGE_SIZE,
+          order: "desc",
+        },
+      });
+      const rows = (data?.items ?? []) as ReviewItem[];
+      setReviews(rows);
+      const next = data?.nextCursor || undefined;
+      setCursor(next);
+      setHasMore(!!next);
+    } catch (e: any) {
+      setErr(e?.response?.data?.error || e?.message || "Failed to load reviews.");
+      setReviews([]);
+      setCursor(undefined);
+      setHasMore(false);
+    } finally {
+      setLoading(false);
     }
+  }
+
+  // --- Pages suivantes ---
+  async function fetchReviewsMore() {
+    if (!platform || !bundleId) return;
+    if (!hasMore || !cursor || loadingMore) return;
+
+    setLoadingMore(true);
+    try {
+      const { data } = await api.get<ReviewsResponse>("/reviews", {
+        params: {
+          platform,
+          bundleId,
+          limit: PAGE_SIZE,
+          order: "desc",
+          cursor,
+        },
+      });
+      const rows = (data?.items ?? []) as ReviewItem[];
+      setReviews((prev) => [...prev, ...rows]);
+      const next = data?.nextCursor || undefined;
+      setCursor(next);
+      setHasMore(!!next);
+    } catch (e: any) {
+      setErr(e?.response?.data?.error || e?.message || "Failed to load more reviews.");
+    } finally {
+      setLoadingMore(false);
+    }
+  }
+
+  useEffect(() => {
+    fetchReviewsInitial();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [platform, bundleId]);
+
+  // Ingest (refresh) → POST puis reset
+  const handleRefresh = async () => {
+    if (!platform || !bundleId) return;
+    try {
+      await api.post("/reviews/ingest", {
+        appName: app?.name || bundleId,
+        platform,
+        bundleId,
+        backfillDays: 2,
+      });
+      await fetchReviewsInitial();
+    } catch (e: any) {
+      setErr(e?.response?.data?.error || e?.message || "Failed to refresh (ingest) reviews.");
+    }
+  };
+
+  // Export CSV → GET blob + download
+  const handleExport = async () => {
+    if (!platform || !bundleId) return;
+    try {
+      const resp = await api.get("/reviews/export", {
+        params: { platform, bundleId, order: "desc" },
+        responseType: "blob",
+      });
+      const blob = new Blob([resp.data], { type: "text/csv;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      const fileBase = `${platform}_${bundleId}`;
+      a.href = url;
+      a.download = `${fileBase}_reviews.csv`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    } catch (e: any) {
+      setErr(e?.response?.data?.error || e?.message || "Failed to export reviews.");
+    }
+  };
+
+  const filteredReviews = useMemo(() => {
+    let out = reviews;
 
     if (platformFilter !== "all") {
-      filtered = filtered.filter(review => review.platform === platformFilter);
+      out = out.filter((r) => r.platform === platformFilter);
     }
-
     if (ratingFilter !== "all") {
-      const rating = parseInt(ratingFilter);
-      filtered = filtered.filter(review => review.rating === rating);
+      const r = parseInt(ratingFilter, 10);
+      out = out.filter((it) => Number(it.rating) === r);
     }
-
-    setFilteredReviews(filtered);
+    if (searchTerm.trim()) {
+      const q = searchTerm.toLowerCase();
+      out = out.filter(
+        (it) =>
+          (it.user_name || "").toLowerCase().includes(q) ||
+          (it.text || "").toLowerCase().includes(q)
+      );
+    }
+    return out;
   }, [reviews, searchTerm, platformFilter, ratingFilter]);
 
-  const handleRefresh = () => {
-    // Mock refresh - in real app, refetch data
-    console.log("Refreshing data...");
-  };
-
-  const handleExport = () => {
-    // Mock export functionality
-    console.log("Exporting reviews...");
-  };
-
-  const handleCreateAlert = () => {
-    // Mock create alert functionality
-    console.log("Creating new alert...");
-  };
-
-  const handleRemoveAlert = (alertId: number) => {
-    // Mock remove alert functionality
-    console.log("Removing alert:", alertId);
-  };
-
-  const renderStars = (rating: number) => {
-    return Array.from({ length: 5 }, (_, i) => (
+  const renderStars = (rating: number) =>
+    Array.from({ length: 5 }, (_, i) => (
       <Star
         key={i}
         className={`h-4 w-4 ${
-          i < rating ? "text-yellow-500 fill-yellow-500" : "text-muted-foreground"
+          i < Math.round(rating) ? "text-yellow-500 fill-yellow-500" : "text-muted-foreground"
         }`}
       />
     ));
-  };
 
   return (
     <Layout showTopbar={false}>
@@ -230,7 +262,7 @@ export default function RevoxAppDetails() {
         </header>
 
         <div className="container mx-auto p-6 max-w-7xl space-y-6">
-          {/* App Info Card */}
+          {/* App Info (mock) */}
           <Card>
             <CardContent className="p-6">
               <div className="flex items-start gap-6">
@@ -249,24 +281,16 @@ export default function RevoxAppDetails() {
                     </div>
                   )}
                 </div>
-                
+
                 <div className="flex-1 space-y-4">
                   <div>
                     <div className="flex items-center gap-3 mb-2">
                       <h2 className="text-2xl font-bold">{app.name}</h2>
                       <div className="flex gap-2">
-                        {app.platforms.includes("ios") && (
-                          <Badge variant="secondary" className="flex items-center gap-1">
-                            <Apple className="h-3 w-3" />
-                            iOS
-                          </Badge>
-                        )}
-                        {app.platforms.includes("android") && (
-                          <Badge variant="secondary" className="flex items-center gap-1">
-                            <Bot className="h-3 w-3" />
-                            Android
-                          </Badge>
-                        )}
+                        <Badge variant="secondary" className="flex items-center gap-1">
+                          {platform === "ios" ? <Apple className="h-3 w-3" /> : <Bot className="h-3 w-3" />}
+                          {platform?.toUpperCase()}
+                        </Badge>
                       </div>
                     </div>
                     <p className="text-muted-foreground leading-relaxed">{app.description}</p>
@@ -274,19 +298,27 @@ export default function RevoxAppDetails() {
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div>
-                      <h3 className="font-medium text-sm text-muted-foreground mb-1">Version</h3>
+                      <h3 className="font-medium text-sm text-muted-foreground mb-1">
+                        Version
+                      </h3>
                       <p className="font-medium">{app.version}</p>
                     </div>
                     <div>
-                      <h3 className="font-medium text-sm text-muted-foreground mb-1">Rating</h3>
+                      <h3 className="font-medium text-sm text-muted-foreground mb-1">
+                        Rating
+                      </h3>
                       <div className="flex items-center gap-2">
                         <div className="flex">{renderStars(Math.floor(app.rating))}</div>
                         <span className="font-medium">{app.rating}</span>
-                        <span className="text-sm text-muted-foreground">({app.totalReviews} reviews)</span>
+                        <span className="text-sm text-muted-foreground">
+                          ({app.totalReviews} reviews)
+                        </span>
                       </div>
                     </div>
                     <div>
-                      <h3 className="font-medium text-sm text-muted-foreground mb-1">Latest Update</h3>
+                      <h3 className="font-medium text-sm text-muted-foreground mb-1">
+                        Latest Update
+                      </h3>
                       <p className="text-sm">{app.latestUpdate}</p>
                     </div>
                   </div>
@@ -295,9 +327,8 @@ export default function RevoxAppDetails() {
             </CardContent>
           </Card>
 
-          {/* Analytics Grid */}
+          {/* Widgets mockés */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Positive Themes */}
             <Card>
               <CardHeader className="pb-4">
                 <div className="flex items-center justify-between">
@@ -305,31 +336,18 @@ export default function RevoxAppDetails() {
                     <TrendingUp className="h-4 w-4 text-green-600" />
                     Top 3 Positive Themes
                   </CardTitle>
-                  <Select defaultValue="all">
-                    <SelectTrigger className="w-16 h-7 text-xs border-0 bg-muted">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All</SelectItem>
-                      <SelectItem value="ios">iOS</SelectItem>
-                      <SelectItem value="android">Android</SelectItem>
-                    </SelectContent>
-                  </Select>
                 </div>
               </CardHeader>
-              <CardContent className="pt-0">
-                <div className="space-y-4">
-                  {mockPositiveThemes.map((theme, index) => (
-                    <div key={index} className="flex items-center justify-between">
-                      <span className="text-sm text-foreground">{theme.theme}</span>
-                      <span className="text-sm font-medium text-green-600">+{theme.percentage}%</span>
-                    </div>
-                  ))}
-                </div>
+              <CardContent className="pt-0 space-y-4">
+                {mockPositiveThemes.map((t, i) => (
+                  <div key={i} className="flex items-center justify-between">
+                    <span className="text-sm text-foreground">{t.theme}</span>
+                    <span className="text-sm font-medium text-green-600">+{t.percentage}%</span>
+                  </div>
+                ))}
               </CardContent>
             </Card>
 
-            {/* Negative Themes */}
             <Card>
               <CardHeader className="pb-4">
                 <div className="flex items-center justify-between">
@@ -337,31 +355,18 @@ export default function RevoxAppDetails() {
                     <TrendingDown className="h-4 w-4 text-orange-600" />
                     Top 3 Negative Themes
                   </CardTitle>
-                  <Select defaultValue="all">
-                    <SelectTrigger className="w-16 h-7 text-xs border-0 bg-muted">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All</SelectItem>
-                      <SelectItem value="ios">iOS</SelectItem>
-                      <SelectItem value="android">Android</SelectItem>
-                    </SelectContent>
-                  </Select>
                 </div>
               </CardHeader>
-              <CardContent className="pt-0">
-                <div className="space-y-4">
-                  {mockNegativeThemes.map((theme, index) => (
-                    <div key={index} className="flex items-center justify-between">
-                      <span className="text-sm text-foreground">{theme.theme}</span>
-                      <span className="text-sm font-medium text-orange-600">-{theme.percentage}%</span>
-                    </div>
-                  ))}
-                </div>
+              <CardContent className="pt-0 space-y-4">
+                {mockNegativeThemes.map((t, i) => (
+                  <div key={i} className="flex items-center justify-between">
+                    <span className="text-sm text-foreground">{t.theme}</span>
+                    <span className="text-sm font-medium text-orange-600">-{t.percentage}%</span>
+                  </div>
+                ))}
               </CardContent>
             </Card>
 
-            {/* Alert Status */}
             <Card>
               <CardHeader className="pb-4">
                 <div className="flex items-center justify-between">
@@ -369,51 +374,40 @@ export default function RevoxAppDetails() {
                     <AlertTriangle className="h-4 w-4 text-orange-500" />
                     Alert Status
                   </CardTitle>
-                  <Button size="sm" variant="outline" onClick={handleCreateAlert} className="h-7 text-xs gap-1">
+                  <Button size="sm" variant="outline" className="h-7 text-xs gap-1">
                     <Plus className="h-3 w-3" />
                     Create New Alert
                   </Button>
                 </div>
               </CardHeader>
-              <CardContent className="pt-0">
-                <div className="space-y-3">
-                  {mockAlerts.map((alert) => (
-                    <div key={alert.id} className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <div className={`w-1.5 h-1.5 rounded-full ${
-                          alert.type === 'error' ? 'bg-red-500' : 'bg-orange-500'
-                        }`} />
-                        <span className="text-sm text-foreground">{alert.message}</span>
-                      </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleRemoveAlert(alert.id)}
-                        className="h-6 w-6 p-0 hover:bg-muted"
-                      >
-                        <X className="h-3 w-3" />
-                      </Button>
+              <CardContent className="pt-0 space-y-3">
+                {mockAlerts.map((a) => (
+                  <div key={a.id} className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div
+                        className={`w-1.5 h-1.5 rounded-full ${
+                          a.type === "error" ? "bg-red-500" : "bg-orange-500"
+                        }`}
+                      />
+                      <span className="text-sm text-foreground">{a.message}</span>
                     </div>
-                  ))}
-                </div>
-                <Button 
-                  className="w-full mt-4 bg-primary text-primary-foreground hover:bg-primary/90" 
-                  onClick={handleCreateAlert}
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  Create New Alert
-                </Button>
+                    <Button variant="ghost" size="sm" className="h-6 w-6 p-0 hover:bg-muted">
+                      <X className="h-3 w-3" />
+                    </Button>
+                  </div>
+                ))}
+                <Button className="w-full mt-4">Create New Alert</Button>
               </CardContent>
             </Card>
           </div>
 
-
-
-          {/* Reviews Section */}
+          {/* Reviews */}
           <Card>
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-lg">Reviews ({filteredReviews.length})</CardTitle>
+                <CardTitle className="text-lg">
+                  Reviews ({filteredReviews.length})
+                </CardTitle>
                 <div className="flex items-center gap-2">
                   <Button size="sm" variant="outline" onClick={handleRefresh} className="gap-2">
                     <RefreshCw className="h-4 w-4" />
@@ -427,10 +421,10 @@ export default function RevoxAppDetails() {
               </div>
             </CardHeader>
             <CardContent>
-              {/* Filters */}
+              {/* Filtres UI */}
               <div className="flex flex-col sm:flex-row gap-4 mb-6">
                 <div className="relative flex-1">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input
                     placeholder="Search reviews..."
                     value={searchTerm}
@@ -438,7 +432,7 @@ export default function RevoxAppDetails() {
                     className="pl-10"
                   />
                 </div>
-                <Select value={platformFilter} onValueChange={setPlatformFilter}>
+                <Select value={platformFilter} onValueChange={(v: any) => setPlatformFilter(v)}>
                   <SelectTrigger className="w-full sm:w-40">
                     <SelectValue placeholder="All Platforms" />
                   </SelectTrigger>
@@ -448,7 +442,7 @@ export default function RevoxAppDetails() {
                     <SelectItem value="android">Android</SelectItem>
                   </SelectContent>
                 </Select>
-                <Select value={ratingFilter} onValueChange={setRatingFilter}>
+                <Select value={ratingFilter} onValueChange={(v: any) => setRatingFilter(v)}>
                   <SelectTrigger className="w-full sm:w-40">
                     <SelectValue placeholder="All Ratings" />
                   </SelectTrigger>
@@ -463,52 +457,69 @@ export default function RevoxAppDetails() {
                 </Select>
               </div>
 
-              {/* Reviews List */}
-              <ScrollArea className="h-96">
-                <div className="space-y-4 pr-4">
-                  {filteredReviews.map((review) => (
-                    <div key={review.id} className="border rounded-lg p-4 space-y-3">
-                      <div className="flex items-start justify-between">
-                        <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center font-medium text-sm">
-                            {review.author.charAt(0)}
-                          </div>
-                          <div>
-                            <div className="flex items-center gap-2 text-sm">
-                              <span className="font-medium">{review.author}</span>
-                              <Badge variant="secondary" className="flex items-center gap-1 h-5 text-xs">
-                                {review.platform === 'ios' ? (
-                                  <Apple className="h-3 w-3" />
-                                ) : (
-                                  <Bot className="h-3 w-3" />
-                                )}
-                                {review.platform === 'ios' ? 'iOS' : 'Android'}
-                              </Badge>
+              {/* Liste */}
+              {loading && <div className="text-sm text-muted-foreground">Loading…</div>}
+              {!loading && err && (
+                <div className="text-sm text-red-600 border p-3 rounded">{err}</div>
+              )}
+              {!loading && !err && (
+                <>
+                  <ScrollArea className="h-96">
+                    <div className="space-y-4 pr-4">
+                      {filteredReviews.map((r, idx) => (
+                        <div key={`${r.date}-${idx}`} className="border rounded-lg p-4 space-y-3">
+                          <div className="flex items-start justify-between">
+                            <div className="flex items-center gap-3">
+                              <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center font-medium text-sm">
+                                {(r.user_name || "?").charAt(0).toUpperCase()}
+                              </div>
+                              <div>
+                                <div className="flex items-center gap-2 text-sm">
+                                  <span className="font-medium">{r.user_name || "Anonymous"}</span>
+                                  <Badge variant="secondary" className="flex items-center gap-1 h-5 text-xs">
+                                    {r.platform === "ios" ? <Apple className="h-3 w-3" /> : <Bot className="h-3 w-3" />}
+                                    {r.platform === "ios" ? "iOS" : "Android"}
+                                  </Badge>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="text-xs text-muted-foreground">
+                              {new Date(r.date).toLocaleString()}
                             </div>
                           </div>
-                        </div>
-                        <div className="text-xs text-muted-foreground">
-                          {review.date}
-                        </div>
-                      </div>
-                      
-                      <div className="flex items-center gap-2">
-                        <div className="flex">{renderStars(review.rating)}</div>
-                        <span className="text-sm text-muted-foreground">
-                          {review.rating}/5
-                        </span>
-                      </div>
 
-                      <div>
-                        <h4 className="font-medium text-sm mb-1">{review.title}</h4>
-                        <p className="text-sm text-muted-foreground leading-relaxed">
-                          {review.content}
-                        </p>
-                      </div>
+                          <div className="flex items-center gap-2">
+                            <div className="flex">{renderStars(Number(r.rating))}</div>
+                            <span className="text-sm text-muted-foreground">
+                              {Number(r.rating)}/5
+                            </span>
+                          </div>
+
+                          {r.text && (
+                            <p className="text-sm text-muted-foreground leading-relaxed">
+                              {r.text}
+                            </p>
+                          )}
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
-              </ScrollArea>
+                  </ScrollArea>
+
+                  {/* Pagination / Load more */}
+                  {hasMore && (
+                    <div className="mt-4">
+                      <Button
+                        variant="outline"
+                        className="w-full"
+                        onClick={fetchReviewsMore}
+                        disabled={loadingMore}
+                      >
+                        {loadingMore ? "Loading…" : `Load more (${PAGE_SIZE})`}
+                      </Button>
+                    </div>
+                  )}
+                </>
+              )}
             </CardContent>
           </Card>
         </div>
