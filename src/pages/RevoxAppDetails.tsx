@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Select,
@@ -109,6 +110,7 @@ export default function RevoxAppDetails() {
   // Reviews + pagination
   const [reviews, setReviews] = useState<ReviewItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [err, setErr] = useState<string | null>(null);
 
   const [cursor, setCursor] = useState<string | undefined>(undefined);
@@ -165,7 +167,7 @@ export default function RevoxAppDetails() {
   // --- Chargement initial (reset) ---
   async function fetchReviewsInitial() {
     if (!platform || !bundleId) return;
-    setLoading(true);
+    if (!refreshing) setLoading(true);
     setErr(null);
     try {
       // Include linked apps in the query if they exist
@@ -193,11 +195,12 @@ export default function RevoxAppDetails() {
       setCursor(next);
       setHasMore(!!next);
 
-      // Auto-refresh if no results
-      if (rows.length === 0 && !loading) {
+      // Auto-refresh if no results and not already refreshing
+      if (rows.length === 0 && !refreshing) {
         setTimeout(() => {
+          setRefreshing(true);
           handleRefresh();
-        }, 1500);
+        }, 2000);
       }
     } catch (e: any) {
       setErr(e?.response?.data?.error || e?.message || "Failed to load reviews.");
@@ -206,6 +209,7 @@ export default function RevoxAppDetails() {
       setHasMore(false);
     } finally {
       setLoading(false);
+      setRefreshing(false);
     }
   }
 
@@ -261,6 +265,7 @@ export default function RevoxAppDetails() {
   // Ingest (refresh) → POST puis reset
   const handleRefresh = async () => {
     if (!platform || !bundleId) return;
+    setRefreshing(true);
     try {
       await api.post("/reviews/ingest", {
         appName: app?.name || bundleId,
@@ -271,6 +276,7 @@ export default function RevoxAppDetails() {
       await fetchReviewsInitial();
     } catch (e: any) {
       setErr(e?.response?.data?.error || e?.message || "Failed to refresh (ingest) reviews.");
+      setRefreshing(false);
     }
   };
 
@@ -657,67 +663,107 @@ export default function RevoxAppDetails() {
               </div>
 
               {/* Liste */}
-              {loading && <div className="text-sm text-muted-foreground">Loading…</div>}
-              {!loading && err && (
-                <div className="text-sm text-red-600 border p-3 rounded">{err}</div>
+              {loading && (
+                <div className="space-y-4 animate-fade-in">
+                  {Array.from({ length: 3 }).map((_, i) => (
+                    <div key={i} className="border rounded-lg p-4 space-y-3">
+                      <div className="flex items-start justify-between">
+                        <div className="flex items-center gap-3">
+                          <Skeleton className="w-8 h-8 rounded-full" />
+                          <div className="space-y-2">
+                            <Skeleton className="h-4 w-24" />
+                            <Skeleton className="h-3 w-16" />
+                          </div>
+                        </div>
+                        <Skeleton className="h-3 w-20" />
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Skeleton className="h-4 w-20" />
+                        <Skeleton className="h-3 w-8" />
+                      </div>
+                      <Skeleton className="h-12 w-full" />
+                    </div>
+                  ))}
+                </div>
               )}
-              {!loading && !err && (
-                <>
-                  <ScrollArea className="h-96">
-                    <div className="space-y-4 pr-4">
-                      {filteredReviews.map((r, idx) => (
-                        <div key={`${r.date}-${idx}`} className="border rounded-lg p-4 space-y-3">
-                          <div className="flex items-start justify-between">
-                            <div className="flex items-center gap-3">
-                              <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center font-medium text-sm">
-                                {(r.user_name || "?").charAt(0).toUpperCase()}
-                              </div>
-                              <div>
-                                <div className="flex items-center gap-2 text-sm">
-                                  <span className="font-medium">{r.user_name || "Anonymous"}</span>
-                                  <Badge variant="secondary" className="flex items-center gap-1 h-5 text-xs">
-                                    {r.platform === "ios" ? <Apple className="h-3 w-3" /> : <Bot className="h-3 w-3" />}
-                                    {r.platform === "ios" ? "iOS" : "Android"}
-                                  </Badge>
+              
+              {refreshing && !loading && (
+                <div className="text-sm text-muted-foreground flex items-center gap-2 animate-fade-in">
+                  <RefreshCw className="h-4 w-4 animate-spin" />
+                  Refreshing reviews...
+                </div>
+              )}
+              
+              {!loading && !refreshing && err && (
+                <div className="text-sm text-red-600 border p-3 rounded animate-fade-in">{err}</div>
+              )}
+              
+              {!loading && !refreshing && !err && (
+                <div className="animate-fade-in">
+                  {filteredReviews.length > 0 ? (
+                    <>
+                      <ScrollArea className="h-96">
+                        <div className="space-y-4 pr-4">
+                          {filteredReviews.map((r, idx) => (
+                            <div key={`${r.date}-${idx}`} className="border rounded-lg p-4 space-y-3 hover-scale">
+                              <div className="flex items-start justify-between">
+                                <div className="flex items-center gap-3">
+                                  <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center font-medium text-sm">
+                                    {(r.user_name || "?").charAt(0).toUpperCase()}
+                                  </div>
+                                  <div>
+                                    <div className="flex items-center gap-2 text-sm">
+                                      <span className="font-medium">{r.user_name || "Anonymous"}</span>
+                                      <Badge variant="secondary" className="flex items-center gap-1 h-5 text-xs">
+                                        {r.platform === "ios" ? <Apple className="h-3 w-3" /> : <Bot className="h-3 w-3" />}
+                                        {r.platform === "ios" ? "iOS" : "Android"}
+                                      </Badge>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className="text-xs text-muted-foreground">
+                                  {new Date(r.date).toLocaleString()}
                                 </div>
                               </div>
-                            </div>
-                            <div className="text-xs text-muted-foreground">
-                              {new Date(r.date).toLocaleString()}
-                            </div>
-                          </div>
 
-                          <div className="flex items-center gap-2">
-                            <div className="flex">{renderStars(Number(r.rating))}</div>
-                            <span className="text-sm text-muted-foreground">
-                              {Number(r.rating)}/5
-                            </span>
-                          </div>
+                              <div className="flex items-center gap-2">
+                                <div className="flex">{renderStars(Number(r.rating))}</div>
+                                <span className="text-sm text-muted-foreground">
+                                  {Number(r.rating)}/5
+                                </span>
+                              </div>
 
-                          {r.text && (
-                            <p className="text-sm text-muted-foreground leading-relaxed">
-                              {r.text}
-                            </p>
-                          )}
+                              {r.text && (
+                                <p className="text-sm text-muted-foreground leading-relaxed">
+                                  {r.text}
+                                </p>
+                              )}
+                            </div>
+                          ))}
                         </div>
-                      ))}
-                    </div>
-                  </ScrollArea>
+                      </ScrollArea>
 
-                  {/* Pagination / Load more */}
-                  {hasMore && (
-                    <div className="mt-4">
-                      <Button
-                        variant="outline"
-                        className="w-full"
-                        onClick={fetchReviewsMore}
-                        disabled={loadingMore}
-                      >
-                        {loadingMore ? "Loading…" : `Load more (${LIMIT})`}
-                      </Button>
+                      {/* Pagination / Load more */}
+                      {hasMore && (
+                        <div className="mt-4">
+                          <Button
+                            variant="outline"
+                            className="w-full"
+                            onClick={fetchReviewsMore}
+                            disabled={loadingMore}
+                          >
+                            {loadingMore ? "Loading…" : `Load more (${LIMIT})`}
+                          </Button>
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <div className="text-center py-8 text-muted-foreground">
+                      <p className="text-sm">No reviews found.</p>
+                      <p className="text-xs mt-1">Reviews will automatically refresh in a moment...</p>
                     </div>
                   )}
-                </>
+                </div>
               )}
             </CardContent>
           </Card>
