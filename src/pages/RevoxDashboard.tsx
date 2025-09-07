@@ -232,6 +232,19 @@ export default function RevoxDashboard() {
     }
   };
 
+  // Find available apps to link with
+  const getAvailableAppsToLink = (currentApp: MergedApp): FollowedApp[] => {
+    if (!apps || currentApp.isLinked) return [];
+    
+    const currentPlatform = currentApp.platforms[0].platform;
+    const oppositePlatform = currentPlatform === "ios" ? "android" : "ios";
+    
+    return apps.filter((app) => 
+      app.platform === oppositePlatform && 
+      !app.linked_app_pks?.length // Only show unlinked apps
+    );
+  };
+
   // Load apps function
   const loadApps = async () => {
     try {
@@ -389,13 +402,34 @@ export default function RevoxDashboard() {
                           </>
                         )}
                         {!app.isLinked && (
-                          <DropdownMenuItem
-                            className="text-destructive focus:text-destructive cursor-pointer"
-                            onClick={() => handleDeleteApp(app)}
-                          >
-                            <Trash2 className="mr-2 h-4 w-4" />
-                            Remove app
-                          </DropdownMenuItem>
+                          <>
+                            {getAvailableAppsToLink(app).length > 0 && (
+                              <>
+                                {getAvailableAppsToLink(app).map((availableApp) => (
+                                  <DropdownMenuItem
+                                    key={`link-${availableApp.platform}-${availableApp.bundleId}`}
+                                    className="cursor-pointer"
+                                    onClick={() => {
+                                      const currentAppPk = app.appPks[0];
+                                      const targetAppPk = appPkFromRoute(availableApp.platform, availableApp.bundleId);
+                                      handleLinkApps(currentAppPk, targetAppPk);
+                                    }}
+                                  >
+                                    <LinkIcon className="mr-2 h-4 w-4" />
+                                    Link with {availableApp.platform === 'ios' ? 'iOS' : 'Android'} {availableApp.name || availableApp.bundleId}
+                                  </DropdownMenuItem>
+                                ))}
+                                <DropdownMenuSeparator />
+                              </>
+                            )}
+                            <DropdownMenuItem
+                              className="text-destructive focus:text-destructive cursor-pointer"
+                              onClick={() => handleDeleteApp(app)}
+                            >
+                              <Trash2 className="mr-2 h-4 w-4" />
+                              Remove app
+                            </DropdownMenuItem>
+                          </>
                         )}
                       </DropdownMenuContent>
                     </DropdownMenu>
