@@ -400,7 +400,7 @@ export default function RevoxAppDetails() {
                   <div>
                     <div className="flex items-center gap-3 mb-2">
                       <h2 className="text-2xl font-bold">{app.name}</h2>
-                      <div className="flex gap-2">
+                      <div className="flex items-center gap-2">
                         <Badge variant="secondary" className="flex items-center gap-1">
                           {platform === "ios" ? <Apple className="h-3 w-3" /> : <Bot className="h-3 w-3" />}
                           {platform?.toUpperCase()}
@@ -411,6 +411,51 @@ export default function RevoxAppDetails() {
                             {linkedApp.platform.toUpperCase()} Linked
                           </Badge>
                         ))}
+                        {linkedApps.length > 0 && (
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={handleUnlinkApp}
+                            disabled={linkingLoading}
+                            className="h-6 px-2 text-xs gap-1 text-muted-foreground hover:text-destructive"
+                            title="Unlink apps"
+                          >
+                            <Unlink className="h-3 w-3" />
+                            Unlink
+                          </Button>
+                        )}
+                        {linkedApps.length === 0 && availableApps.length > 0 && (
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                disabled={linkingLoading}
+                                className="h-6 px-2 text-xs gap-1 text-muted-foreground hover:text-primary"
+                                title="Link with counterpart app"
+                              >
+                                <Plus className="h-3 w-3" />
+                                Link
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent>
+                              {availableApps.map((availableApp) => (
+                                <DropdownMenuItem
+                                  key={`${availableApp.platform}-${availableApp.bundleId}`}
+                                  onClick={() => handleLinkApp(availableApp)}
+                                  className="gap-2"
+                                >
+                                  {availableApp.platform === "ios" ? (
+                                    <Apple className="h-4 w-4" />
+                                  ) : (
+                                    <Bot className="h-4 w-4" />
+                                  )}
+                                  {availableApp.name || availableApp.bundleId}
+                                </DropdownMenuItem>
+                              ))}
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        )}
                       </div>
                     </div>
                     <p className="text-muted-foreground leading-relaxed">{app.description}</p>
@@ -439,53 +484,7 @@ export default function RevoxAppDetails() {
                       <h3 className="font-medium text-sm text-muted-foreground mb-1">
                         Latest Update
                       </h3>
-                      <p className="text-sm mb-2">{app.latestUpdate}</p>
-                      
-                      {/* Link/Unlink controls */}
-                      {linkedApps.length > 0 ? (
-                        <div className="flex gap-2">
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={handleUnlinkApp}
-                            disabled={linkingLoading}
-                            className="gap-1"
-                          >
-                            <Unlink className="h-3 w-3" />
-                            Unlink
-                          </Button>
-                        </div>
-                      ) : availableApps.length > 0 ? (
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              disabled={linkingLoading}
-                              className="gap-1"
-                            >
-                              <LinkIcon className="h-3 w-3" />
-                              Link counterpart
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent>
-                            {availableApps.map((availableApp) => (
-                              <DropdownMenuItem
-                                key={`${availableApp.platform}-${availableApp.bundleId}`}
-                                onClick={() => handleLinkApp(availableApp)}
-                                className="gap-2"
-                              >
-                                {availableApp.platform === "ios" ? (
-                                  <Apple className="h-4 w-4" />
-                                ) : (
-                                  <Bot className="h-4 w-4" />
-                                )}
-                                {availableApp.name || availableApp.bundleId}
-                              </DropdownMenuItem>
-                            ))}
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      ) : null}
+                      <p className="text-sm">{app.latestUpdate}</p>
                     </div>
                   </div>
                 </div>
