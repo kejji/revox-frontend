@@ -48,31 +48,6 @@ export function appPkFromRoute(platform: "ios" | "android", bundleId: string) {
   return `${platform}#${bundleId}`;
 }
 
-/** Encode app_pk for URL query params */
-export function encodeAppPk(appPk: string): string {
-  return encodeURIComponent(appPk);
-}
-
-/** Create comma-separated encoded app_pk for multi-app queries */
-export function encodeMultiAppPk(appPks: string[]): string {
-  return appPks.map(encodeAppPk).join(",");
-}
-
-/** Link two apps together */
-export async function linkApps(appPk1: string, appPk2: string): Promise<void> {
-  await api.post("/apps/merge", {
-    app_pks: [appPk1, appPk2],
-  });
-}
-
-/** Unlink two apps */
-export async function unlinkApps(appPk1: string, appPk2: string): Promise<void> {
-  await api.delete("/apps/merge", {
-    data: {
-      app_pks: [appPk1, appPk2],
-    },
-  });
-}
 
 /** Construit l'URL d'export CSV (sans cursor) */
 export function getReviewsExportUrl(params: {
