@@ -79,7 +79,7 @@ const mockAlerts = [
   { id: 2, type: "error" as const, message: "Crash mentions spike", active: true },
 ];
 
-const PAGE_SIZE = 10;
+const LIMIT = 10;
 
 export default function RevoxAppDetails() {
   const navigate = useNavigate();
@@ -111,7 +111,7 @@ export default function RevoxAppDetails() {
       const { data } = await api.get<ReviewsResponse>("/reviews", {
         params: {
           app_pk: appPkFromRoute(platform, bundleId),
-          pageSize: PAGE_SIZE,
+          limit: LIMIT,
           order: "desc",
         },
       });
@@ -140,7 +140,7 @@ export default function RevoxAppDetails() {
       const { data } = await api.get<ReviewsResponse>("/reviews", {
         params: {
           app_pk: appPkFromRoute(platform, bundleId),
-          pageSize: PAGE_SIZE,
+          limit: LIMIT,
           order: "desc",
           cursor, // opaque, renvoyé tel quel
         },
@@ -185,7 +185,6 @@ export default function RevoxAppDetails() {
       const urlPath = getReviewsExportUrl({
         app_pk: appPkFromRoute(platform, bundleId),
         order: "desc",
-        pageSize: PAGE_SIZE, // optionnel
       });
       const resp = await api.get(urlPath, { responseType: "blob" });
       const blob = new Blob([resp.data], { type: "text/csv;charset=utf-8" });
@@ -513,7 +512,7 @@ export default function RevoxAppDetails() {
                         onClick={fetchReviewsMore}
                         disabled={loadingMore}
                       >
-                        {loadingMore ? "Loading…" : `Load more (${PAGE_SIZE})`}
+                        {loadingMore ? "Loading…" : `Load more (${LIMIT})`}
                       </Button>
                     </div>
                   )}

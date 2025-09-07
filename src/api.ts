@@ -54,13 +54,11 @@ export function getReviewsExportUrl(params: {
   from?: string;
   to?: string;
   order?: "asc" | "desc";
-  pageSize?: number;
 }) {
   const qp = new URLSearchParams();
   Object.entries({
     ...params,
     order: params.order ?? "desc",
-    pageSize: params.pageSize ?? 200,
   }).forEach(([k, v]) => {
     if (v === undefined || v === null || v === "") return;
     qp.set(k, String(v));
