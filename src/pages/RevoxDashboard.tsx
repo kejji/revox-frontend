@@ -342,9 +342,6 @@ export default function RevoxDashboard() {
         {/* ===== Sous-header (titre section) ===== */}
         <div className="mb-4">
           <h2 className="text-lg font-semibold">Your Apps</h2>
-          <p className="text-sm text-muted-foreground">
-            Monitor feedback from {mergedApps ? mergedApps.length : 0} apps
-          </p>
         </div>
 
         {/* ===== Contenu ===== */}
