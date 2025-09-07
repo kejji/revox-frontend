@@ -168,8 +168,17 @@ export default function RevoxAppDetails() {
     setLoading(true);
     setErr(null);
     try {
-      // Single app query only
-      const appPkParam = appPkFromRoute(platform, bundleId);
+      // Include linked apps in the query if they exist
+      let appPkParam: string;
+      if (linkedApps.length > 0) {
+        const allAppPks = [
+          appPkFromRoute(platform, bundleId), 
+          ...linkedApps.map(app => appPkFromRoute(app.platform, app.bundleId))
+        ];
+        appPkParam = allAppPks.join(",");
+      } else {
+        appPkParam = appPkFromRoute(platform, bundleId);
+      }
 
       const { data } = await api.get<ReviewsResponse>("/reviews", {
         params: {
@@ -200,8 +209,17 @@ export default function RevoxAppDetails() {
 
     setLoadingMore(true);
     try {
-      // Single app query only
-      const appPkParam = appPkFromRoute(platform, bundleId);
+      // Include linked apps in the query if they exist
+      let appPkParam: string;
+      if (linkedApps.length > 0) {
+        const allAppPks = [
+          appPkFromRoute(platform, bundleId), 
+          ...linkedApps.map(app => appPkFromRoute(app.platform, app.bundleId))
+        ];
+        appPkParam = allAppPks.join(",");
+      } else {
+        appPkParam = appPkFromRoute(platform, bundleId);
+      }
 
       const { data } = await api.get<ReviewsResponse>("/reviews", {
         params: {
@@ -231,7 +249,7 @@ export default function RevoxAppDetails() {
   useEffect(() => {
     fetchReviewsInitial();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [platform, bundleId]);
+  }, [platform, bundleId, linkedApps]);
 
   // Ingest (refresh) → POST puis reset
   const handleRefresh = async () => {
@@ -253,8 +271,17 @@ export default function RevoxAppDetails() {
   const handleExport = async () => {
     if (!platform || !bundleId) return;
     try {
-      // Single app export only
-      const appPk = appPkFromRoute(platform, bundleId);
+      // Include linked apps in export if they exist
+      let appPk: string;
+      if (linkedApps.length > 0) {
+        const allAppPks = [
+          appPkFromRoute(platform, bundleId), 
+          ...linkedApps.map(app => appPkFromRoute(app.platform, app.bundleId))
+        ];
+        appPk = allAppPks.join(",");
+      } else {
+        appPk = appPkFromRoute(platform, bundleId);
+      }
 
       const urlPath = getReviewsExportUrl({
         app_pk: appPk,
@@ -265,7 +292,7 @@ export default function RevoxAppDetails() {
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `${platform}_${bundleId}_reviews.csv`;
+      a.download = `${platform}_${bundleId}${linkedApps.length > 0 ? '_linked' : ''}_reviews.csv`;
       document.body.appendChild(a);
       a.click();
       a.remove();
