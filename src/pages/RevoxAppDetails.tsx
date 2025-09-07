@@ -38,7 +38,7 @@ import {
 } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { LanguageToggle } from "@/components/ui/language-toggle";
-import { api, appPkFromRoute, getReviewsExportUrl, encodeAppPk, encodeMultiAppPk, linkApps, unlinkApps } from "@/api";
+import { api, appPkFromRoute, getReviewsExportUrl, linkApps, unlinkApps } from "@/api";
 
 // -------- Types alignés avec le backend --------
 type ReviewItem = {
@@ -119,7 +119,6 @@ export default function RevoxAppDetails() {
   const [linkedApps, setLinkedApps] = useState<FollowedApp[]>([]);
   const [availableApps, setAvailableApps] = useState<FollowedApp[]>([]);
   const [currentApp, setCurrentApp] = useState<FollowedApp | null>(null);
-  const [isGroupView, setIsGroupView] = useState(false);
   const [linkingLoading, setLinkingLoading] = useState(false);
 
   // Filtres UI (client)
@@ -150,9 +149,6 @@ export default function RevoxAppDetails() {
         });
         setLinkedApps(linked);
         
-        // Set group view if linked
-        setIsGroupView(linked.length > 0);
-        
         // Find available apps for linking (opposite platform, not already linked)
         const available = followedApps.filter((app) => {
           if (app.platform === platform) return false;
@@ -172,19 +168,8 @@ export default function RevoxAppDetails() {
     setLoading(true);
     setErr(null);
     try {
-      let appPkParam: string;
-      
-      if (isGroupView && linkedApps.length > 0) {
-        // Multi-app query for group view
-        const allAppPks = [
-          appPkFromRoute(platform, bundleId), 
-          ...linkedApps.map(app => appPkFromRoute(app.platform, app.bundleId))
-        ];
-        appPkParam = allAppPks.join(",");
-      } else {
-        // Single app query
-        appPkParam = appPkFromRoute(platform, bundleId);
-      }
+      // Single app query only
+      const appPkParam = appPkFromRoute(platform, bundleId);
 
       const { data } = await api.get<ReviewsResponse>("/reviews", {
         params: {
@@ -215,19 +200,8 @@ export default function RevoxAppDetails() {
 
     setLoadingMore(true);
     try {
-      let appPkParam: string;
-      
-      if (isGroupView && linkedApps.length > 0) {
-        // Multi-app query for group view
-        const allAppPks = [
-          appPkFromRoute(platform, bundleId), 
-          ...linkedApps.map(app => appPkFromRoute(app.platform, app.bundleId))
-        ];
-        appPkParam = allAppPks.join(",");
-      } else {
-        // Single app query
-        appPkParam = appPkFromRoute(platform, bundleId);
-      }
+      // Single app query only
+      const appPkParam = appPkFromRoute(platform, bundleId);
 
       const { data } = await api.get<ReviewsResponse>("/reviews", {
         params: {
@@ -257,7 +231,7 @@ export default function RevoxAppDetails() {
   useEffect(() => {
     fetchReviewsInitial();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [platform, bundleId, isGroupView, linkedApps]);
+  }, [platform, bundleId]);
 
   // Ingest (refresh) → POST puis reset
   const handleRefresh = async () => {
@@ -279,19 +253,8 @@ export default function RevoxAppDetails() {
   const handleExport = async () => {
     if (!platform || !bundleId) return;
     try {
-      let appPk: string;
-      
-      if (isGroupView && linkedApps.length > 0) {
-        // Multi-app export for group view
-        const allAppPks = [
-          appPkFromRoute(platform, bundleId), 
-          ...linkedApps.map(app => appPkFromRoute(app.platform, app.bundleId))
-        ];
-        appPk = allAppPks.join(",");
-      } else {
-        // Single app export
-        appPk = appPkFromRoute(platform, bundleId);
-      }
+      // Single app export only
+      const appPk = appPkFromRoute(platform, bundleId);
 
       const urlPath = getReviewsExportUrl({
         app_pk: appPk,
@@ -301,9 +264,8 @@ export default function RevoxAppDetails() {
       const blob = new Blob([resp.data], { type: "text/csv;charset=utf-8" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
-      const fileBase = isGroupView ? `${platform}_${bundleId}_group` : `${platform}_${bundleId}`;
       a.href = url;
-      a.download = `${fileBase}_reviews.csv`;
+      a.download = `${platform}_${bundleId}_reviews.csv`;
       document.body.appendChild(a);
       a.click();
       a.remove();
@@ -492,14 +454,6 @@ export default function RevoxAppDetails() {
                             <Unlink className="h-3 w-3" />
                             Unlink
                           </Button>
-                          <Button
-                            size="sm"
-                            variant={isGroupView ? "default" : "outline"}
-                            onClick={() => setIsGroupView(!isGroupView)}
-                            className="gap-1"
-                          >
-                            {isGroupView ? "Group View" : "Single View"}
-                          </Button>
                         </div>
                       ) : availableApps.length > 0 ? (
                         <DropdownMenu>
@@ -618,16 +572,7 @@ export default function RevoxAppDetails() {
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-lg">
-                  {isGroupView && linkedApps.length > 0 ? (
-                    <div className="flex items-center gap-2">
-                      <span>Group Reviews ({filteredReviews.length})</span>
-                      <Badge variant="secondary" className="text-xs">
-                        {1 + linkedApps.length} apps
-                      </Badge>
-                    </div>
-                  ) : (
-                    `Reviews (${filteredReviews.length})`
-                  )}
+                  Reviews ({filteredReviews.length})
                 </CardTitle>
                 <div className="flex items-center gap-2">
                   <Button size="sm" variant="outline" onClick={handleRefresh} className="gap-2">
@@ -636,7 +581,7 @@ export default function RevoxAppDetails() {
                   </Button>
                   <Button size="sm" variant="outline" onClick={handleExport} className="gap-2">
                     <Download className="h-4 w-4" />
-                    Export {isGroupView && linkedApps.length > 0 ? 'Group' : ''}
+                    Export
                   </Button>
                 </div>
               </div>

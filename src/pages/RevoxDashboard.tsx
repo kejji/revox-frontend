@@ -404,7 +404,7 @@ export default function RevoxDashboard() {
                   {/* Clickable main content area */}
                   <div
                     onClick={() => {
-                      // Navigate to first platform for now, later we can add group view
+                      // Navigate to first platform
                       const firstPlatform = app.platforms[0];
                       navigate(`/revox/apps/${firstPlatform.platform}/${encodeURIComponent(firstPlatform.bundleId)}`);
                     }}
