@@ -433,9 +433,9 @@ export default function RevoxAppDetails() {
                           {platform?.toUpperCase()}
                         </Badge>
                         {linkedApps.map((linkedApp) => (
-                          <Badge key={linkedApp.bundleId} variant="outline" className="flex items-center gap-1">
+                          <Badge key={linkedApp.bundleId} variant="secondary" className="flex items-center gap-1">
                             {linkedApp.platform === "ios" ? <Apple className="h-3 w-3" /> : <Bot className="h-3 w-3" />}
-                            {linkedApp.platform.toUpperCase()} Linked
+                            {linkedApp.platform.toUpperCase()}
                           </Badge>
                         ))}
                         {linkedApps.length > 0 && (
