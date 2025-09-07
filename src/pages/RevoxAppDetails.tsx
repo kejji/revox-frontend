@@ -292,7 +292,7 @@ export default function RevoxAppDetails() {
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `${platform}_${bundleId}${linkedApps.length > 0 ? '_linked' : ''}_reviews.csv`;
+      a.download = `${app.name.replace(/[^a-zA-Z0-9]/g, '_')}_export.csv`;
       document.body.appendChild(a);
       a.click();
       a.remove();
