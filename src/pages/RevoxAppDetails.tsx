@@ -192,6 +192,13 @@ export default function RevoxAppDetails() {
       const next = data?.nextCursor || undefined;
       setCursor(next);
       setHasMore(!!next);
+
+      // Auto-refresh if no results
+      if (rows.length === 0 && !loading) {
+        setTimeout(() => {
+          handleRefresh();
+        }, 1500);
+      }
     } catch (e: any) {
       setErr(e?.response?.data?.error || e?.message || "Failed to load reviews.");
       setReviews([]);
