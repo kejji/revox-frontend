@@ -172,9 +172,23 @@ export default function RevoxAppDetails() {
     setLoading(true);
     setErr(null);
     try {
+      let appPkParam: string;
+      
+      if (isGroupView && linkedApps.length > 0) {
+        // Multi-app query for group view
+        const allAppPks = [
+          appPkFromRoute(platform, bundleId), 
+          ...linkedApps.map(app => appPkFromRoute(app.platform, app.bundleId))
+        ];
+        appPkParam = encodeMultiAppPk(allAppPks);
+      } else {
+        // Single app query
+        appPkParam = encodeAppPk(appPkFromRoute(platform, bundleId));
+      }
+
       const { data } = await api.get<ReviewsResponse>("/reviews", {
         params: {
-          app_pk: appPkFromRoute(platform, bundleId),
+          app_pk: appPkParam,
           limit: LIMIT,
           order: "desc",
         },
@@ -201,9 +215,23 @@ export default function RevoxAppDetails() {
 
     setLoadingMore(true);
     try {
+      let appPkParam: string;
+      
+      if (isGroupView && linkedApps.length > 0) {
+        // Multi-app query for group view
+        const allAppPks = [
+          appPkFromRoute(platform, bundleId), 
+          ...linkedApps.map(app => appPkFromRoute(app.platform, app.bundleId))
+        ];
+        appPkParam = encodeMultiAppPk(allAppPks);
+      } else {
+        // Single app query
+        appPkParam = encodeAppPk(appPkFromRoute(platform, bundleId));
+      }
+
       const { data } = await api.get<ReviewsResponse>("/reviews", {
         params: {
-          app_pk: appPkFromRoute(platform, bundleId),
+          app_pk: appPkParam,
           limit: LIMIT,
           order: "desc",
           cursor, // opaque, renvoyé tel quel
