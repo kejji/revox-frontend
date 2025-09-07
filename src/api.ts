@@ -29,6 +29,18 @@ api.interceptors.request.use(async (config: InternalAxiosRequestConfig) => {
   return config;
 });
 
+// Add response interceptor to handle CORS and other API errors
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.code === 'ERR_NETWORK' || error.message?.includes('CORS')) {
+      console.error('CORS Error: The backend API Gateway needs to allow the current frontend URL:', window.location.origin);
+      console.error('Please update your AWS API Gateway CORS settings to include:', window.location.origin);
+    }
+    return Promise.reject(error);
+  }
+);
+
 export type SearchAppItem = {
   store: "ios" | "android";
   name: string;
