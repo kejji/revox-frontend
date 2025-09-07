@@ -180,10 +180,10 @@ export default function RevoxAppDetails() {
           appPkFromRoute(platform, bundleId), 
           ...linkedApps.map(app => appPkFromRoute(app.platform, app.bundleId))
         ];
-        appPkParam = encodeMultiAppPk(allAppPks);
+        appPkParam = allAppPks.join(",");
       } else {
         // Single app query
-        appPkParam = encodeAppPk(appPkFromRoute(platform, bundleId));
+        appPkParam = appPkFromRoute(platform, bundleId);
       }
 
       const { data } = await api.get<ReviewsResponse>("/reviews", {
@@ -223,10 +223,10 @@ export default function RevoxAppDetails() {
           appPkFromRoute(platform, bundleId), 
           ...linkedApps.map(app => appPkFromRoute(app.platform, app.bundleId))
         ];
-        appPkParam = encodeMultiAppPk(allAppPks);
+        appPkParam = allAppPks.join(",");
       } else {
         // Single app query
-        appPkParam = encodeAppPk(appPkFromRoute(platform, bundleId));
+        appPkParam = appPkFromRoute(platform, bundleId);
       }
 
       const { data } = await api.get<ReviewsResponse>("/reviews", {
@@ -287,10 +287,10 @@ export default function RevoxAppDetails() {
           appPkFromRoute(platform, bundleId), 
           ...linkedApps.map(app => appPkFromRoute(app.platform, app.bundleId))
         ];
-        appPk = encodeMultiAppPk(allAppPks);
+        appPk = allAppPks.join(",");
       } else {
         // Single app export
-        appPk = encodeAppPk(appPkFromRoute(platform, bundleId));
+        appPk = appPkFromRoute(platform, bundleId);
       }
 
       const urlPath = getReviewsExportUrl({

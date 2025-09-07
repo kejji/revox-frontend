@@ -48,9 +48,9 @@ export function appPkFromRoute(platform: "ios" | "android", bundleId: string) {
   return `${platform}#${bundleId}`;
 }
 
-/** Encode app_pk for URL query params (# -> %23) */
+/** Encode app_pk for URL query params */
 export function encodeAppPk(appPk: string): string {
-  return appPk.replace(/#/g, "%23");
+  return encodeURIComponent(appPk);
 }
 
 /** Create comma-separated encoded app_pk for multi-app queries */
@@ -82,13 +82,11 @@ export function getReviewsExportUrl(params: {
   order?: "asc" | "desc";
 }) {
   const qp = new URLSearchParams();
-  // Encode app_pk for URL
-  const encodedParams = {
+  const cleanParams = {
     ...params,
-    app_pk: encodeAppPk(params.app_pk),
     order: params.order ?? "desc",
   };
-  Object.entries(encodedParams).forEach(([k, v]) => {
+  Object.entries(cleanParams).forEach(([k, v]) => {
     if (v === undefined || v === null || v === "") return;
     qp.set(k, String(v));
   });
