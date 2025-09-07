@@ -131,14 +131,8 @@ export default function RevoxAppDetails() {
   const loadAppData = async () => {
     if (!platform || !bundleId) return;
     
-    console.log('🔍 loadAppData: Starting to fetch app data...');
-    console.log('🔍 Platform:', platform, 'BundleId:', bundleId);
-    
     try {
-      console.log('🔍 Making GET request to /follow-app from app details...');
       const { data } = await api.get("/follow-app");
-      console.log('✅ loadAppData: Successfully fetched apps:', data);
-      
       const followedApps = (data?.followed as FollowedApp[]) ?? [];
       
       const current = followedApps.find(
@@ -168,14 +162,7 @@ export default function RevoxAppDetails() {
         setAvailableApps(available);
       }
     } catch (e: any) {
-      console.error('❌ loadAppData: Error fetching app data:', e);
-      console.error('❌ Error details:', {
-        message: e?.message,
-        response: e?.response,
-        status: e?.response?.status,
-        statusText: e?.response?.statusText,
-        config: e?.config
-      });
+      console.error("Failed to load app data:", e);
     }
   };
 

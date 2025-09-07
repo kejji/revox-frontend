@@ -29,32 +29,6 @@ api.interceptors.request.use(async (config: InternalAxiosRequestConfig) => {
   return config;
 });
 
-// Add response interceptor to handle CORS and other API errors
-api.interceptors.response.use(
-  (response) => {
-    console.log('✅ API Success:', response.config.method?.toUpperCase(), response.config.url, response.status);
-    return response;
-  },
-  (error) => {
-    console.error('❌ API Error:', error.config?.method?.toUpperCase(), error.config?.url);
-    console.error('❌ Error details:', {
-      message: error.message,
-      code: error.code,
-      status: error.response?.status,
-      statusText: error.response?.statusText,
-      data: error.response?.data
-    });
-    
-    if (error.code === 'ERR_NETWORK' || error.message?.includes('CORS')) {
-      console.error('🚨 CORS Error detected!');
-      console.error('🔧 Current frontend URL:', window.location.origin);
-      console.error('🔧 API base URL:', import.meta.env.VITE_API_URL);
-      console.error('🔧 Please update your AWS API Gateway CORS settings to include:', window.location.origin);
-    }
-    return Promise.reject(error);
-  }
-);
-
 export type SearchAppItem = {
   store: "ios" | "android";
   name: string;
