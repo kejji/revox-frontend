@@ -12,12 +12,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Settings, LogOut, Star, Trash2, ChevronRight, Bot, Apple, MoreVertical, Plus } from "lucide-react";
+import { Settings, LogOut, Star, Trash2, ChevronRight, Bot, Apple, MoreVertical, Plus, Link as LinkIcon, Unlink } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { LanguageToggle } from "@/components/ui/language-toggle";
 import { Link, useNavigate } from "react-router-dom";
 
-import { api, appPkFromRoute } from "@/api";
+import { api, linkApps, unlinkApps, appPkFromRoute } from "@/api";
 import { doSignOut } from "@/lib/auth";
 
 // ✅ Amplify v6: lire l'utilisateur courant + attributs
@@ -31,22 +31,30 @@ type FollowedApp = {
   icon?: string | null;
   rating?: number | null;
   reviewsThisWeek?: number | null;
+  linked_app_pks?: string[] | null;
 };
 
-type App = {
-  id: string;
+type MergedApp = {
+  id: string; // Unique identifier for the merged app
   name: string;
   icon?: string | null;
-  platform: "ios" | "android";
-  bundleId: string;
-  rating?: number | null;
-  reviewsThisWeek?: number | null;
+  platforms: Array<{
+    platform: "ios" | "android";
+    bundleId: string;
+    rating?: number | null;
+    reviewsThisWeek?: number | null;
+  }>;
+  totalRating?: number;
+  totalReviewsThisWeek?: number;
+  isLinked: boolean;
+  appPks: string[];
 };
 
 export default function RevoxDashboard() {
   const navigate = useNavigate();
 
-  const [apps, setApps] = useState<App[] | null>(null);
+  const [apps, setApps] = useState<FollowedApp[] | null>(null);
+  const [mergedApps, setMergedApps] = useState<MergedApp[] | null>(null);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState<string | null>(null);
 
@@ -54,17 +62,79 @@ export default function RevoxDashboard() {
   const [userName, setUserName] = useState<string>("");
   const [userEmail, setUserEmail] = useState<string>("");
 
-  // Convert followed apps to simple app list
-  const processAppsData = (followedApps: FollowedApp[]): App[] => {
-    return followedApps.map((app) => ({
-      id: appPkFromRoute(app.platform, app.bundleId),
-      name: app.name || app.bundleId,
-      icon: app.icon,
-      platform: app.platform,
-      bundleId: app.bundleId,
-      rating: app.rating,
-      reviewsThisWeek: app.reviewsThisWeek,
-    }));
+  // Process apps to create merged view
+  const processAppsData = (followedApps: FollowedApp[]): MergedApp[] => {
+    const processed: MergedApp[] = [];
+    const processedAppPks = new Set<string>();
+
+    followedApps.forEach((app) => {
+      const appPk = appPkFromRoute(app.platform, app.bundleId);
+      
+      if (processedAppPks.has(appPk)) return;
+
+      // Check if this app is linked to another
+      const linkedAppPks = app.linked_app_pks || [];
+      const linkedApps = followedApps.filter((linkedApp) => {
+        const linkedAppPk = appPkFromRoute(linkedApp.platform, linkedApp.bundleId);
+        return linkedAppPks.includes(linkedAppPk) && linkedAppPk !== appPk;
+      });
+
+      if (linkedApps.length > 0) {
+        // Create merged app entry
+        const allApps = [app, ...linkedApps];
+        const platforms = allApps.map((a) => ({
+          platform: a.platform,
+          bundleId: a.bundleId,
+          rating: a.rating,
+          reviewsThisWeek: a.reviewsThisWeek,
+        }));
+
+        const totalRating = allApps
+          .filter((a) => a.rating !== null && a.rating !== undefined)
+          .reduce((sum, a, _, arr) => sum + (a.rating || 0) / arr.length, 0);
+
+        const totalReviewsThisWeek = allApps
+          .reduce((sum, a) => sum + (a.reviewsThisWeek || 0), 0);
+
+        processed.push({
+          id: `merged-${appPk}`,
+          name: app.name || app.bundleId,
+          icon: app.icon,
+          platforms,
+          totalRating: totalRating > 0 ? totalRating : undefined,
+          totalReviewsThisWeek,
+          isLinked: true,
+          appPks: [appPk, ...linkedAppPks],
+        });
+
+        // Mark all related apps as processed
+        allApps.forEach((a) => {
+          processedAppPks.add(appPkFromRoute(a.platform, a.bundleId));
+        });
+      } else {
+        // Single app entry
+        processed.push({
+          id: `single-${appPk}`,
+          name: app.name || app.bundleId,
+          icon: app.icon,
+          platforms: [
+            {
+              platform: app.platform,
+              bundleId: app.bundleId,
+              rating: app.rating,
+              reviewsThisWeek: app.reviewsThisWeek,
+            },
+          ],
+          totalRating: app.rating || undefined,
+          totalReviewsThisWeek: app.reviewsThisWeek || 0,
+          isLinked: false,
+          appPks: [appPk],
+        });
+        processedAppPks.add(appPk);
+      }
+    });
+
+    return processed;
   };
 
   // Handle browser back button to navigate to /revox
@@ -110,14 +180,30 @@ export default function RevoxDashboard() {
   }, []);
 
   // Delete app handler
-  const handleDeleteApp = async (app: App) => {
+  const handleDeleteApp = async (app: MergedApp, platform?: "ios" | "android") => {
     try {
-      await api.delete("/follow-app", {
-        data: {
-          platform: app.platform,
-          bundleId: app.bundleId,
-        },
-      });
+      if (app.isLinked && platform) {
+        // Delete specific platform from linked app
+        const platformData = app.platforms.find((p) => p.platform === platform);
+        if (platformData) {
+          await api.delete("/follow-app", {
+            data: {
+              platform: platform,
+              bundleId: platformData.bundleId,
+            },
+          });
+        }
+      } else {
+        // Delete all platforms for this app
+        for (const platformData of app.platforms) {
+          await api.delete("/follow-app", {
+            data: {
+              platform: platformData.platform,
+              bundleId: platformData.bundleId,
+            },
+          });
+        }
+      }
 
       // Refresh the apps list
       await loadApps();
@@ -126,13 +212,33 @@ export default function RevoxDashboard() {
     }
   };
 
+  // Link apps handler
+  const handleLinkApps = async (app1Pk: string, app2Pk: string) => {
+    try {
+      await linkApps(app1Pk, app2Pk);
+      await loadApps();
+    } catch (e: any) {
+      setErr(e?.response?.data?.message || e?.message || "Failed to link apps.");
+    }
+  };
+
+  // Unlink apps handler  
+  const handleUnlinkApps = async (app1Pk: string, app2Pk: string) => {
+    try {
+      await unlinkApps(app1Pk, app2Pk);
+      await loadApps();
+    } catch (e: any) {
+      setErr(e?.response?.data?.message || e?.message || "Failed to unlink apps.");
+    }
+  };
 
   // Load apps function
   const loadApps = async () => {
     try {
       const { data } = await api.get("/follow-app"); // => { followed: [...] }
       const followedApps = (data?.followed as FollowedApp[]) ?? [];
-      setApps(processAppsData(followedApps));
+      setApps(followedApps);
+      setMergedApps(processAppsData(followedApps));
     } catch (e: any) {
       setErr(e?.response?.data?.message || e?.message || "Failed to load apps.");
     }
@@ -224,7 +330,7 @@ export default function RevoxDashboard() {
         <div className="mb-4">
           <h2 className="text-lg font-semibold">Your Apps</h2>
           <p className="text-sm text-muted-foreground">
-            Monitor feedback from {apps ? apps.length : 0} apps
+            Monitor feedback from {mergedApps ? mergedApps.length : 0} apps
           </p>
         </div>
 
@@ -234,15 +340,17 @@ export default function RevoxDashboard() {
           <div className="border rounded-xl p-6 text-red-600">{err}</div>
         )}
 
-        {!loading && !err && apps && (
+        {!loading && !err && mergedApps && (
           <div className="grid gap-6 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
-            {apps.map((app) => (
+            {mergedApps.map((app) => (
               <Card
                 key={app.id}
-                className="group relative overflow-hidden border-0 shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-[1.02] bg-gradient-to-br from-card to-card/50"
+                className={`group relative overflow-hidden border-0 shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-[1.02] bg-gradient-to-br from-card to-card/50 ${
+                  app.isLinked ? 'animate-fade-in' : ''
+                }`}
               >
                 <CardContent className="p-0">
-                  {/* Delete button */}
+                  {/* Delete/Options button */}
                   <div className="absolute top-3 right-3 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
@@ -255,13 +363,40 @@ export default function RevoxDashboard() {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem
-                          className="text-destructive focus:text-destructive cursor-pointer"
-                          onClick={() => handleDeleteApp(app)}
-                        >
-                          <Trash2 className="mr-2 h-4 w-4" />
-                          Remove app
-                        </DropdownMenuItem>
+                        {app.isLinked && (
+                          <>
+                            <DropdownMenuItem
+                              className="cursor-pointer"
+                              onClick={() => {
+                                if (app.appPks.length >= 2) {
+                                  handleUnlinkApps(app.appPks[0], app.appPks[1]);
+                                }
+                              }}
+                            >
+                              <Unlink className="mr-2 h-4 w-4" />
+                              Unlink apps
+                            </DropdownMenuItem>
+                            {app.platforms.map((platform) => (
+                              <DropdownMenuItem
+                                key={platform.platform}
+                                className="text-destructive focus:text-destructive cursor-pointer"
+                                onClick={() => handleDeleteApp(app, platform.platform)}
+                              >
+                                <Trash2 className="mr-2 h-4 w-4" />
+                                Remove {platform.platform === 'ios' ? 'iOS' : 'Android'}
+                              </DropdownMenuItem>
+                            ))}
+                          </>
+                        )}
+                        {!app.isLinked && (
+                          <DropdownMenuItem
+                            className="text-destructive focus:text-destructive cursor-pointer"
+                            onClick={() => handleDeleteApp(app)}
+                          >
+                            <Trash2 className="mr-2 h-4 w-4" />
+                            Remove app
+                          </DropdownMenuItem>
+                        )}
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </div>
@@ -269,31 +404,42 @@ export default function RevoxDashboard() {
                   {/* Clickable main content area */}
                   <div
                     onClick={() => {
-                      navigate(`/revox/apps/${app.platform}/${encodeURIComponent(app.bundleId)}`);
+                      // Navigate to first platform for now, later we can add group view
+                      const firstPlatform = app.platforms[0];
+                      navigate(`/revox/apps/${firstPlatform.platform}/${encodeURIComponent(firstPlatform.bundleId)}`);
                     }}
                     className="block p-6 hover:bg-accent/30 transition-colors duration-200 cursor-pointer"
                   >
                     {/* Header section */}
                     <div className="flex items-center gap-4 mb-6">
-                      {app.icon ? (
-                        <img
-                          src={app.icon}
-                          alt=""
-                          className="w-12 h-12 rounded-xl object-cover border-2 border-border/50 shadow-sm group-hover:shadow-md transition-shadow duration-200"
-                        />
-                      ) : (
-                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-muted to-muted/50 border-2 border-border/50" />
-                      )}
+                      <div className="relative">
+                        {app.icon ? (
+                          <img
+                            src={app.icon}
+                            alt=""
+                            className="w-12 h-12 rounded-xl object-cover border-2 border-border/50 shadow-sm group-hover:shadow-md transition-shadow duration-200"
+                          />
+                        ) : (
+                          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-muted to-muted/50 border-2 border-border/50" />
+                        )}
+                        {app.isLinked && (
+                          <div className="absolute -top-1 -right-1 w-5 h-5 bg-primary rounded-full flex items-center justify-center">
+                            <LinkIcon className="h-3 w-3 text-primary-foreground" />
+                          </div>
+                        )}
+                      </div>
 
                       <div className="min-w-0 flex-1">
                         <div className="font-semibold text-base truncate group-hover:text-primary transition-colors duration-200" title={app.name}>
                           {app.name}
                         </div>
-                        <div className="flex items-center gap-2 mt-2">
-                          <Badge variant="secondary" className="text-xs flex items-center gap-1">
-                            {app.platform === 'ios' ? <Apple className="h-3 w-3" /> : <Bot className="h-3 w-3" />}
-                            {app.platform === 'ios' ? 'iOS' : 'Android'}
-                          </Badge>
+                        <div className="flex items-center gap-2 mt-2 flex-wrap">
+                          {app.platforms.map((platform) => (
+                            <Badge key={platform.platform} variant="secondary" className="text-xs flex items-center gap-1">
+                              {platform.platform === 'ios' ? <Apple className="h-3 w-3" /> : <Bot className="h-3 w-3" />}
+                              {platform.platform === 'ios' ? 'iOS' : 'Android'}
+                            </Badge>
+                          ))}
                         </div>
                       </div>
                     </div>
@@ -303,13 +449,13 @@ export default function RevoxDashboard() {
                       <div className="flex items-center gap-2 bg-muted/50 rounded-full px-3 py-1.5">
                         <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />
                         <span className="font-medium text-sm">
-                          {typeof app.rating === "number" ? app.rating.toFixed(1) : "—"}
+                          {typeof app.totalRating === "number" ? app.totalRating.toFixed(1) : "—"}
                         </span>
                       </div>
 
                       <div className="text-xs text-muted-foreground font-medium">
-                        {typeof app.reviewsThisWeek === "number" && app.reviewsThisWeek > 0
-                          ? `${app.reviewsThisWeek} reviews this week`
+                        {typeof app.totalReviewsThisWeek === "number" && app.totalReviewsThisWeek > 0
+                          ? `${app.totalReviewsThisWeek} reviews this week`
                           : "No recent reviews"}
                       </div>
                     </div>
@@ -317,7 +463,7 @@ export default function RevoxDashboard() {
                     {/* Call to action hint */}
                     <div className="mt-4 pt-4 border-t border-border/50">
                       <div className="flex items-center justify-between text-xs text-muted-foreground">
-                        <span>View detailed analytics</span>
+                        <span>{app.isLinked ? "View combined analytics" : "View detailed analytics"}</span>
                         <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                           Click to explore →
                         </span>
