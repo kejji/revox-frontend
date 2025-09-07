@@ -497,7 +497,7 @@ export default function RevoxDashboard() {
                     {/* Call to action hint */}
                     <div className="mt-4 pt-4 border-t border-border/50">
                       <div className="flex items-center justify-between text-xs text-muted-foreground">
-                        <span>{app.isLinked ? "View combined analytics" : "View detailed analytics"}</span>
+                        <span>View detailed analytics</span>
                         <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                           Click to explore →
                         </span>
