@@ -33,12 +33,10 @@ import {
   Plus,
   Apple,
   Bot,
-  Link as LinkIcon,
-  Unlink,
 } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { LanguageToggle } from "@/components/ui/language-toggle";
-import { api, appPkFromRoute, getReviewsExportUrl, encodeAppPk, encodeMultiAppPk, linkApps, unlinkApps } from "@/api";
+import { api, appPkFromRoute, getReviewsExportUrl } from "@/api";
 
 // -------- Types alignés avec le backend --------
 type ReviewItem = {
@@ -58,15 +56,6 @@ type ReviewsResponse = {
   count?: number;
 };
 
-type FollowedApp = {
-  bundleId: string;
-  platform: "ios" | "android";
-  name?: string | null;
-  icon?: string | null;
-  rating?: number | null;
-  reviewsThisWeek?: number | null;
-  linked_app_pks?: string[] | null;
-};
 
 // Données d’en-tête (mock pour l’instant)
 const mockApp = {
@@ -115,56 +104,12 @@ export default function RevoxAppDetails() {
   const [hasMore, setHasMore] = useState<boolean>(false);
   const [loadingMore, setLoadingMore] = useState<boolean>(false);
 
-  // Linking state
-  const [linkedApps, setLinkedApps] = useState<FollowedApp[]>([]);
-  const [availableApps, setAvailableApps] = useState<FollowedApp[]>([]);
-  const [currentApp, setCurrentApp] = useState<FollowedApp | null>(null);
-  const [isGroupView, setIsGroupView] = useState(false);
-  const [linkingLoading, setLinkingLoading] = useState(false);
 
   // Filtres UI (client)
   const [searchTerm, setSearchTerm] = useState("");
   const [platformFilter, setPlatformFilter] = useState<"all" | "ios" | "android">("all");
   const [ratingFilter, setRatingFilter] = useState<"all" | "1" | "2" | "3" | "4" | "5">("all");
 
-  // Load app info and linking data
-  const loadAppData = async () => {
-    if (!platform || !bundleId) return;
-    
-    try {
-      const { data } = await api.get("/follow-app");
-      const followedApps = (data?.followed as FollowedApp[]) ?? [];
-      
-      const current = followedApps.find(
-        (app) => app.platform === platform && app.bundleId === bundleId
-      );
-      
-      if (current) {
-        setCurrentApp(current);
-        
-        // Find linked apps
-        const linkedAppPks = current.linked_app_pks || [];
-        const linked = followedApps.filter((app) => {
-          const appPk = appPkFromRoute(app.platform, app.bundleId);
-          return linkedAppPks.includes(appPk);
-        });
-        setLinkedApps(linked);
-        
-        // Set group view if linked
-        setIsGroupView(linked.length > 0);
-        
-        // Find available apps for linking (opposite platform, not already linked)
-        const available = followedApps.filter((app) => {
-          if (app.platform === platform) return false;
-          const appPk = appPkFromRoute(app.platform, app.bundleId);
-          return !linkedAppPks.includes(appPk);
-        });
-        setAvailableApps(available);
-      }
-    } catch (e: any) {
-      console.error("Failed to load app data:", e);
-    }
-  };
 
   // --- Chargement initial (reset) ---
   async function fetchReviewsInitial() {
@@ -172,19 +117,7 @@ export default function RevoxAppDetails() {
     setLoading(true);
     setErr(null);
     try {
-      let appPkParam: string;
-      
-      if (isGroupView && linkedApps.length > 0) {
-        // Multi-app query for group view
-        const allAppPks = [
-          appPkFromRoute(platform, bundleId), 
-          ...linkedApps.map(app => appPkFromRoute(app.platform, app.bundleId))
-        ];
-        appPkParam = allAppPks.join(",");
-      } else {
-        // Single app query
-        appPkParam = appPkFromRoute(platform, bundleId);
-      }
+      const appPkParam = appPkFromRoute(platform, bundleId);
 
       const { data } = await api.get<ReviewsResponse>("/reviews", {
         params: {
@@ -215,19 +148,7 @@ export default function RevoxAppDetails() {
 
     setLoadingMore(true);
     try {
-      let appPkParam: string;
-      
-      if (isGroupView && linkedApps.length > 0) {
-        // Multi-app query for group view
-        const allAppPks = [
-          appPkFromRoute(platform, bundleId), 
-          ...linkedApps.map(app => appPkFromRoute(app.platform, app.bundleId))
-        ];
-        appPkParam = allAppPks.join(",");
-      } else {
-        // Single app query
-        appPkParam = appPkFromRoute(platform, bundleId);
-      }
+      const appPkParam = appPkFromRoute(platform, bundleId);
 
       const { data } = await api.get<ReviewsResponse>("/reviews", {
         params: {
@@ -250,14 +171,9 @@ export default function RevoxAppDetails() {
   }
 
   useEffect(() => {
-    loadAppData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps  
-  }, [platform, bundleId]);
-
-  useEffect(() => {
     fetchReviewsInitial();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [platform, bundleId, isGroupView, linkedApps]);
+  }, [platform, bundleId]);
 
   // Ingest (refresh) → POST puis reset
   const handleRefresh = async () => {
@@ -279,19 +195,7 @@ export default function RevoxAppDetails() {
   const handleExport = async () => {
     if (!platform || !bundleId) return;
     try {
-      let appPk: string;
-      
-      if (isGroupView && linkedApps.length > 0) {
-        // Multi-app export for group view
-        const allAppPks = [
-          appPkFromRoute(platform, bundleId), 
-          ...linkedApps.map(app => appPkFromRoute(app.platform, app.bundleId))
-        ];
-        appPk = allAppPks.join(",");
-      } else {
-        // Single app export
-        appPk = appPkFromRoute(platform, bundleId);
-      }
+      const appPk = appPkFromRoute(platform, bundleId);
 
       const urlPath = getReviewsExportUrl({
         app_pk: appPk,
@@ -301,9 +205,8 @@ export default function RevoxAppDetails() {
       const blob = new Blob([resp.data], { type: "text/csv;charset=utf-8" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
-      const fileBase = isGroupView ? `${platform}_${bundleId}_group` : `${platform}_${bundleId}`;
       a.href = url;
-      a.download = `${fileBase}_reviews.csv`;
+      a.download = `${platform}_${bundleId}_reviews.csv`;
       document.body.appendChild(a);
       a.click();
       a.remove();
@@ -313,41 +216,6 @@ export default function RevoxAppDetails() {
     }
   };
 
-  // Link app handler
-  const handleLinkApp = async (targetApp: FollowedApp) => {
-    if (!currentApp) return;
-    
-    setLinkingLoading(true);
-    try {
-      const currentAppPk = appPkFromRoute(currentApp.platform, currentApp.bundleId);
-      const targetAppPk = appPkFromRoute(targetApp.platform, targetApp.bundleId);
-      
-      await linkApps(currentAppPk, targetAppPk);
-      await loadAppData();
-    } catch (e: any) {
-      setErr(e?.response?.data?.message || e?.message || "Failed to link apps.");
-    } finally {
-      setLinkingLoading(false);
-    }
-  };
-
-  // Unlink app handler
-  const handleUnlinkApp = async () => {
-    if (!currentApp || linkedApps.length === 0) return;
-    
-    setLinkingLoading(true);
-    try {
-      const currentAppPk = appPkFromRoute(currentApp.platform, currentApp.bundleId);
-      const linkedAppPk = appPkFromRoute(linkedApps[0].platform, linkedApps[0].bundleId);
-      
-      await unlinkApps(currentAppPk, linkedAppPk);
-      await loadAppData();
-    } catch (e: any) {
-      setErr(e?.response?.data?.message || e?.message || "Failed to unlink apps.");
-    } finally {
-      setLinkingLoading(false);
-    }
-  };
 
   const filteredReviews = useMemo(() => {
     let out = reviews;
@@ -426,31 +294,20 @@ export default function RevoxAppDetails() {
                         </span>
                       </div>
                     )}
-                    {linkedApps.length > 0 && (
-                      <div className="absolute -top-1 -right-1 w-6 h-6 bg-primary rounded-full flex items-center justify-center">
-                        <LinkIcon className="h-4 w-4 text-primary-foreground" />
-                      </div>
-                    )}
                   </div>
                 </div>
 
                 <div className="flex-1 space-y-4">
                   <div>
-                    <div className="flex items-center gap-3 mb-2">
-                      <h2 className="text-2xl font-bold">{app.name}</h2>
-                      <div className="flex gap-2">
-                        <Badge variant="secondary" className="flex items-center gap-1">
-                          {platform === "ios" ? <Apple className="h-3 w-3" /> : <Bot className="h-3 w-3" />}
-                          {platform?.toUpperCase()}
-                        </Badge>
-                        {linkedApps.map((linkedApp) => (
-                          <Badge key={linkedApp.bundleId} variant="outline" className="flex items-center gap-1">
-                            {linkedApp.platform === "ios" ? <Apple className="h-3 w-3" /> : <Bot className="h-3 w-3" />}
-                            {linkedApp.platform.toUpperCase()} Linked
+                      <div className="flex items-center gap-3 mb-2">
+                        <h2 className="text-2xl font-bold">{app.name}</h2>
+                        <div className="flex gap-2">
+                          <Badge variant="secondary" className="flex items-center gap-1">
+                            {platform === "ios" ? <Apple className="h-3 w-3" /> : <Bot className="h-3 w-3" />}
+                            {platform?.toUpperCase()}
                           </Badge>
-                        ))}
+                        </div>
                       </div>
-                    </div>
                     <p className="text-muted-foreground leading-relaxed">{app.description}</p>
                   </div>
 
@@ -477,61 +334,7 @@ export default function RevoxAppDetails() {
                       <h3 className="font-medium text-sm text-muted-foreground mb-1">
                         Latest Update
                       </h3>
-                      <p className="text-sm mb-2">{app.latestUpdate}</p>
-                      
-                      {/* Link/Unlink controls */}
-                      {linkedApps.length > 0 ? (
-                        <div className="flex gap-2">
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={handleUnlinkApp}
-                            disabled={linkingLoading}
-                            className="gap-1"
-                          >
-                            <Unlink className="h-3 w-3" />
-                            Unlink
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant={isGroupView ? "default" : "outline"}
-                            onClick={() => setIsGroupView(!isGroupView)}
-                            className="gap-1"
-                          >
-                            {isGroupView ? "Group View" : "Single View"}
-                          </Button>
-                        </div>
-                      ) : availableApps.length > 0 ? (
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              disabled={linkingLoading}
-                              className="gap-1"
-                            >
-                              <LinkIcon className="h-3 w-3" />
-                              Link counterpart
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent>
-                            {availableApps.map((availableApp) => (
-                              <DropdownMenuItem
-                                key={`${availableApp.platform}-${availableApp.bundleId}`}
-                                onClick={() => handleLinkApp(availableApp)}
-                                className="gap-2"
-                              >
-                                {availableApp.platform === "ios" ? (
-                                  <Apple className="h-4 w-4" />
-                                ) : (
-                                  <Bot className="h-4 w-4" />
-                                )}
-                                {availableApp.name || availableApp.bundleId}
-                              </DropdownMenuItem>
-                            ))}
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      ) : null}
+                      <p className="text-sm">{app.latestUpdate}</p>
                     </div>
                   </div>
                 </div>
@@ -618,16 +421,7 @@ export default function RevoxAppDetails() {
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-lg">
-                  {isGroupView && linkedApps.length > 0 ? (
-                    <div className="flex items-center gap-2">
-                      <span>Group Reviews ({filteredReviews.length})</span>
-                      <Badge variant="secondary" className="text-xs">
-                        {1 + linkedApps.length} apps
-                      </Badge>
-                    </div>
-                  ) : (
-                    `Reviews (${filteredReviews.length})`
-                  )}
+                  Reviews ({filteredReviews.length})
                 </CardTitle>
                 <div className="flex items-center gap-2">
                   <Button size="sm" variant="outline" onClick={handleRefresh} className="gap-2">
@@ -636,7 +430,7 @@ export default function RevoxAppDetails() {
                   </Button>
                   <Button size="sm" variant="outline" onClick={handleExport} className="gap-2">
                     <Download className="h-4 w-4" />
-                    Export {isGroupView && linkedApps.length > 0 ? 'Group' : ''}
+                    Export
                   </Button>
                 </div>
               </div>
