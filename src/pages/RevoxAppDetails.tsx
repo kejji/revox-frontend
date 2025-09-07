@@ -6,7 +6,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Select,
@@ -31,7 +30,7 @@ import {
 } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { LanguageToggle } from "@/components/ui/language-toggle";
-import { api } from "@/api";
+import { api, appPkFromRoute, getReviewsExportUrl } from "@/api";
 
 // -------- Types alignés avec le backend --------
 type ReviewItem = {
@@ -111,9 +110,8 @@ export default function RevoxAppDetails() {
     try {
       const { data } = await api.get<ReviewsResponse>("/reviews", {
         params: {
-          platform,
-          bundleId,
-          limit: PAGE_SIZE,
+          app_pk: appPkFromRoute(platform, bundleId),
+          pageSize: PAGE_SIZE,
           order: "desc",
         },
       });
@@ -141,11 +139,10 @@ export default function RevoxAppDetails() {
     try {
       const { data } = await api.get<ReviewsResponse>("/reviews", {
         params: {
-          platform,
-          bundleId,
-          limit: PAGE_SIZE,
+          app_pk: appPkFromRoute(platform, bundleId),
+          pageSize: PAGE_SIZE,
           order: "desc",
-          cursor,
+          cursor, // opaque, renvoyé tel quel
         },
       });
       const rows = (data?.items ?? []) as ReviewItem[];
@@ -185,10 +182,12 @@ export default function RevoxAppDetails() {
   const handleExport = async () => {
     if (!platform || !bundleId) return;
     try {
-      const resp = await api.get("/reviews/export", {
-        params: { platform, bundleId, order: "desc" },
-        responseType: "blob",
+      const urlPath = getReviewsExportUrl({
+        app_pk: appPkFromRoute(platform, bundleId),
+        order: "desc",
+        pageSize: PAGE_SIZE, // optionnel
       });
+      const resp = await api.get(urlPath, { responseType: "blob" });
       const blob = new Blob([resp.data], { type: "text/csv;charset=utf-8" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");

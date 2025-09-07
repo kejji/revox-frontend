@@ -42,3 +42,28 @@ export async function searchApps(query: string): Promise<SearchAppItem[]> {
   });
   return data ?? [];
 }
+
+/** Normalise un app_pk à partir de la route /:platform/:bundleId */
+export function appPkFromRoute(platform: "ios" | "android", bundleId: string) {
+  return `${platform}#${bundleId}`;
+}
+
+/** Construit l'URL d'export CSV (sans cursor) */
+export function getReviewsExportUrl(params: {
+  app_pk: string;
+  from?: string;
+  to?: string;
+  order?: "asc" | "desc";
+  pageSize?: number;
+}) {
+  const qp = new URLSearchParams();
+  Object.entries({
+    ...params,
+    order: params.order ?? "desc",
+    pageSize: params.pageSize ?? 200,
+  }).forEach(([k, v]) => {
+    if (v === undefined || v === null || v === "") return;
+    qp.set(k, String(v));
+  });
+  return `/reviews/export?${qp.toString()}`;
+}
