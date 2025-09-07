@@ -234,12 +234,27 @@ export default function RevoxDashboard() {
 
   // Load apps function
   const loadApps = async () => {
+    console.log('🔍 loadApps: Starting to fetch apps...');
+    console.log('🔍 API base URL:', import.meta.env.VITE_API_URL);
+    console.log('🔍 Current origin:', window.location.origin);
+    
     try {
+      console.log('🔍 Making GET request to /follow-app...');
       const { data } = await api.get("/follow-app"); // => { followed: [...] }
+      console.log('✅ loadApps: Successfully fetched apps:', data);
+      
       const followedApps = (data?.followed as FollowedApp[]) ?? [];
       setApps(followedApps);
       setMergedApps(processAppsData(followedApps));
     } catch (e: any) {
+      console.error('❌ loadApps: Error fetching apps:', e);
+      console.error('❌ Error details:', {
+        message: e?.message,
+        response: e?.response,
+        status: e?.response?.status,
+        statusText: e?.response?.statusText,
+        config: e?.config
+      });
       setErr(e?.response?.data?.message || e?.message || "Failed to load apps.");
     }
   };
