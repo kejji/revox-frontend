@@ -524,7 +524,7 @@ export default function RevoxAppDetails() {
                   {/* Table Layout */}
                   <div className="space-y-3">
                     {/* Header Row */}
-                    <div className="grid grid-cols-[32px_140px_200px_1fr] gap-6 pb-2 border-b border-border/30">
+                    <div className="grid grid-cols-[32px_140px_200px_1fr] gap-6 pb-2">
                       <div></div>
                       <h4 className="font-medium text-xs text-muted-foreground uppercase tracking-wider">Version</h4>
                       <h4 className="font-medium text-xs text-muted-foreground uppercase tracking-wider">Rating</h4>
