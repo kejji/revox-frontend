@@ -523,8 +523,10 @@ export default function RevoxAppDetails() {
 
                   <div className="space-y-1">
                     {/* Current App Row */}
-                    <div className="flex items-center gap-4">
-                      {platform === "ios" ? <Apple className="h-4 w-4 text-muted-foreground flex-shrink-0" /> : <Bot className="h-4 w-4 text-muted-foreground flex-shrink-0" />}
+                    <div className="flex items-start gap-4">
+                      <div className="mt-1">
+                        {platform === "ios" ? <Apple className="h-4 w-4 text-muted-foreground" /> : <Bot className="h-4 w-4 text-muted-foreground" />}
+                      </div>
                       <div className="grid grid-cols-[120px_180px_1fr] gap-4 flex-1">
                         <div>
                           <h4 className="font-medium text-xs text-muted-foreground mb-1">Version</h4>
@@ -558,8 +560,10 @@ export default function RevoxAppDetails() {
 
                     {/* Linked Apps Rows */}
                     {linkedApps.map((linkedApp, index) => (
-                      <div key={`${linkedApp.platform}-${linkedApp.bundleId}`} className="flex items-center gap-4">
-                        {linkedApp.platform === "ios" ? <Apple className="h-4 w-4 text-muted-foreground flex-shrink-0" /> : <Bot className="h-4 w-4 text-muted-foreground flex-shrink-0" />}
+                      <div key={`${linkedApp.platform}-${linkedApp.bundleId}`} className="flex items-start gap-4">
+                        <div className="mt-0.5">
+                          {linkedApp.platform === "ios" ? <Apple className="h-4 w-4 text-muted-foreground" /> : <Bot className="h-4 w-4 text-muted-foreground" />}
+                        </div>
                         <div className="grid grid-cols-[120px_180px_1fr] gap-4 flex-1">
                           <div>
                             <p className="font-medium">2.3.1</p>
