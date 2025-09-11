@@ -518,41 +518,80 @@ export default function RevoxAppDetails() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div>
-                      <h3 className="font-medium text-sm text-muted-foreground mb-1">
-                        Version
-                      </h3>
-                      <p className="font-medium">{app.version}</p>
-                    </div>
-                    <div>
-                      <h3 className="font-medium text-sm text-muted-foreground mb-1">
-                        Rating
-                      </h3>
+                  <div className="space-y-4">
+                    {/* Current App Row */}
+                    <div className="space-y-3">
                       <div className="flex items-center gap-2">
-                        <div className="flex">{renderStars(Math.floor(app.rating))}</div>
-                        <span className="font-medium">{app.rating}</span>
-                        <span className="text-sm text-muted-foreground">
-                          ({app.totalReviews} reviews)
-                        </span>
+                        {platform === "ios" ? <Apple className="h-4 w-4 text-muted-foreground" /> : <Bot className="h-4 w-4 text-muted-foreground" />}
+                        <h3 className="font-medium text-sm text-muted-foreground">{platform?.toUpperCase()} App</h3>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div>
+                          <h4 className="font-medium text-xs text-muted-foreground mb-1">Version</h4>
+                          <p className="font-medium">{app.version}</p>
+                        </div>
+                        <div>
+                          <h4 className="font-medium text-xs text-muted-foreground mb-1">Rating</h4>
+                          <div className="flex items-center gap-2">
+                            <div className="flex">{renderStars(Math.floor(app.rating))}</div>
+                            <span className="font-medium">{app.rating}</span>
+                            <span className="text-sm text-muted-foreground">({app.totalReviews} reviews)</span>
+                          </div>
+                        </div>
+                        <div className="flex flex-col gap-2">
+                          <h4 className="font-medium text-xs text-muted-foreground mb-1">Latest Update</h4>
+                          <div className="flex items-center gap-2">
+                            <p className="text-sm truncate max-w-[200px]">{app.latestUpdate}</p>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              className="h-6 px-2 text-xs text-muted-foreground hover:text-primary"
+                              onClick={() => setShowUpdateDialog(true)}
+                            >
+                              Show more
+                            </Button>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                    <div className="flex flex-col gap-2">
-                      <h3 className="font-medium text-sm text-muted-foreground mb-1">
-                        Latest Update
-                      </h3>
-                      <div className="flex items-center gap-2">
-                        <p className="text-sm truncate max-w-[200px]">{app.latestUpdate}</p>
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          className="h-6 px-2 text-xs text-muted-foreground hover:text-primary"
-                          onClick={() => setShowUpdateDialog(true)}
-                        >
-                          Show more
-                        </Button>
+
+                    {/* Linked Apps Rows */}
+                    {linkedApps.map((linkedApp, index) => (
+                      <div key={`${linkedApp.platform}-${linkedApp.bundleId}`} className="space-y-3 pt-4 border-t">
+                        <div className="flex items-center gap-2">
+                          {linkedApp.platform === "ios" ? <Apple className="h-4 w-4 text-muted-foreground" /> : <Bot className="h-4 w-4 text-muted-foreground" />}
+                          <h3 className="font-medium text-sm text-muted-foreground">{linkedApp.platform.toUpperCase()} App</h3>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                          <div>
+                            <h4 className="font-medium text-xs text-muted-foreground mb-1">Version</h4>
+                            <p className="font-medium">2.3.1</p>
+                          </div>
+                          <div>
+                            <h4 className="font-medium text-xs text-muted-foreground mb-1">Rating</h4>
+                            <div className="flex items-center gap-2">
+                              <div className="flex">{renderStars(linkedApp.rating || 4)}</div>
+                              <span className="font-medium">{linkedApp.rating || "4.1"}</span>
+                              <span className="text-sm text-muted-foreground">({linkedApp.reviewsThisWeek || 892} reviews)</span>
+                            </div>
+                          </div>
+                          <div className="flex flex-col gap-2">
+                            <h4 className="font-medium text-xs text-muted-foreground mb-1">Latest Update</h4>
+                            <div className="flex items-center gap-2">
+                              <p className="text-sm truncate max-w-[200px]">Enhanced {linkedApp.platform === 'ios' ? 'iOS' : 'Android'} compatibility and bug fixes for better performance.</p>
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                className="h-6 px-2 text-xs text-muted-foreground hover:text-primary"
+                                onClick={() => setShowUpdateDialog(true)}
+                              >
+                                Show more
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
                       </div>
-                    </div>
+                    ))}
                   </div>
                 </div>
               </div>
