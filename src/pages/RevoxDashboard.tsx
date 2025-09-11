@@ -486,12 +486,26 @@ export default function RevoxDashboard() {
 
                     {/* Stats section */}
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2 bg-muted/50 rounded-full px-3 py-1.5">
-                        <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />
-                        <span className="font-medium text-sm">
-                          {typeof app.totalRating === "number" ? app.totalRating.toFixed(1) : "—"}
-                        </span>
-                      </div>
+                      {app.platforms.length > 1 ? (
+                        <div className="flex items-center gap-2">
+                          {app.platforms.map((platform) => (
+                            <div key={platform.platform} className="flex items-center gap-2 bg-muted/50 rounded-full px-3 py-1.5">
+                              {platform.platform === 'ios' ? <Apple className="h-3 w-3" /> : <Bot className="h-3 w-3" />}
+                              <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />
+                              <span className="font-medium text-sm">
+                                {typeof platform.rating === "number" ? platform.rating.toFixed(1) : "—"}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-2 bg-muted/50 rounded-full px-3 py-1.5">
+                          <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />
+                          <span className="font-medium text-sm">
+                            {typeof app.totalRating === "number" ? app.totalRating.toFixed(1) : "—"}
+                          </span>
+                        </div>
+                      )}
 
                       <div className="text-xs text-muted-foreground font-medium">
                         {typeof app.totalReviewsThisWeek === "number" && app.totalReviewsThisWeek > 0
