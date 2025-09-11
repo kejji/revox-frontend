@@ -25,8 +25,8 @@ export function AppDetailsTable({ currentApp, linkedApps = [], className = "" }:
   const [showUpdateDialog, setShowUpdateDialog] = useState(false);
   const [selectedUpdateText, setSelectedUpdateText] = useState("");
 
-  // Check if text should be truncated (more than 40 characters)
-  const isUpdateTextTruncated = (text: string) => text.length > 40;
+  // Check if text should be truncated (more than 80 characters)
+  const isUpdateTextTruncated = (text: string) => text.length > 80;
 
   const renderStars = (rating: number) =>
     Array.from({ length: 5 }, (_, i) => (
