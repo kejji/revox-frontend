@@ -532,7 +532,6 @@ export default function RevoxAppDetails() {
                           <div className="flex items-center gap-2">
                             <div className="flex">{renderStars(Math.floor(app.rating))}</div>
                             <span className="font-medium">{app.rating}</span>
-                            <span className="text-sm text-muted-foreground">({app.totalReviews} reviews)</span>
                           </div>
                         </div>
                         <div className="flex flex-col gap-2">
@@ -564,7 +563,6 @@ export default function RevoxAppDetails() {
                             <div className="flex items-center gap-2">
                               <div className="flex">{renderStars(linkedApp.rating || 4)}</div>
                               <span className="font-medium">{linkedApp.rating || "4.1"}</span>
-                              <span className="text-sm text-muted-foreground">({linkedApp.reviewsThisWeek || 892} reviews)</span>
                             </div>
                           </div>
                           <div className="flex flex-col gap-2">
