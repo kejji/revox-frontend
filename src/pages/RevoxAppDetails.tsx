@@ -27,6 +27,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { AppDetailsTable } from "@/components/app-details/AppDetailsTable";
 import {
   ArrowLeft,
   Star,
@@ -521,68 +522,24 @@ export default function RevoxAppDetails() {
                     </div>
                   </div>
 
-                  {/* Table Layout */}
-                  <div className="space-y-1">
-                    {/* Header Row */}
-                    <div className="grid grid-cols-[32px_140px_200px_1fr] gap-6 pb-2">
-                      <div></div>
-                      <h4 className="font-medium text-xs text-muted-foreground uppercase tracking-wider">Version</h4>
-                      <h4 className="font-medium text-xs text-muted-foreground uppercase tracking-wider">Rating</h4>
-                      <h4 className="font-medium text-xs text-muted-foreground uppercase tracking-wider">Latest Update</h4>
-                    </div>
-
-                    {/* Current App Row */}
-                    <div className="grid grid-cols-[32px_140px_200px_1fr] gap-6 items-center py-2">
-                      <div className="flex justify-center">
-                        {platform === "ios" ? <Apple className="h-4 w-4 text-muted-foreground" /> : <Bot className="h-4 w-4 text-muted-foreground" />}
-                      </div>
-                      <div className="font-medium">{app.version}</div>
-                      <div className="flex items-center gap-2">
-                        <div className="flex">{renderStars(Math.floor(app.rating))}</div>
-                        <span className="font-medium">{app.rating}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <p className="text-sm text-foreground truncate flex-1">{app.latestUpdate}</p>
-                        {isUpdateTextTruncated(app.latestUpdate) && (
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            className="h-6 px-2 text-xs text-muted-foreground hover:text-primary flex-shrink-0"
-                            onClick={() => setShowUpdateDialog(true)}
-                          >
-                            Show more
-                          </Button>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Linked Apps Rows */}
-                    {linkedApps.map((linkedApp, index) => (
-                      <div key={`${linkedApp.platform}-${linkedApp.bundleId}`} className="grid grid-cols-[32px_140px_200px_1fr] gap-6 items-center py-2">
-                        <div className="flex justify-center">
-                          {linkedApp.platform === "ios" ? <Apple className="h-4 w-4 text-muted-foreground" /> : <Bot className="h-4 w-4 text-muted-foreground" />}
-                        </div>
-                        <div className="font-medium">2.3.1</div>
-                        <div className="flex items-center gap-2">
-                          <div className="flex">{renderStars(linkedApp.rating || 4)}</div>
-                          <span className="font-medium">{linkedApp.rating || "4.1"}</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <p className="text-sm text-foreground truncate flex-1">Enhanced {linkedApp.platform === 'ios' ? 'iOS' : 'Android'} compatibility and bug fixes for better performance.</p>
-                          {isUpdateTextTruncated(`Enhanced ${linkedApp.platform === 'ios' ? 'iOS' : 'Android'} compatibility and bug fixes for better performance.`) && (
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              className="h-6 px-2 text-xs text-muted-foreground hover:text-primary flex-shrink-0"
-                              onClick={() => setShowUpdateDialog(true)}
-                            >
-                              Show more
-                            </Button>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                  <AppDetailsTable
+                    currentApp={{
+                      name: app.name,
+                      version: app.version,
+                      rating: app.rating,
+                      latestUpdate: app.latestUpdate,
+                      platform: platform!,
+                      bundleId: bundleId!
+                    }}
+                    linkedApps={linkedApps.map(linkedApp => ({
+                      name: linkedApp.name || linkedApp.bundleId,
+                      version: "2.3.1",
+                      rating: linkedApp.rating || 4.1,
+                      latestUpdate: `Enhanced ${linkedApp.platform === 'ios' ? 'iOS' : 'Android'} compatibility and bug fixes for better performance.`,
+                      platform: linkedApp.platform,
+                      bundleId: linkedApp.bundleId
+                    }))}
+                  />
                 </div>
               </div>
             </CardContent>
@@ -830,18 +787,6 @@ export default function RevoxAppDetails() {
             </CardContent>
           </Card>
         </div>
-
-        {/* Update Details Dialog */}
-        <Dialog open={showUpdateDialog} onOpenChange={setShowUpdateDialog}>
-          <DialogContent className="max-w-lg">
-            <DialogHeader>
-              <DialogTitle>Latest Update Details</DialogTitle>
-            </DialogHeader>
-            <div className="pt-4">
-              <p className="text-sm leading-relaxed">{app.latestUpdate}</p>
-            </div>
-          </DialogContent>
-        </Dialog>
       </div>
     </Layout>
   );
