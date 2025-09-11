@@ -85,7 +85,7 @@ const mockApp = {
   rating: 4.2,
   totalReviews: 1847,
   latestUpdate:
-    "Fixed critical bug with notification sync and improved performance on iOS 17.",
+    "Avec cette nouvelle version, nous avons ajouté un nouveau service personnalisé de simulation d'économie sur l'assurance emprunteur. Réalisez des économies en changeant d'assurance emprunteur, c'est simple et rapide. Merci pour vos retours qui nous permettent d'améliorer la qualité de l'application.",
   platforms: ["ios", "android"] as const,
   icon: null as string | null,
 };
