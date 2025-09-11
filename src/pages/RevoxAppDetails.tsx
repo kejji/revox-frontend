@@ -115,7 +115,7 @@ export default function RevoxAppDetails() {
   const urlParams = new URLSearchParams(window.location.search);
   const urlAppPks = urlParams.get('app_pks')?.split(',').filter(Boolean) || [];
 
-  // Header app (mock)
+  // Header app (fallback to mock for display while loading)
   const [app] = useState(mockApp);
 
   // Reviews + pagination
@@ -141,6 +141,21 @@ export default function RevoxAppDetails() {
   
   // Dialog state
   const [showUpdateDialog, setShowUpdateDialog] = useState(false);
+
+  // Use real app data from API when available, fallback to mock
+  const displayApp = currentApp ? {
+    name: currentApp.name || bundleId || 'Unknown App',
+    icon: currentApp.icon,
+    version: (currentApp as any).version || 'Unknown',
+    rating: currentApp.rating || 0,
+    ratingCount: (currentApp as any).ratingCount,
+    latestUpdate: (currentApp as any).releaseNotes || 'No update information available.',
+    lastUpdatedAt: (currentApp as any).lastUpdatedAt
+  } : {
+    ...app,
+    ratingCount: app.totalReviews,
+    lastUpdatedAt: undefined
+  };
 
   // Load app info and linking data
   const loadAppData = async () => {
@@ -297,7 +312,7 @@ export default function RevoxAppDetails() {
     setRefreshing(true);
     try {
       await api.post("/reviews/ingest", {
-        appName: app?.name || bundleId,
+        appName: displayApp?.name || bundleId,
         platform,
         bundleId,
         backfillDays: 2,
@@ -336,7 +351,7 @@ export default function RevoxAppDetails() {
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `${app.name.replace(/[^a-zA-Z0-9]/g, '_')}_export.csv`;
+      a.download = `${displayApp.name.replace(/[^a-zA-Z0-9]/g, '_')}_export.csv`;
       document.body.appendChild(a);
       a.click();
       a.remove();
@@ -429,7 +444,7 @@ export default function RevoxAppDetails() {
                 Back to Dashboard
               </Button>
               <div className="h-6 w-px bg-border" />
-              <h1 className="font-semibold text-lg">{app.name}</h1>
+              <h1 className="font-semibold text-lg">{displayApp.name}</h1>
             </div>
             <div className="flex items-center gap-2">
               <ThemeToggle />
@@ -445,16 +460,16 @@ export default function RevoxAppDetails() {
               <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
                 <div className="flex-shrink-0">
                   <div className="relative">
-                    {app.icon ? (
+                    {displayApp.icon ? (
                       <img
-                        src={app.icon}
-                        alt={app.name}
+                        src={displayApp.icon}
+                        alt={displayApp.name}
                         className="w-20 h-20 rounded-2xl border-2 border-border/50 shadow-sm"
                       />
                     ) : (
                       <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-muted to-muted/50 border-2 border-border/50 flex items-center justify-center">
                         <span className="text-2xl font-bold text-muted-foreground">
-                          {app.name.substring(0, 2).toUpperCase()}
+                          {displayApp.name.substring(0, 2).toUpperCase()}
                         </span>
                       </div>
                     )}
@@ -469,7 +484,7 @@ export default function RevoxAppDetails() {
                 <div className="flex-1 space-y-3 sm:space-y-4">
                   <div>
                     <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-2">
-                      <h2 className="text-xl sm:text-2xl font-bold">{app.name}</h2>
+                      <h2 className="text-xl sm:text-2xl font-bold">{displayApp.name}</h2>
                       <div className="flex items-center gap-2 flex-wrap">
                         <Badge variant="secondary" className="flex items-center gap-1">
                           {platform === "ios" ? <Apple className="h-3 w-3" /> : <Bot className="h-3 w-3" />}
@@ -532,18 +547,22 @@ export default function RevoxAppDetails() {
 
                   <AppDetailsTable
                     currentApp={{
-                      name: app.name,
-                      version: app.version,
-                      rating: app.rating,
-                      latestUpdate: app.latestUpdate,
+                      name: displayApp.name,
+                      version: displayApp.version,
+                      rating: displayApp.rating,
+                      ratingCount: displayApp.ratingCount,
+                      latestUpdate: displayApp.latestUpdate,
+                      lastUpdatedAt: displayApp.lastUpdatedAt,
                       platform: platform!,
                       bundleId: bundleId!
                     }}
                     linkedApps={linkedApps.map(linkedApp => ({
                       name: linkedApp.name || linkedApp.bundleId,
-                      version: "2.3.1",
+                      version: (linkedApp as any).version || "Unknown",
                       rating: linkedApp.rating || 4.1,
-                      latestUpdate: `Enhanced ${linkedApp.platform === 'ios' ? 'iOS' : 'Android'} compatibility and bug fixes for better performance.`,
+                      ratingCount: (linkedApp as any).ratingCount,
+                      latestUpdate: (linkedApp as any).releaseNotes || `Enhanced ${linkedApp.platform === 'ios' ? 'iOS' : 'Android'} compatibility and bug fixes for better performance.`,
+                      lastUpdatedAt: (linkedApp as any).lastUpdatedAt,
                       platform: linkedApp.platform,
                       bundleId: linkedApp.bundleId
                     }))}
