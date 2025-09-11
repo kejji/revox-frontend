@@ -437,7 +437,16 @@ export default function RevoxDashboard() {
                     onClick={() => {
                       // Navigate to first platform
                       const firstPlatform = app.platforms[0];
-                      navigate(`/revox/apps/${firstPlatform.platform}/${encodeURIComponent(firstPlatform.bundleId)}`);
+                      const url = `/revox/apps/${firstPlatform.platform}/${encodeURIComponent(firstPlatform.bundleId)}`;
+                      
+                      // For merged apps, add all app_pks as URL parameters
+                      if (app.isLinked && app.appPks.length > 1) {
+                        const params = new URLSearchParams();
+                        params.set('app_pks', app.appPks.join(','));
+                        navigate(`${url}?${params.toString()}`);
+                      } else {
+                        navigate(url);
+                      }
                     }}
                     className="block p-6 hover:bg-accent/30 transition-colors duration-200 cursor-pointer"
                   >

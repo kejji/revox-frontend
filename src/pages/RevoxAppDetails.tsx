@@ -103,6 +103,10 @@ const LIMIT = 10;
 export default function RevoxAppDetails() {
   const navigate = useNavigate();
   const { platform, bundleId } = useParams<{ platform: "ios" | "android"; bundleId: string }>();
+  
+  // Get app_pks from URL parameters for merged apps
+  const urlParams = new URLSearchParams(window.location.search);
+  const urlAppPks = urlParams.get('app_pks')?.split(',').filter(Boolean) || [];
 
   // Header app (mock)
   const [app] = useState(mockApp);
@@ -170,9 +174,11 @@ export default function RevoxAppDetails() {
     if (!refreshing) setLoading(true);
     setErr(null);
     try {
-      // Include linked apps in the query if they exist
+      // Use URL app_pks if available (for merged apps), otherwise use current app + linked apps
       let appPkParam: string;
-      if (linkedApps.length > 0) {
+      if (urlAppPks.length > 0) {
+        appPkParam = urlAppPks.join(",");
+      } else if (linkedApps.length > 0) {
         const allAppPks = [
           appPkFromRoute(platform, bundleId), 
           ...linkedApps.map(app => appPkFromRoute(app.platform, app.bundleId))
@@ -220,9 +226,11 @@ export default function RevoxAppDetails() {
 
     setLoadingMore(true);
     try {
-      // Include linked apps in the query if they exist
+      // Use URL app_pks if available (for merged apps), otherwise use current app + linked apps
       let appPkParam: string;
-      if (linkedApps.length > 0) {
+      if (urlAppPks.length > 0) {
+        appPkParam = urlAppPks.join(",");
+      } else if (linkedApps.length > 0) {
         const allAppPks = [
           appPkFromRoute(platform, bundleId), 
           ...linkedApps.map(app => appPkFromRoute(app.platform, app.bundleId))
@@ -260,7 +268,7 @@ export default function RevoxAppDetails() {
   useEffect(() => {
     fetchReviewsInitial();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [platform, bundleId, linkedApps]);
+  }, [platform, bundleId, urlAppPks.length > 0 ? urlAppPks.join(',') : linkedApps]);
 
   // Ingest (refresh) → POST puis reset
   const handleRefresh = async () => {
@@ -284,9 +292,11 @@ export default function RevoxAppDetails() {
   const handleExport = async () => {
     if (!platform || !bundleId) return;
     try {
-      // Include linked apps in export if they exist
+      // Use URL app_pks if available (for merged apps), otherwise use current app + linked apps
       let appPk: string;
-      if (linkedApps.length > 0) {
+      if (urlAppPks.length > 0) {
+        appPk = urlAppPks.join(",");
+      } else if (linkedApps.length > 0) {
         const allAppPks = [
           appPkFromRoute(platform, bundleId), 
           ...linkedApps.map(app => appPkFromRoute(app.platform, app.bundleId))
