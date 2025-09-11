@@ -507,7 +507,6 @@ export default function RevoxAppDetails() {
                         )}
                       </div>
                     </div>
-                    <p className="text-muted-foreground leading-relaxed">{app.description}</p>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
