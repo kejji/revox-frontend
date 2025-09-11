@@ -232,6 +232,16 @@ export default function RevoxAppDetails() {
       />
     ));
 
+  function formatDate(dateString: string) {
+    const d = new Date(dateString);
+    const day = d.getDate().toString().padStart(2, "0");
+    const month = (d.getMonth() + 1).toString().padStart(2, "0");
+    const year = d.getFullYear();
+    const hours = d.getHours().toString().padStart(2, "0");
+    const minutes = d.getMinutes().toString().padStart(2, "0");
+    return `${day}/${month}/${year} . ${hours}:${minutes}`;
+  }
+
   return (
     <Layout showTopbar={false}>
       <div className="min-h-screen bg-background">
@@ -480,14 +490,7 @@ export default function RevoxAppDetails() {
                               </div>
                             </div>
                             <div className="text-xs text-muted-foreground">
-                              {new Date(r.date).toLocaleString("fr-FR", {
-                                day: "2-digit",
-                                month: "2-digit",
-                                year: "numeric",
-                                hour: "2-digit",
-                                minute: "2-digit",
-                                hour12: false
-                              }).replace(",", " .")}
+                              {formatDate(r.date)}
                             </div>
                           </div>
 
