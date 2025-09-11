@@ -560,10 +560,8 @@ export default function RevoxAppDetails() {
 
                     {/* Linked Apps Rows */}
                     {linkedApps.map((linkedApp, index) => (
-                      <div key={`${linkedApp.platform}-${linkedApp.bundleId}`} className="flex items-start gap-4">
-                        <div className="mt-0.5">
-                          {linkedApp.platform === "ios" ? <Apple className="h-4 w-4 text-muted-foreground" /> : <Bot className="h-4 w-4 text-muted-foreground" />}
-                        </div>
+                      <div key={`${linkedApp.platform}-${linkedApp.bundleId}`} className="flex items-center gap-4">
+                        {linkedApp.platform === "ios" ? <Apple className="h-4 w-4 text-muted-foreground" /> : <Bot className="h-4 w-4 text-muted-foreground" />}
                         <div className="grid grid-cols-[120px_180px_1fr] gap-4 flex-1">
                           <div>
                             <p className="font-medium">2.3.1</p>
