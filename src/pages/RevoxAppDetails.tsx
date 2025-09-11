@@ -518,11 +518,11 @@ export default function RevoxAppDetails() {
                     </div>
                   </div>
 
-                  <div className="space-y-2">
+                  <div className="space-y-1">
                     {/* Current App Row */}
                     <div className="flex items-center gap-4">
                       {platform === "ios" ? <Apple className="h-4 w-4 text-muted-foreground flex-shrink-0" /> : <Bot className="h-4 w-4 text-muted-foreground flex-shrink-0" />}
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 flex-1">
+                      <div className="grid grid-cols-[120px_180px_1fr] gap-4 flex-1">
                         <div>
                           <h4 className="font-medium text-xs text-muted-foreground mb-1">Version</h4>
                           <p className="font-medium">{app.version}</p>
@@ -538,11 +538,11 @@ export default function RevoxAppDetails() {
                         <div className="flex flex-col gap-2">
                           <h4 className="font-medium text-xs text-muted-foreground mb-1">Latest Update</h4>
                           <div className="flex items-center gap-2">
-                            <p className="text-sm truncate max-w-[200px]">{app.latestUpdate}</p>
+                            <p className="text-sm truncate flex-1">{app.latestUpdate}</p>
                             <Button
                               size="sm"
                               variant="ghost"
-                              className="h-6 px-2 text-xs text-muted-foreground hover:text-primary"
+                              className="h-6 px-2 text-xs text-muted-foreground hover:text-primary flex-shrink-0"
                               onClick={() => setShowUpdateDialog(true)}
                             >
                               Show more
@@ -556,13 +556,11 @@ export default function RevoxAppDetails() {
                     {linkedApps.map((linkedApp, index) => (
                       <div key={`${linkedApp.platform}-${linkedApp.bundleId}`} className="flex items-center gap-4">
                         {linkedApp.platform === "ios" ? <Apple className="h-4 w-4 text-muted-foreground flex-shrink-0" /> : <Bot className="h-4 w-4 text-muted-foreground flex-shrink-0" />}
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 flex-1">
+                        <div className="grid grid-cols-[120px_180px_1fr] gap-4 flex-1">
                           <div>
-                            <h4 className="font-medium text-xs text-muted-foreground mb-1">Version</h4>
                             <p className="font-medium">2.3.1</p>
                           </div>
                           <div>
-                            <h4 className="font-medium text-xs text-muted-foreground mb-1">Rating</h4>
                             <div className="flex items-center gap-2">
                               <div className="flex">{renderStars(linkedApp.rating || 4)}</div>
                               <span className="font-medium">{linkedApp.rating || "4.1"}</span>
@@ -570,13 +568,12 @@ export default function RevoxAppDetails() {
                             </div>
                           </div>
                           <div className="flex flex-col gap-2">
-                            <h4 className="font-medium text-xs text-muted-foreground mb-1">Latest Update</h4>
                             <div className="flex items-center gap-2">
-                              <p className="text-sm truncate max-w-[200px]">Enhanced {linkedApp.platform === 'ios' ? 'iOS' : 'Android'} compatibility and bug fixes for better performance.</p>
+                              <p className="text-sm truncate flex-1">Enhanced {linkedApp.platform === 'ios' ? 'iOS' : 'Android'} compatibility and bug fixes for better performance.</p>
                               <Button
                                 size="sm"
                                 variant="ghost"
-                                className="h-6 px-2 text-xs text-muted-foreground hover:text-primary"
+                                className="h-6 px-2 text-xs text-muted-foreground hover:text-primary flex-shrink-0"
                                 onClick={() => setShowUpdateDialog(true)}
                               >
                                 Show more
