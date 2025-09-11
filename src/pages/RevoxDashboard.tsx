@@ -500,6 +500,7 @@ export default function RevoxDashboard() {
                         </div>
                       ) : (
                         <div className="flex items-center gap-2 bg-muted/50 rounded-full px-3 py-1.5">
+                          {app.platforms[0]?.platform === 'ios' ? <Apple className="h-3 w-3" /> : <Bot className="h-3 w-3" />}
                           <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />
                           <span className="font-medium text-sm">
                             {typeof app.totalRating === "number" ? app.totalRating.toFixed(1) : "—"}
