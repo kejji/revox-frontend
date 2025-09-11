@@ -560,21 +560,21 @@ export default function RevoxAppDetails() {
 
                     {/* Linked Apps Rows */}
                     {linkedApps.map((linkedApp, index) => (
-                      <div key={`${linkedApp.platform}-${linkedApp.bundleId}`} className="flex items-center gap-4">
-                        <div className="w-4 flex justify-center">
+                      <div key={`${linkedApp.platform}-${linkedApp.bundleId}`} className="flex items-end gap-4">
+                        <div className="w-4 flex justify-center pb-1">
                           {linkedApp.platform === "ios" ? <Apple className="h-4 w-4 text-muted-foreground" /> : <Bot className="h-4 w-4 text-muted-foreground" />}
                         </div>
                         <div className="grid grid-cols-[120px_180px_1fr] gap-4 flex-1">
-                          <div className="flex items-center h-[38px]">
+                          <div className="flex items-end h-[38px]">
                             <p className="font-medium">2.3.1</p>
                           </div>
-                          <div className="flex items-center h-[38px]">
+                          <div className="flex items-end h-[38px]">
                             <div className="flex items-center gap-2">
                               <div className="flex">{renderStars(linkedApp.rating || 4)}</div>
                               <span className="font-medium">{linkedApp.rating || "4.1"}</span>
                             </div>
                           </div>
-                          <div className="flex items-center h-[38px]">
+                          <div className="flex items-end h-[38px]">
                             <div className="flex items-center gap-2 w-full">
                               <p className="text-sm truncate flex-1">Enhanced {linkedApp.platform === 'ios' ? 'iOS' : 'Android'} compatibility and bug fixes for better performance.</p>
                               {isUpdateTextTruncated(`Enhanced ${linkedApp.platform === 'ios' ? 'iOS' : 'Android'} compatibility and bug fixes for better performance.`) && (
