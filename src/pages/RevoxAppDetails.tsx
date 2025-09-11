@@ -523,23 +523,23 @@ export default function RevoxAppDetails() {
 
                   <div className="space-y-1">
                     {/* Current App Row */}
-                    <div className="flex items-start gap-4">
-                      <div className="mt-1">
+                    <div className="flex items-center gap-4">
+                      <div className="w-4 flex justify-center">
                         {platform === "ios" ? <Apple className="h-4 w-4 text-muted-foreground" /> : <Bot className="h-4 w-4 text-muted-foreground" />}
                       </div>
                       <div className="grid grid-cols-[120px_180px_1fr] gap-4 flex-1">
-                        <div>
+                        <div className="flex flex-col">
                           <h4 className="font-medium text-xs text-muted-foreground mb-1">Version</h4>
                           <p className="font-medium">{app.version}</p>
                         </div>
-                        <div>
+                        <div className="flex flex-col">
                           <h4 className="font-medium text-xs text-muted-foreground mb-1">Rating</h4>
                           <div className="flex items-center gap-2">
                             <div className="flex">{renderStars(Math.floor(app.rating))}</div>
                             <span className="font-medium">{app.rating}</span>
                           </div>
                         </div>
-                        <div className="flex flex-col gap-2">
+                        <div className="flex flex-col">
                           <h4 className="font-medium text-xs text-muted-foreground mb-1">Latest Update</h4>
                           <div className="flex items-center gap-2">
                             <p className="text-sm truncate flex-1">{app.latestUpdate}</p>
@@ -561,19 +561,21 @@ export default function RevoxAppDetails() {
                     {/* Linked Apps Rows */}
                     {linkedApps.map((linkedApp, index) => (
                       <div key={`${linkedApp.platform}-${linkedApp.bundleId}`} className="flex items-center gap-4">
-                        {linkedApp.platform === "ios" ? <Apple className="h-4 w-4 text-muted-foreground" /> : <Bot className="h-4 w-4 text-muted-foreground" />}
+                        <div className="w-4 flex justify-center">
+                          {linkedApp.platform === "ios" ? <Apple className="h-4 w-4 text-muted-foreground" /> : <Bot className="h-4 w-4 text-muted-foreground" />}
+                        </div>
                         <div className="grid grid-cols-[120px_180px_1fr] gap-4 flex-1">
-                          <div>
+                          <div className="flex items-center h-[38px]">
                             <p className="font-medium">2.3.1</p>
                           </div>
-                          <div>
+                          <div className="flex items-center h-[38px]">
                             <div className="flex items-center gap-2">
                               <div className="flex">{renderStars(linkedApp.rating || 4)}</div>
                               <span className="font-medium">{linkedApp.rating || "4.1"}</span>
                             </div>
                           </div>
-                          <div className="flex flex-col gap-2">
-                            <div className="flex items-center gap-2">
+                          <div className="flex items-center h-[38px]">
+                            <div className="flex items-center gap-2 w-full">
                               <p className="text-sm truncate flex-1">Enhanced {linkedApp.platform === 'ios' ? 'iOS' : 'Android'} compatibility and bug fixes for better performance.</p>
                               {isUpdateTextTruncated(`Enhanced ${linkedApp.platform === 'ios' ? 'iOS' : 'Android'} compatibility and bug fixes for better performance.`) && (
                                 <Button
