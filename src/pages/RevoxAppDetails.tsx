@@ -430,11 +430,11 @@ export default function RevoxAppDetails() {
           </div>
         </header>
 
-        <div className="container mx-auto p-6 max-w-7xl space-y-6">
+        <div className="container mx-auto p-4 sm:p-6 max-w-7xl space-y-4 sm:space-y-6">
           {/* App Info (mock) */}
           <Card>
-            <CardContent className="p-6">
-              <div className="flex items-start gap-6">
+            <CardContent className="p-4 sm:p-6">
+              <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
                 <div className="flex-shrink-0">
                   <div className="relative">
                     {app.icon ? (
@@ -458,11 +458,11 @@ export default function RevoxAppDetails() {
                   </div>
                 </div>
 
-                <div className="flex-1 space-y-4">
+                <div className="flex-1 space-y-3 sm:space-y-4">
                   <div>
-                    <div className="flex items-center gap-3 mb-2">
-                      <h2 className="text-2xl font-bold">{app.name}</h2>
-                      <div className="flex items-center gap-2">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-2">
+                      <h2 className="text-xl sm:text-2xl font-bold">{app.name}</h2>
+                      <div className="flex items-center gap-2 flex-wrap">
                         <Badge variant="secondary" className="flex items-center gap-1">
                           {platform === "ios" ? <Apple className="h-3 w-3" /> : <Bot className="h-3 w-3" />}
                           {platform?.toUpperCase()}
@@ -539,6 +539,7 @@ export default function RevoxAppDetails() {
                       platform: linkedApp.platform,
                       bundleId: linkedApp.bundleId
                     }))}
+                    className="mt-4"
                   />
                 </div>
               </div>
