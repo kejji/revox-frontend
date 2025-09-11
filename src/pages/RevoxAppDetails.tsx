@@ -187,18 +187,18 @@ export default function RevoxAppDetails() {
     if (!refreshing) setLoading(true);
     setErr(null);
     try {
-      // Use URL app_pks if available (for merged apps), otherwise use current app + linked apps
+      // Always use URL app_pks if available (for merged apps), otherwise construct from current + linked apps
       let appPkParam: string;
       if (urlAppPks.length > 0) {
+        // URL contains the merged app_pks - use them directly
         appPkParam = urlAppPks.join(",");
-      } else if (linkedApps.length > 0) {
-        const allAppPks = [
-          appPkFromRoute(platform, bundleId),
-          ...linkedApps.map(app => appPkFromRoute(app.platform, app.bundleId))
-        ];
-        appPkParam = allAppPks.join(",");
       } else {
-        appPkParam = appPkFromRoute(platform, bundleId);
+        // Construct from current app + any linked apps
+        const allAppPks = [appPkFromRoute(platform, bundleId)];
+        if (linkedApps.length > 0) {
+          allAppPks.push(...linkedApps.map(app => appPkFromRoute(app.platform, app.bundleId)));
+        }
+        appPkParam = allAppPks.join(",");
       }
 
       const { data } = await api.get<ReviewsResponse>("/reviews", {
@@ -239,18 +239,18 @@ export default function RevoxAppDetails() {
 
     setLoadingMore(true);
     try {
-      // Use URL app_pks if available (for merged apps), otherwise use current app + linked apps
+      // Always use URL app_pks if available (for merged apps), otherwise construct from current + linked apps
       let appPkParam: string;
       if (urlAppPks.length > 0) {
+        // URL contains the merged app_pks - use them directly
         appPkParam = urlAppPks.join(",");
-      } else if (linkedApps.length > 0) {
-        const allAppPks = [
-          appPkFromRoute(platform, bundleId),
-          ...linkedApps.map(app => appPkFromRoute(app.platform, app.bundleId))
-        ];
-        appPkParam = allAppPks.join(",");
       } else {
-        appPkParam = appPkFromRoute(platform, bundleId);
+        // Construct from current app + any linked apps
+        const allAppPks = [appPkFromRoute(platform, bundleId)];
+        if (linkedApps.length > 0) {
+          allAppPks.push(...linkedApps.map(app => appPkFromRoute(app.platform, app.bundleId)));
+        }
+        appPkParam = allAppPks.join(",");
       }
 
       const { data } = await api.get<ReviewsResponse>("/reviews", {
@@ -313,18 +313,18 @@ export default function RevoxAppDetails() {
   const handleExport = async () => {
     if (!platform || !bundleId) return;
     try {
-      // Use URL app_pks if available (for merged apps), otherwise use current app + linked apps
+      // Always use URL app_pks if available (for merged apps), otherwise construct from current + linked apps
       let appPk: string;
       if (urlAppPks.length > 0) {
+        // URL contains the merged app_pks - use them directly
         appPk = urlAppPks.join(",");
-      } else if (linkedApps.length > 0) {
-        const allAppPks = [
-          appPkFromRoute(platform, bundleId),
-          ...linkedApps.map(app => appPkFromRoute(app.platform, app.bundleId))
-        ];
-        appPk = allAppPks.join(",");
       } else {
-        appPk = appPkFromRoute(platform, bundleId);
+        // Construct from current app + any linked apps
+        const allAppPks = [appPkFromRoute(platform, bundleId)];
+        if (linkedApps.length > 0) {
+          allAppPks.push(...linkedApps.map(app => appPkFromRoute(app.platform, app.bundleId)));
+        }
+        appPk = allAppPks.join(",");
       }
 
       const urlPath = getReviewsExportUrl({
