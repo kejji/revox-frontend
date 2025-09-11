@@ -1,5 +1,5 @@
 // src/pages/RevoxAppDetails.tsx
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -176,6 +176,9 @@ export default function RevoxAppDetails() {
       console.error("Failed to load app data:", e);
     }
   };
+
+  // Check if text is truncated by length
+  const isUpdateTextTruncated = (text: string) => text.length > 80;
 
   // --- Chargement initial (reset) ---
   async function fetchReviewsInitial() {
@@ -538,14 +541,16 @@ export default function RevoxAppDetails() {
                           <h4 className="font-medium text-xs text-muted-foreground mb-1">Latest Update</h4>
                           <div className="flex items-center gap-2">
                             <p className="text-sm truncate flex-1">{app.latestUpdate}</p>
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              className="h-6 px-2 text-xs text-muted-foreground hover:text-primary flex-shrink-0"
-                              onClick={() => setShowUpdateDialog(true)}
-                            >
-                              Show more
-                            </Button>
+                            {isUpdateTextTruncated(app.latestUpdate) && (
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                className="h-6 px-2 text-xs text-muted-foreground hover:text-primary flex-shrink-0"
+                                onClick={() => setShowUpdateDialog(true)}
+                              >
+                                Show more
+                              </Button>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -568,14 +573,16 @@ export default function RevoxAppDetails() {
                           <div className="flex flex-col gap-2">
                             <div className="flex items-center gap-2">
                               <p className="text-sm truncate flex-1">Enhanced {linkedApp.platform === 'ios' ? 'iOS' : 'Android'} compatibility and bug fixes for better performance.</p>
-                              <Button
-                                size="sm"
-                                variant="ghost"
-                                className="h-6 px-2 text-xs text-muted-foreground hover:text-primary flex-shrink-0"
-                                onClick={() => setShowUpdateDialog(true)}
-                              >
-                                Show more
-                              </Button>
+                              {isUpdateTextTruncated(`Enhanced ${linkedApp.platform === 'ios' ? 'iOS' : 'Android'} compatibility and bug fixes for better performance.`) && (
+                                <Button
+                                  size="sm"
+                                  variant="ghost"
+                                  className="h-6 px-2 text-xs text-muted-foreground hover:text-primary flex-shrink-0"
+                                  onClick={() => setShowUpdateDialog(true)}
+                                >
+                                  Show more
+                                </Button>
+                              )}
                             </div>
                           </div>
                         </div>
