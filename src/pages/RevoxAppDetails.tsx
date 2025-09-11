@@ -194,7 +194,7 @@ export default function RevoxAppDetails() {
   };
 
   // Check if text is truncated by length
-  const isUpdateTextTruncated = (text: string) => text.length > 80;
+  const isUpdateTextTruncated = (text: string) => text.length > 40;
 
   // --- Chargement initial (reset) ---
   async function fetchReviewsInitial() {
