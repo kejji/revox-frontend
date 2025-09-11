@@ -424,8 +424,8 @@ export default function RevoxAppDetails() {
     );
   };
 
-  // Component for individual app info card in merged view
-  const AppInfoCard = ({ 
+  // Component for individual app info row in merged view (flat design)
+  const AppInfoRow = ({ 
     platform, 
     version, 
     rating, 
@@ -440,21 +440,21 @@ export default function RevoxAppDetails() {
     lastUpdate: string;
     isPrimary: boolean;
   }) => (
-    <div className={`border rounded-lg p-4 space-y-4 ${isPrimary ? 'bg-primary/5 border-primary/20' : 'bg-muted/30'}`}>
-      <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-muted to-muted/50 border flex items-center justify-center">
-          {platform === "ios" ? <Apple className="h-5 w-5" /> : <Bot className="h-5 w-5" />}
+    <div className={`py-4 ${isPrimary ? 'bg-primary/5 -mx-6 px-6 rounded-lg' : ''}`}>
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-center">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
+            {platform === "ios" ? <Apple className="h-5 w-5" /> : <Bot className="h-5 w-5" />}
+          </div>
+          <div>
+            <h3 className="font-semibold flex items-center gap-2">
+              {platform === "ios" ? "iOS" : "Android"}
+              {isPrimary && <Badge variant="secondary" className="text-xs">Primary</Badge>}
+            </h3>
+            <p className="text-xs text-muted-foreground">Mobile Application</p>
+          </div>
         </div>
-        <div>
-          <h3 className="font-semibold flex items-center gap-2">
-            {platform === "ios" ? "iOS" : "Android"}
-            {isPrimary && <Badge variant="secondary" className="text-xs">Primary</Badge>}
-          </h3>
-          <p className="text-xs text-muted-foreground">Mobile Application</p>
-        </div>
-      </div>
 
-      <div className="space-y-3">
         <div>
           <h4 className="font-medium text-xs text-muted-foreground mb-1">Version</h4>
           <p className="font-mono text-sm font-medium">{version}</p>
@@ -542,9 +542,9 @@ export default function RevoxAppDetails() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="space-y-6">
                     {/* Current Platform App */}
-                    <AppInfoCard 
+                    <AppInfoRow 
                       platform={platform as "ios" | "android"}
                       version={app.version}
                       rating={app.rating}
@@ -553,8 +553,11 @@ export default function RevoxAppDetails() {
                       isPrimary={true}
                     />
                     
+                    {/* Separator */}
+                    <div className="border-t border-border/50"></div>
+                    
                     {/* Linked App */}
-                    <AppInfoCard 
+                    <AppInfoRow 
                       platform={linkedApps[0].platform}
                       version="2.1.8" // Mock version for linked app
                       rating={linkedApps[0].rating || 4.1}
