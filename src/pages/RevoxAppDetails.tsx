@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Select,
@@ -14,6 +15,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   ArrowLeft,
   Star,
@@ -27,10 +34,12 @@ import {
   Plus,
   Apple,
   Bot,
+  Link as LinkIcon,
+  Unlink,
 } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { LanguageToggle } from "@/components/ui/language-toggle";
-import { api, appPkFromRoute, getReviewsExportUrl } from "@/api";
+import { api, appPkFromRoute, getReviewsExportUrl, linkApps, unlinkApps } from "@/api";
 
 // -------- Types alignés avec le backend --------
 type ReviewItem = {
@@ -48,6 +57,16 @@ type ReviewsResponse = {
   items: ReviewItem[];
   nextCursor?: string | null;
   count?: number;
+};
+
+type FollowedApp = {
+  bundleId: string;
+  platform: "ios" | "android";
+  name?: string | null;
+  icon?: string | null;
+  rating?: number | null;
+  reviewsThisWeek?: number | null;
+  linked_app_pks?: string[] | null;
 };
 
 // Données d’en-tête (mock pour l’instant)
@@ -91,26 +110,81 @@ export default function RevoxAppDetails() {
   // Reviews + pagination
   const [reviews, setReviews] = useState<ReviewItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [err, setErr] = useState<string | null>(null);
 
   const [cursor, setCursor] = useState<string | undefined>(undefined);
   const [hasMore, setHasMore] = useState<boolean>(false);
   const [loadingMore, setLoadingMore] = useState<boolean>(false);
 
+  // Linking state
+  const [linkedApps, setLinkedApps] = useState<FollowedApp[]>([]);
+  const [availableApps, setAvailableApps] = useState<FollowedApp[]>([]);
+  const [currentApp, setCurrentApp] = useState<FollowedApp | null>(null);
+  const [linkingLoading, setLinkingLoading] = useState(false);
+
   // Filtres UI (client)
   const [searchTerm, setSearchTerm] = useState("");
   const [platformFilter, setPlatformFilter] = useState<"all" | "ios" | "android">("all");
   const [ratingFilter, setRatingFilter] = useState<"all" | "1" | "2" | "3" | "4" | "5">("all");
 
+  // Load app info and linking data
+  const loadAppData = async () => {
+    if (!platform || !bundleId) return;
+    
+    try {
+      const { data } = await api.get("/follow-app");
+      const followedApps = (data?.followed as FollowedApp[]) ?? [];
+      
+      const current = followedApps.find(
+        (app) => app.platform === platform && app.bundleId === bundleId
+      );
+      
+      if (current) {
+        setCurrentApp(current);
+        
+        // Find linked apps
+        const linkedAppPks = current.linked_app_pks || [];
+        const linked = followedApps.filter((app) => {
+          const appPk = appPkFromRoute(app.platform, app.bundleId);
+          return linkedAppPks.includes(appPk);
+        });
+        setLinkedApps(linked);
+        
+        // Find available apps for linking (opposite platform, not already linked)
+        const available = followedApps.filter((app) => {
+          if (app.platform === platform) return false;
+          const appPk = appPkFromRoute(app.platform, app.bundleId);
+          return !linkedAppPks.includes(appPk);
+        });
+        setAvailableApps(available);
+      }
+    } catch (e: any) {
+      console.error("Failed to load app data:", e);
+    }
+  };
+
   // --- Chargement initial (reset) ---
   async function fetchReviewsInitial() {
     if (!platform || !bundleId) return;
-    setLoading(true);
+    if (!refreshing) setLoading(true);
     setErr(null);
     try {
+      // Include linked apps in the query if they exist
+      let appPkParam: string;
+      if (linkedApps.length > 0) {
+        const allAppPks = [
+          appPkFromRoute(platform, bundleId), 
+          ...linkedApps.map(app => appPkFromRoute(app.platform, app.bundleId))
+        ];
+        appPkParam = allAppPks.join(",");
+      } else {
+        appPkParam = appPkFromRoute(platform, bundleId);
+      }
+
       const { data } = await api.get<ReviewsResponse>("/reviews", {
         params: {
-          app_pk: appPkFromRoute(platform, bundleId),
+          app_pk: appPkParam,
           limit: LIMIT,
           order: "desc",
         },
@@ -120,6 +194,14 @@ export default function RevoxAppDetails() {
       const next = data?.nextCursor || undefined;
       setCursor(next);
       setHasMore(!!next);
+
+      // Auto-refresh if no results and not already refreshing
+      if (rows.length === 0 && !refreshing) {
+        setTimeout(() => {
+          setRefreshing(true);
+          handleRefresh();
+        }, 2000);
+      }
     } catch (e: any) {
       setErr(e?.response?.data?.error || e?.message || "Failed to load reviews.");
       setReviews([]);
@@ -127,6 +209,7 @@ export default function RevoxAppDetails() {
       setHasMore(false);
     } finally {
       setLoading(false);
+      setRefreshing(false);
     }
   }
 
@@ -137,9 +220,21 @@ export default function RevoxAppDetails() {
 
     setLoadingMore(true);
     try {
+      // Include linked apps in the query if they exist
+      let appPkParam: string;
+      if (linkedApps.length > 0) {
+        const allAppPks = [
+          appPkFromRoute(platform, bundleId), 
+          ...linkedApps.map(app => appPkFromRoute(app.platform, app.bundleId))
+        ];
+        appPkParam = allAppPks.join(",");
+      } else {
+        appPkParam = appPkFromRoute(platform, bundleId);
+      }
+
       const { data } = await api.get<ReviewsResponse>("/reviews", {
         params: {
-          app_pk: appPkFromRoute(platform, bundleId),
+          app_pk: appPkParam,
           limit: LIMIT,
           order: "desc",
           cursor, // opaque, renvoyé tel quel
@@ -158,13 +253,19 @@ export default function RevoxAppDetails() {
   }
 
   useEffect(() => {
+    loadAppData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps  
+  }, [platform, bundleId]);
+
+  useEffect(() => {
     fetchReviewsInitial();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [platform, bundleId]);
+  }, [platform, bundleId, linkedApps]);
 
   // Ingest (refresh) → POST puis reset
   const handleRefresh = async () => {
     if (!platform || !bundleId) return;
+    setRefreshing(true);
     try {
       await api.post("/reviews/ingest", {
         appName: app?.name || bundleId,
@@ -175,6 +276,7 @@ export default function RevoxAppDetails() {
       await fetchReviewsInitial();
     } catch (e: any) {
       setErr(e?.response?.data?.error || e?.message || "Failed to refresh (ingest) reviews.");
+      setRefreshing(false);
     }
   };
 
@@ -182,23 +284,70 @@ export default function RevoxAppDetails() {
   const handleExport = async () => {
     if (!platform || !bundleId) return;
     try {
+      // Include linked apps in export if they exist
+      let appPk: string;
+      if (linkedApps.length > 0) {
+        const allAppPks = [
+          appPkFromRoute(platform, bundleId), 
+          ...linkedApps.map(app => appPkFromRoute(app.platform, app.bundleId))
+        ];
+        appPk = allAppPks.join(",");
+      } else {
+        appPk = appPkFromRoute(platform, bundleId);
+      }
+
       const urlPath = getReviewsExportUrl({
-        app_pk: appPkFromRoute(platform, bundleId),
+        app_pk: appPk,
         order: "desc",
       });
       const resp = await api.get(urlPath, { responseType: "blob" });
       const blob = new Blob([resp.data], { type: "text/csv;charset=utf-8" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
-      const fileBase = `${platform}_${bundleId}`;
       a.href = url;
-      a.download = `${fileBase}_reviews.csv`;
+      a.download = `${app.name.replace(/[^a-zA-Z0-9]/g, '_')}_export.csv`;
       document.body.appendChild(a);
       a.click();
       a.remove();
       URL.revokeObjectURL(url);
     } catch (e: any) {
       setErr(e?.response?.data?.error || e?.message || "Failed to export reviews.");
+    }
+  };
+
+  // Link app handler
+  const handleLinkApp = async (targetApp: FollowedApp) => {
+    if (!currentApp) return;
+    
+    setLinkingLoading(true);
+    try {
+      const currentAppPk = appPkFromRoute(currentApp.platform, currentApp.bundleId);
+      const targetAppPk = appPkFromRoute(targetApp.platform, targetApp.bundleId);
+      
+      await linkApps(currentAppPk, targetAppPk);
+      await loadAppData();
+    } catch (e: any) {
+      setErr(e?.response?.data?.message || e?.message || "Failed to link apps.");
+    } finally {
+      setLinkingLoading(false);
+    }
+  };
+
+  // Unlink app handler
+  const handleUnlinkApp = async () => {
+    if (!currentApp || linkedApps.length === 0) return;
+    
+    setLinkingLoading(true);
+    try {
+      const currentAppPk = appPkFromRoute(currentApp.platform, currentApp.bundleId);
+      const linkedAppPk = appPkFromRoute(linkedApps[0].platform, linkedApps[0].bundleId);
+      
+      await unlinkApps(currentAppPk, linkedAppPk);
+      await loadAppData();
+    } catch (e: any) {
+      setErr(e?.response?.data?.message || e?.message || "Failed to unlink apps.");
+    } finally {
+      setLinkingLoading(false);
     }
   };
 
@@ -227,20 +376,11 @@ export default function RevoxAppDetails() {
     Array.from({ length: 5 }, (_, i) => (
       <Star
         key={i}
-        className={`h-4 w-4 ${i < Math.round(rating) ? "text-yellow-500 fill-yellow-500" : "text-muted-foreground"
-          }`}
+        className={`h-4 w-4 ${
+          i < Math.round(rating) ? "text-yellow-500 fill-yellow-500" : "text-muted-foreground"
+        }`}
       />
     ));
-
-  function formatDate(dateString: string) {
-    const d = new Date(dateString);
-    const day = d.getDate().toString().padStart(2, "0");
-    const month = (d.getMonth() + 1).toString().padStart(2, "0");
-    const year = d.getFullYear();
-    const hours = d.getHours().toString().padStart(2, "0");
-    const minutes = d.getMinutes().toString().padStart(2, "0");
-    return `${day}/${month}/${year} . ${hours}:${minutes}`;
-  }
 
   return (
     <Layout showTopbar={false}>
@@ -274,30 +414,88 @@ export default function RevoxAppDetails() {
             <CardContent className="p-6">
               <div className="flex items-start gap-6">
                 <div className="flex-shrink-0">
-                  {app.icon ? (
-                    <img
-                      src={app.icon}
-                      alt={app.name}
-                      className="w-20 h-20 rounded-2xl border-2 border-border/50 shadow-sm"
-                    />
-                  ) : (
-                    <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-muted to-muted/50 border-2 border-border/50 flex items-center justify-center">
-                      <span className="text-2xl font-bold text-muted-foreground">
-                        {app.name.substring(0, 2).toUpperCase()}
-                      </span>
-                    </div>
-                  )}
+                  <div className="relative">
+                    {app.icon ? (
+                      <img
+                        src={app.icon}
+                        alt={app.name}
+                        className="w-20 h-20 rounded-2xl border-2 border-border/50 shadow-sm"
+                      />
+                    ) : (
+                      <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-muted to-muted/50 border-2 border-border/50 flex items-center justify-center">
+                        <span className="text-2xl font-bold text-muted-foreground">
+                          {app.name.substring(0, 2).toUpperCase()}
+                        </span>
+                      </div>
+                    )}
+                    {linkedApps.length > 0 && (
+                      <div className="absolute -top-1 -right-1 w-6 h-6 bg-primary rounded-full flex items-center justify-center">
+                        <LinkIcon className="h-4 w-4 text-primary-foreground" />
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 <div className="flex-1 space-y-4">
                   <div>
                     <div className="flex items-center gap-3 mb-2">
                       <h2 className="text-2xl font-bold">{app.name}</h2>
-                      <div className="flex gap-2">
+                      <div className="flex items-center gap-2">
                         <Badge variant="secondary" className="flex items-center gap-1">
                           {platform === "ios" ? <Apple className="h-3 w-3" /> : <Bot className="h-3 w-3" />}
                           {platform?.toUpperCase()}
                         </Badge>
+                        {linkedApps.map((linkedApp) => (
+                          <Badge key={linkedApp.bundleId} variant="secondary" className="flex items-center gap-1">
+                            {linkedApp.platform === "ios" ? <Apple className="h-3 w-3" /> : <Bot className="h-3 w-3" />}
+                            {linkedApp.platform.toUpperCase()}
+                          </Badge>
+                        ))}
+                        {linkedApps.length > 0 && (
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={handleUnlinkApp}
+                            disabled={linkingLoading}
+                            className="h-6 px-2 text-xs gap-1 text-muted-foreground hover:text-destructive"
+                            title="Unlink apps"
+                          >
+                            <Unlink className="h-3 w-3" />
+                            Unlink
+                          </Button>
+                        )}
+                        {linkedApps.length === 0 && availableApps.length > 0 && (
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                disabled={linkingLoading}
+                                className="h-6 px-2 text-xs gap-1 text-muted-foreground hover:text-primary"
+                                title="Link with counterpart app"
+                              >
+                                <Plus className="h-3 w-3" />
+                                Link
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent>
+                              {availableApps.map((availableApp) => (
+                                <DropdownMenuItem
+                                  key={`${availableApp.platform}-${availableApp.bundleId}`}
+                                  onClick={() => handleLinkApp(availableApp)}
+                                  className="gap-2"
+                                >
+                                  {availableApp.platform === "ios" ? (
+                                    <Apple className="h-4 w-4" />
+                                  ) : (
+                                    <Bot className="h-4 w-4" />
+                                  )}
+                                  {availableApp.name || availableApp.bundleId}
+                                </DropdownMenuItem>
+                              ))}
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        )}
                       </div>
                     </div>
                     <p className="text-muted-foreground leading-relaxed">{app.description}</p>
@@ -322,7 +520,7 @@ export default function RevoxAppDetails() {
                         </span>
                       </div>
                     </div>
-                    <div>
+                    <div className="flex flex-col gap-2">
                       <h3 className="font-medium text-sm text-muted-foreground mb-1">
                         Latest Update
                       </h3>
@@ -392,8 +590,9 @@ export default function RevoxAppDetails() {
                   <div key={a.id} className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <div
-                        className={`w-1.5 h-1.5 rounded-full ${a.type === "error" ? "bg-red-500" : "bg-orange-500"
-                          }`}
+                        className={`w-1.5 h-1.5 rounded-full ${
+                          a.type === "error" ? "bg-red-500" : "bg-orange-500"
+                        }`}
                       />
                       <span className="text-sm text-foreground">{a.message}</span>
                     </div>
@@ -464,67 +663,107 @@ export default function RevoxAppDetails() {
               </div>
 
               {/* Liste */}
-              {loading && <div className="text-sm text-muted-foreground">Loading…</div>}
-              {!loading && err && (
-                <div className="text-sm text-red-600 border p-3 rounded">{err}</div>
+              {loading && (
+                <div className="space-y-4 animate-fade-in">
+                  {Array.from({ length: 3 }).map((_, i) => (
+                    <div key={i} className="border rounded-lg p-4 space-y-3">
+                      <div className="flex items-start justify-between">
+                        <div className="flex items-center gap-3">
+                          <Skeleton className="w-8 h-8 rounded-full" />
+                          <div className="space-y-2">
+                            <Skeleton className="h-4 w-24" />
+                            <Skeleton className="h-3 w-16" />
+                          </div>
+                        </div>
+                        <Skeleton className="h-3 w-20" />
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Skeleton className="h-4 w-20" />
+                        <Skeleton className="h-3 w-8" />
+                      </div>
+                      <Skeleton className="h-12 w-full" />
+                    </div>
+                  ))}
+                </div>
               )}
-              {!loading && !err && (
-                <>
-                  <ScrollArea className="h-96">
-                    <div className="space-y-4 pr-4">
-                      {filteredReviews.map((r, idx) => (
-                        <div key={`${r.date}-${idx}`} className="border rounded-lg p-4 space-y-3">
-                          <div className="flex items-start justify-between">
-                            <div className="flex items-center gap-3">
-                              <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center font-medium text-sm">
-                                {(r.user_name || "?").charAt(0).toUpperCase()}
-                              </div>
-                              <div>
-                                <div className="flex items-center gap-2 text-sm">
-                                  <span className="font-medium">{r.user_name || "Anonymous"}</span>
-                                  <Badge variant="secondary" className="flex items-center gap-1 h-5 text-xs">
-                                    {r.platform === "ios" ? <Apple className="h-3 w-3" /> : <Bot className="h-3 w-3" />}
-                                    {r.platform === "ios" ? "iOS" : "Android"}
-                                  </Badge>
+              
+              {refreshing && !loading && (
+                <div className="text-sm text-muted-foreground flex items-center gap-2 animate-fade-in">
+                  <RefreshCw className="h-4 w-4 animate-spin" />
+                  Refreshing reviews...
+                </div>
+              )}
+              
+              {!loading && !refreshing && err && (
+                <div className="text-sm text-red-600 border p-3 rounded animate-fade-in">{err}</div>
+              )}
+              
+              {!loading && !refreshing && !err && (
+                <div className="animate-fade-in">
+                  {filteredReviews.length > 0 ? (
+                    <>
+                      <ScrollArea className="h-96">
+                        <div className="space-y-4 pr-4">
+                          {filteredReviews.map((r, idx) => (
+                            <div key={`${r.date}-${idx}`} className="border rounded-lg p-4 space-y-3 hover-scale">
+                              <div className="flex items-start justify-between">
+                                <div className="flex items-center gap-3">
+                                  <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center font-medium text-sm">
+                                    {(r.user_name || "?").charAt(0).toUpperCase()}
+                                  </div>
+                                  <div>
+                                    <div className="flex items-center gap-2 text-sm">
+                                      <span className="font-medium">{r.user_name || "Anonymous"}</span>
+                                      <Badge variant="secondary" className="flex items-center gap-1 h-5 text-xs">
+                                        {r.platform === "ios" ? <Apple className="h-3 w-3" /> : <Bot className="h-3 w-3" />}
+                                        {r.platform === "ios" ? "iOS" : "Android"}
+                                      </Badge>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className="text-xs text-muted-foreground">
+                                  {new Date(r.date).toLocaleString()}
                                 </div>
                               </div>
-                            </div>
-                            <div className="text-xs text-muted-foreground">
-                              {formatDate(r.date)}
-                            </div>
-                          </div>
 
-                          <div className="flex items-center gap-2">
-                            <div className="flex">{renderStars(Number(r.rating))}</div>
-                            <span className="text-sm text-muted-foreground">
-                              {Number(r.rating)}/5
-                            </span>
-                          </div>
+                              <div className="flex items-center gap-2">
+                                <div className="flex">{renderStars(Number(r.rating))}</div>
+                                <span className="text-sm text-muted-foreground">
+                                  {Number(r.rating)}/5
+                                </span>
+                              </div>
 
-                          {r.text && (
-                            <p className="text-sm text-muted-foreground leading-relaxed">
-                              {r.text}
-                            </p>
-                          )}
+                              {r.text && (
+                                <p className="text-sm text-muted-foreground leading-relaxed">
+                                  {r.text}
+                                </p>
+                              )}
+                            </div>
+                          ))}
                         </div>
-                      ))}
-                    </div>
-                  </ScrollArea>
+                      </ScrollArea>
 
-                  {/* Pagination / Load more */}
-                  {hasMore && (
-                    <div className="mt-4">
-                      <Button
-                        variant="outline"
-                        className="w-full"
-                        onClick={fetchReviewsMore}
-                        disabled={loadingMore}
-                      >
-                        {loadingMore ? "Loading…" : `Load more (${LIMIT})`}
-                      </Button>
+                      {/* Pagination / Load more */}
+                      {hasMore && (
+                        <div className="mt-4">
+                          <Button
+                            variant="outline"
+                            className="w-full"
+                            onClick={fetchReviewsMore}
+                            disabled={loadingMore}
+                          >
+                            {loadingMore ? "Loading…" : `Load more (${LIMIT})`}
+                          </Button>
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <div className="text-center py-8 text-muted-foreground">
+                      <p className="text-sm">No reviews found.</p>
+                      <p className="text-xs mt-1">Reviews will automatically refresh in a moment...</p>
                     </div>
                   )}
-                </>
+                </div>
               )}
             </CardContent>
           </Card>
