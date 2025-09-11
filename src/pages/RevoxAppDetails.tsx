@@ -281,7 +281,15 @@ export default function RevoxAppDetails() {
   useEffect(() => {
     fetchReviewsInitial();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [platform, bundleId, urlAppPks.length > 0 ? urlAppPks.join(',') : linkedApps]);
+  }, [platform, bundleId, linkedApps.length, urlAppPks.join(',')]);
+
+  // Initial fetch when app data is loaded
+  useEffect(() => {
+    if (currentApp && linkedApps.length >= 0) { // Check after loadAppData completes
+      fetchReviewsInitial();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentApp]);
 
   // Ingest (refresh) → POST puis reset
   const handleRefresh = async () => {
