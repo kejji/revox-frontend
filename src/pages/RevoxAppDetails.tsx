@@ -522,7 +522,7 @@ export default function RevoxAppDetails() {
                   </div>
 
                   {/* Table Layout */}
-                  <div className="space-y-3">
+                  <div className="space-y-1">
                     {/* Header Row */}
                     <div className="grid grid-cols-[32px_140px_200px_1fr] gap-6 pb-2">
                       <div></div>
