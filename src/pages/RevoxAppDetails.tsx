@@ -518,14 +518,11 @@ export default function RevoxAppDetails() {
                     </div>
                   </div>
 
-                  <div className="space-y-4">
+                  <div className="space-y-2">
                     {/* Current App Row */}
-                    <div className="space-y-3">
-                      <div className="flex items-center gap-2">
-                        {platform === "ios" ? <Apple className="h-4 w-4 text-muted-foreground" /> : <Bot className="h-4 w-4 text-muted-foreground" />}
-                        <h3 className="font-medium text-sm text-muted-foreground">{platform?.toUpperCase()} App</h3>
-                      </div>
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="flex items-center gap-4">
+                      {platform === "ios" ? <Apple className="h-4 w-4 text-muted-foreground flex-shrink-0" /> : <Bot className="h-4 w-4 text-muted-foreground flex-shrink-0" />}
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 flex-1">
                         <div>
                           <h4 className="font-medium text-xs text-muted-foreground mb-1">Version</h4>
                           <p className="font-medium">{app.version}</p>
@@ -557,12 +554,9 @@ export default function RevoxAppDetails() {
 
                     {/* Linked Apps Rows */}
                     {linkedApps.map((linkedApp, index) => (
-                      <div key={`${linkedApp.platform}-${linkedApp.bundleId}`} className="space-y-3 pt-4 border-t">
-                        <div className="flex items-center gap-2">
-                          {linkedApp.platform === "ios" ? <Apple className="h-4 w-4 text-muted-foreground" /> : <Bot className="h-4 w-4 text-muted-foreground" />}
-                          <h3 className="font-medium text-sm text-muted-foreground">{linkedApp.platform.toUpperCase()} App</h3>
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      <div key={`${linkedApp.platform}-${linkedApp.bundleId}`} className="flex items-center gap-4">
+                        {linkedApp.platform === "ios" ? <Apple className="h-4 w-4 text-muted-foreground flex-shrink-0" /> : <Bot className="h-4 w-4 text-muted-foreground flex-shrink-0" />}
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 flex-1">
                           <div>
                             <h4 className="font-medium text-xs text-muted-foreground mb-1">Version</h4>
                             <p className="font-medium">2.3.1</p>
