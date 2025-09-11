@@ -22,6 +22,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
   ArrowLeft,
   Star,
   TrendingUp,
@@ -131,6 +137,9 @@ export default function RevoxAppDetails() {
   const [searchTerm, setSearchTerm] = useState("");
   const [platformFilter, setPlatformFilter] = useState<"all" | "ios" | "android">("all");
   const [ratingFilter, setRatingFilter] = useState<"all" | "1" | "2" | "3" | "4" | "5">("all");
+  
+  // Dialog state
+  const [showUpdateDialog, setShowUpdateDialog] = useState(false);
 
   // Load app info and linking data
   const loadAppData = async () => {
@@ -532,7 +541,17 @@ export default function RevoxAppDetails() {
                       <h3 className="font-medium text-sm text-muted-foreground mb-1">
                         Latest Update
                       </h3>
-                      <p className="text-sm">{app.latestUpdate}</p>
+                      <div className="flex items-center gap-2">
+                        <p className="text-sm truncate max-w-[200px]">{app.latestUpdate}</p>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="h-6 px-2 text-xs text-muted-foreground hover:text-primary"
+                          onClick={() => setShowUpdateDialog(true)}
+                        >
+                          Show more
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -782,6 +801,18 @@ export default function RevoxAppDetails() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Update Details Dialog */}
+        <Dialog open={showUpdateDialog} onOpenChange={setShowUpdateDialog}>
+          <DialogContent className="max-w-lg">
+            <DialogHeader>
+              <DialogTitle>Latest Update Details</DialogTitle>
+            </DialogHeader>
+            <div className="pt-4">
+              <p className="text-sm leading-relaxed">{app.latestUpdate}</p>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </Layout>
   );
