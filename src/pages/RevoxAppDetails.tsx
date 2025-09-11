@@ -545,52 +545,6 @@ export default function RevoxAppDetails() {
                     </div>
                   </div>
 
-                  {/* Rankings Section - Show separate rankings for iOS and Android when merged */}
-                  {linkedApps.length > 0 && (
-                    <div className="pt-4 border-t">
-                      <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium mb-3">App Store Rankings</p>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        {/* Current App Ranking */}
-                        <div className="space-y-2">
-                          <div className="flex items-center gap-2">
-                            {currentApp?.platform === "ios" ? (
-                              <Apple className="h-4 w-4 text-muted-foreground" />
-                            ) : (
-                              <Bot className="h-4 w-4 text-muted-foreground" />
-                            )}
-                            <Badge variant="secondary" className="text-xs">
-                              {currentApp?.platform.toUpperCase()} Store
-                            </Badge>
-                          </div>
-                          <div className="space-y-1">
-                            <p className="text-sm font-medium">Ranking: #{Math.floor(Math.random() * 50) + 1}</p>
-                            <p className="text-xs text-muted-foreground">Productivity Category</p>
-                          </div>
-                        </div>
-                        
-                        {/* Linked App Ranking */}
-                        {linkedApps[0] && (
-                          <div className="space-y-2">
-                            <div className="flex items-center gap-2">
-                              {linkedApps[0].platform === "ios" ? (
-                                <Apple className="h-4 w-4 text-muted-foreground" />
-                              ) : (
-                                <Bot className="h-4 w-4 text-muted-foreground" />
-                              )}
-                              <Badge variant="secondary" className="text-xs">
-                                {linkedApps[0].platform.toUpperCase()} Store
-                              </Badge>
-                            </div>
-                            <div className="space-y-1">
-                              <p className="text-sm font-medium">Ranking: #{Math.floor(Math.random() * 50) + 1}</p>
-                              <p className="text-xs text-muted-foreground">Productivity Category</p>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  )}
-
                   <AppDetailsTable
                     currentApp={{
                       name: displayApp.name,
