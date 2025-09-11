@@ -103,7 +103,7 @@ const LIMIT = 10;
 export default function RevoxAppDetails() {
   const navigate = useNavigate();
   const { platform, bundleId } = useParams<{ platform: "ios" | "android"; bundleId: string }>();
-  
+
   // Get app_pks from URL parameters for merged apps
   const urlParams = new URLSearchParams(window.location.search);
   const urlAppPks = urlParams.get('app_pks')?.split(',').filter(Boolean) || [];
@@ -135,18 +135,18 @@ export default function RevoxAppDetails() {
   // Load app info and linking data
   const loadAppData = async () => {
     if (!platform || !bundleId) return;
-    
+
     try {
       const { data } = await api.get("/follow-app");
       const followedApps = (data?.followed as FollowedApp[]) ?? [];
-      
+
       const current = followedApps.find(
         (app) => app.platform === platform && app.bundleId === bundleId
       );
-      
+
       if (current) {
         setCurrentApp(current);
-        
+
         // Find linked apps
         const linkedAppPks = current.linked_app_pks || [];
         const linked = followedApps.filter((app) => {
@@ -154,7 +154,7 @@ export default function RevoxAppDetails() {
           return linkedAppPks.includes(appPk);
         });
         setLinkedApps(linked);
-        
+
         // Find available apps for linking (opposite platform, not already linked)
         const available = followedApps.filter((app) => {
           if (app.platform === platform) return false;
@@ -180,7 +180,7 @@ export default function RevoxAppDetails() {
         appPkParam = urlAppPks.join(",");
       } else if (linkedApps.length > 0) {
         const allAppPks = [
-          appPkFromRoute(platform, bundleId), 
+          appPkFromRoute(platform, bundleId),
           ...linkedApps.map(app => appPkFromRoute(app.platform, app.bundleId))
         ];
         appPkParam = allAppPks.join(",");
@@ -232,7 +232,7 @@ export default function RevoxAppDetails() {
         appPkParam = urlAppPks.join(",");
       } else if (linkedApps.length > 0) {
         const allAppPks = [
-          appPkFromRoute(platform, bundleId), 
+          appPkFromRoute(platform, bundleId),
           ...linkedApps.map(app => appPkFromRoute(app.platform, app.bundleId))
         ];
         appPkParam = allAppPks.join(",");
@@ -298,7 +298,7 @@ export default function RevoxAppDetails() {
         appPk = urlAppPks.join(",");
       } else if (linkedApps.length > 0) {
         const allAppPks = [
-          appPkFromRoute(platform, bundleId), 
+          appPkFromRoute(platform, bundleId),
           ...linkedApps.map(app => appPkFromRoute(app.platform, app.bundleId))
         ];
         appPk = allAppPks.join(",");
@@ -328,12 +328,12 @@ export default function RevoxAppDetails() {
   // Link app handler
   const handleLinkApp = async (targetApp: FollowedApp) => {
     if (!currentApp) return;
-    
+
     setLinkingLoading(true);
     try {
       const currentAppPk = appPkFromRoute(currentApp.platform, currentApp.bundleId);
       const targetAppPk = appPkFromRoute(targetApp.platform, targetApp.bundleId);
-      
+
       await linkApps(currentAppPk, targetAppPk);
       await loadAppData();
     } catch (e: any) {
@@ -346,12 +346,12 @@ export default function RevoxAppDetails() {
   // Unlink app handler
   const handleUnlinkApp = async () => {
     if (!currentApp || linkedApps.length === 0) return;
-    
+
     setLinkingLoading(true);
     try {
       const currentAppPk = appPkFromRoute(currentApp.platform, currentApp.bundleId);
       const linkedAppPk = appPkFromRoute(linkedApps[0].platform, linkedApps[0].bundleId);
-      
+
       await unlinkApps(currentAppPk, linkedAppPk);
       await loadAppData();
     } catch (e: any) {
@@ -386,9 +386,8 @@ export default function RevoxAppDetails() {
     Array.from({ length: 5 }, (_, i) => (
       <Star
         key={i}
-        className={`h-4 w-4 ${
-          i < Math.round(rating) ? "text-yellow-500 fill-yellow-500" : "text-muted-foreground"
-        }`}
+        className={`h-4 w-4 ${i < Math.round(rating) ? "text-yellow-500 fill-yellow-500" : "text-muted-foreground"
+          }`}
       />
     ));
 
@@ -600,9 +599,8 @@ export default function RevoxAppDetails() {
                   <div key={a.id} className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <div
-                        className={`w-1.5 h-1.5 rounded-full ${
-                          a.type === "error" ? "bg-red-500" : "bg-orange-500"
-                        }`}
+                        className={`w-1.5 h-1.5 rounded-full ${a.type === "error" ? "bg-red-500" : "bg-orange-500"
+                          }`}
                       />
                       <span className="text-sm text-foreground">{a.message}</span>
                     </div>
@@ -696,18 +694,18 @@ export default function RevoxAppDetails() {
                   ))}
                 </div>
               )}
-              
+
               {refreshing && !loading && (
                 <div className="text-sm text-muted-foreground flex items-center gap-2 animate-fade-in">
                   <RefreshCw className="h-4 w-4 animate-spin" />
                   Refreshing reviews...
                 </div>
               )}
-              
+
               {!loading && !refreshing && err && (
                 <div className="text-sm text-red-600 border p-3 rounded animate-fade-in">{err}</div>
               )}
-              
+
               {!loading && !refreshing && !err && (
                 <div className="animate-fade-in">
                   {filteredReviews.length > 0 ? (
@@ -732,7 +730,14 @@ export default function RevoxAppDetails() {
                                   </div>
                                 </div>
                                 <div className="text-xs text-muted-foreground">
-                                  {new Date(r.date).toLocaleString()}
+                                  {new Date(r.date).toLocaleString("fr-FR", {
+                                    day: "2-digit",
+                                    month: "2-digit",
+                                    year: "numeric",
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                    hour12: false
+                                  }).replace(" ", " • ")}
                                 </div>
                               </div>
 
