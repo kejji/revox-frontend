@@ -22,13 +22,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
   ArrowLeft,
   Star,
   TrendingUp,
@@ -398,85 +391,6 @@ export default function RevoxAppDetails() {
       />
     ));
 
-  // Component for displaying truncated text with full text dialog
-  const TruncatedText = ({ text }: { text: string }) => {
-    const maxLength = 60;
-    const shouldTruncate = text.length > maxLength;
-
-    if (!shouldTruncate) {
-      return <p className="text-sm">{text}</p>;
-    }
-
-    return (
-      <Dialog>
-        <DialogTrigger asChild>
-          <button className="text-sm text-left hover:text-primary transition-colors cursor-pointer">
-            {text.substring(0, maxLength)}…
-          </button>
-        </DialogTrigger>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle>Latest Update Details</DialogTitle>
-          </DialogHeader>
-          <p className="text-sm leading-relaxed">{text}</p>
-        </DialogContent>
-      </Dialog>
-    );
-  };
-
-  // Component for individual app info row in merged view (flat design)
-  const AppInfoRow = ({ 
-    platform, 
-    version, 
-    rating, 
-    totalReviews, 
-    lastUpdate, 
-    isPrimary 
-  }: {
-    platform: "ios" | "android";
-    version: string;
-    rating: number;
-    totalReviews: number;
-    lastUpdate: string;
-    isPrimary: boolean;
-  }) => (
-    <div className={`py-4 ${isPrimary ? 'bg-primary/5 -mx-6 px-6 rounded-lg' : ''}`}>
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-center">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
-            {platform === "ios" ? <Apple className="h-5 w-5" /> : <Bot className="h-5 w-5" />}
-          </div>
-          <div>
-            <h3 className="font-semibold flex items-center gap-2">
-              {platform === "ios" ? "iOS" : "Android"}
-              {isPrimary && <Badge variant="secondary" className="text-xs">Primary</Badge>}
-            </h3>
-            <p className="text-xs text-muted-foreground">Mobile Application</p>
-          </div>
-        </div>
-
-        <div>
-          <h4 className="font-medium text-xs text-muted-foreground mb-1">Version</h4>
-          <p className="font-mono text-sm font-medium">{version}</p>
-        </div>
-
-        <div>
-          <h4 className="font-medium text-xs text-muted-foreground mb-1">Rating</h4>
-          <div className="flex items-center gap-2">
-            <div className="flex">{renderStars(Math.floor(rating))}</div>
-            <span className="font-medium text-sm">{rating}</span>
-            <span className="text-xs text-muted-foreground">({totalReviews})</span>
-          </div>
-        </div>
-
-        <div>
-          <h4 className="font-medium text-xs text-muted-foreground mb-1">Latest Update</h4>
-          <TruncatedText text={lastUpdate} />
-        </div>
-      </div>
-    </div>
-  );
-
   return (
     <Layout showTopbar={false}>
       <div className="min-h-screen bg-background">
@@ -504,156 +418,125 @@ export default function RevoxAppDetails() {
         </header>
 
         <div className="container mx-auto p-6 max-w-7xl space-y-6">
-          {/* App Info */}
+          {/* App Info (mock) */}
           <Card>
             <CardContent className="p-6">
-              {linkedApps.length > 0 ? (
-                // Merged apps view - side by side comparison
-                <div className="space-y-6">
-                  <div className="flex items-center gap-4 pb-4 border-b">
-                    <div className="relative">
-                      <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-muted to-muted/50 border-2 border-border/50 flex items-center justify-center">
-                        <span className="text-lg font-bold text-muted-foreground">
-                          {app.name.substring(0, 2).toUpperCase()}
-                        </span>
-                      </div>
-                      <div className="absolute -top-1 -right-1 w-5 h-5 bg-primary rounded-full flex items-center justify-center">
-                        <LinkIcon className="h-3 w-3 text-primary-foreground" />
-                      </div>
-                    </div>
-                    <div>
-                      <h2 className="text-xl font-bold">{app.name}</h2>
-                      <p className="text-sm text-muted-foreground">Merged App Comparison</p>
-                    </div>
-                    <div className="ml-auto flex items-center gap-2">
-                      {linkedApps.length > 0 && (
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={handleUnlinkApp}
-                          disabled={linkingLoading}
-                          className="h-8 px-3 text-xs gap-2 text-muted-foreground hover:text-destructive"
-                          title="Unlink apps"
-                        >
-                          <Unlink className="h-4 w-4" />
-                          Unlink Apps
-                        </Button>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="space-y-6">
-                    {/* Current Platform App */}
-                    <AppInfoRow 
-                      platform={platform as "ios" | "android"}
-                      version={app.version}
-                      rating={app.rating}
-                      totalReviews={app.totalReviews}
-                      lastUpdate={app.latestUpdate}
-                      isPrimary={true}
-                    />
-                    
-                    {/* Separator */}
-                    <div className="border-t border-border/50"></div>
-                    
-                    {/* Linked App */}
-                    <AppInfoRow 
-                      platform={linkedApps[0].platform}
-                      version="2.1.8" // Mock version for linked app
-                      rating={linkedApps[0].rating || 4.1}
-                      totalReviews={1234} // Mock reviews for linked app  
-                      lastUpdate="Performance improvements and bug fixes for better stability on the latest OS version."
-                      isPrimary={false}
-                    />
-                  </div>
-                </div>
-              ) : (
-                // Single app view
-                <div className="flex items-start gap-6">
-                  <div className="flex-shrink-0">
-                    <div className="relative">
+              <div className="flex items-start gap-6">
+                <div className="flex-shrink-0">
+                  <div className="relative">
+                    {app.icon ? (
+                      <img
+                        src={app.icon}
+                        alt={app.name}
+                        className="w-20 h-20 rounded-2xl border-2 border-border/50 shadow-sm"
+                      />
+                    ) : (
                       <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-muted to-muted/50 border-2 border-border/50 flex items-center justify-center">
                         <span className="text-2xl font-bold text-muted-foreground">
                           {app.name.substring(0, 2).toUpperCase()}
                         </span>
                       </div>
+                    )}
+                    {linkedApps.length > 0 && (
+                      <div className="absolute -top-1 -right-1 w-6 h-6 bg-primary rounded-full flex items-center justify-center">
+                        <LinkIcon className="h-4 w-4 text-primary-foreground" />
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex-1 space-y-4">
+                  <div>
+                    <div className="flex items-center gap-3 mb-2">
+                      <h2 className="text-2xl font-bold">{app.name}</h2>
+                      <div className="flex items-center gap-2">
+                        <Badge variant="secondary" className="flex items-center gap-1">
+                          {platform === "ios" ? <Apple className="h-3 w-3" /> : <Bot className="h-3 w-3" />}
+                          {platform?.toUpperCase()}
+                        </Badge>
+                        {linkedApps.map((linkedApp) => (
+                          <Badge key={linkedApp.bundleId} variant="secondary" className="flex items-center gap-1">
+                            {linkedApp.platform === "ios" ? <Apple className="h-3 w-3" /> : <Bot className="h-3 w-3" />}
+                            {linkedApp.platform.toUpperCase()}
+                          </Badge>
+                        ))}
+                        {linkedApps.length > 0 && (
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={handleUnlinkApp}
+                            disabled={linkingLoading}
+                            className="h-6 px-2 text-xs gap-1 text-muted-foreground hover:text-destructive"
+                            title="Unlink apps"
+                          >
+                            <Unlink className="h-3 w-3" />
+                            Unlink
+                          </Button>
+                        )}
+                        {linkedApps.length === 0 && availableApps.length > 0 && (
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                disabled={linkingLoading}
+                                className="h-6 px-2 text-xs gap-1 text-muted-foreground hover:text-primary"
+                                title="Link with counterpart app"
+                              >
+                                <Plus className="h-3 w-3" />
+                                Link
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent>
+                              {availableApps.map((availableApp) => (
+                                <DropdownMenuItem
+                                  key={`${availableApp.platform}-${availableApp.bundleId}`}
+                                  onClick={() => handleLinkApp(availableApp)}
+                                  className="gap-2"
+                                >
+                                  {availableApp.platform === "ios" ? (
+                                    <Apple className="h-4 w-4" />
+                                  ) : (
+                                    <Bot className="h-4 w-4" />
+                                  )}
+                                  {availableApp.name || availableApp.bundleId}
+                                </DropdownMenuItem>
+                              ))}
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        )}
+                      </div>
                     </div>
                   </div>
 
-                  <div className="flex-1 space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div>
-                      <div className="flex items-center gap-3 mb-2">
-                        <h2 className="text-2xl font-bold">{app.name}</h2>
-                        <div className="flex items-center gap-2">
-                          <Badge variant="secondary" className="flex items-center gap-1">
-                            {platform === "ios" ? <Apple className="h-3 w-3" /> : <Bot className="h-3 w-3" />}
-                            {platform?.toUpperCase()}
-                          </Badge>
-                          {availableApps.length > 0 && (
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <Button
-                                  size="sm"
-                                  variant="ghost"
-                                  disabled={linkingLoading}
-                                  className="h-6 px-2 text-xs gap-1 text-muted-foreground hover:text-primary"
-                                  title="Link with counterpart app"
-                                >
-                                  <Plus className="h-3 w-3" />
-                                  Link
-                                </Button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent>
-                                {availableApps.map((availableApp) => (
-                                  <DropdownMenuItem
-                                    key={`${availableApp.platform}-${availableApp.bundleId}`}
-                                    onClick={() => handleLinkApp(availableApp)}
-                                    className="gap-2"
-                                  >
-                                    {availableApp.platform === "ios" ? (
-                                      <Apple className="h-4 w-4" />
-                                    ) : (
-                                      <Bot className="h-4 w-4" />
-                                    )}
-                                    {availableApp.name || availableApp.bundleId}
-                                  </DropdownMenuItem>
-                                ))}
-                              </DropdownMenuContent>
-                            </DropdownMenu>
-                          )}
-                        </div>
+                      <h3 className="font-medium text-sm text-muted-foreground mb-1">
+                        Version
+                      </h3>
+                      <p className="font-medium">{app.version}</p>
+                    </div>
+                    <div>
+                      <h3 className="font-medium text-sm text-muted-foreground mb-1">
+                        Rating
+                      </h3>
+                      <div className="flex items-center gap-2">
+                        <div className="flex">{renderStars(Math.floor(app.rating))}</div>
+                        <span className="font-medium">{app.rating}</span>
+                        <span className="text-sm text-muted-foreground">
+                          ({app.totalReviews} reviews)
+                        </span>
                       </div>
                     </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                      <div>
-                        <h3 className="font-medium text-sm text-muted-foreground mb-1">
-                          Version
-                        </h3>
-                        <p className="font-medium">{app.version}</p>
-                      </div>
-                      <div>
-                        <h3 className="font-medium text-sm text-muted-foreground mb-1">
-                          Rating
-                        </h3>
-                        <div className="flex items-center gap-2">
-                          <div className="flex">{renderStars(Math.floor(app.rating))}</div>
-                          <span className="font-medium">{app.rating}</span>
-                          <span className="text-sm text-muted-foreground">
-                            ({app.totalReviews} reviews)
-                          </span>
-                        </div>
-                      </div>
-                      <div className="flex flex-col gap-2">
-                        <h3 className="font-medium text-sm text-muted-foreground mb-1">
-                          Latest Update
-                        </h3>
-                        <TruncatedText text={app.latestUpdate} />
-                      </div>
+                    <div className="flex flex-col gap-2">
+                      <h3 className="font-medium text-sm text-muted-foreground mb-1">
+                        Latest Update
+                      </h3>
+                      <p className="text-sm">{app.latestUpdate}</p>
                     </div>
                   </div>
                 </div>
-              )}
+              </div>
             </CardContent>
           </Card>
 
