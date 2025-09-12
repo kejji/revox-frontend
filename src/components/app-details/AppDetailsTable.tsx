@@ -80,15 +80,15 @@ export function AppDetailsTable({ currentApp, linkedApps = [], className = "" }:
             </div>
 
             {/* Latest Update */}
-            <div className="space-y-1">
-              <p className="text-sm text-foreground line-clamp-2 leading-relaxed">
+            <div className="flex items-start gap-2">
+              <p className="text-sm text-foreground line-clamp-2 leading-relaxed flex-1">
                 {app.latestUpdate}
               </p>
               {isUpdateTextTruncated(app.latestUpdate) && (
                 <Button
                   size="sm"
                   variant="link"
-                  className="h-auto p-0 text-xs text-primary hover:text-primary/80 font-medium"
+                  className="h-auto p-0 text-xs text-primary hover:text-primary/80 font-medium flex-shrink-0"
                   onClick={() => handleShowMore(app.latestUpdate)}
                 >
                   Show more
