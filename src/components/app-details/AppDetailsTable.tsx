@@ -25,8 +25,8 @@ export function AppDetailsTable({ currentApp, linkedApps = [], className = "" }:
   const [showUpdateDialog, setShowUpdateDialog] = useState(false);
   const [selectedUpdateText, setSelectedUpdateText] = useState("");
 
-  // Check if text should be truncated (more than 60 characters)
-  const isUpdateTextTruncated = (text: string) => text.length > 60;
+  // Check if text should be truncated (more than 80 characters)
+  const isUpdateTextTruncated = (text: string) => text.length > 80;
 
   const renderStars = (rating: number) =>
     Array.from({ length: 5 }, (_, i) => (
@@ -48,8 +48,7 @@ export function AppDetailsTable({ currentApp, linkedApps = [], className = "" }:
       {/* Desktop Layout */}
       <div className="hidden md:block space-y-1">
         {/* Header Row */}
-        <div className="grid grid-cols-[32px_140px_200px_1fr] gap-6 pb-2">
-          <div></div>
+        <div className="grid grid-cols-[200px_200px_1fr] gap-6 pb-2">
           <h4 className="font-medium text-xs text-muted-foreground uppercase tracking-wider">Version</h4>
           <h4 className="font-medium text-xs text-muted-foreground uppercase tracking-wider">Rating</h4>
           <h4 className="font-medium text-xs text-muted-foreground uppercase tracking-wider">Latest Update</h4>
@@ -57,18 +56,16 @@ export function AppDetailsTable({ currentApp, linkedApps = [], className = "" }:
 
         {/* App Rows */}
         {allApps.map((app, index) => (
-          <div key={`${app.platform}-${app.bundleId}-${index}`} className="grid grid-cols-[32px_140px_200px_1fr] gap-6 items-center py-2">
-            {/* Platform Icon */}
-            <div className="flex justify-center">
+          <div key={`${app.platform}-${app.bundleId}-${index}`} className="grid grid-cols-[200px_200px_1fr] gap-6 items-center py-2">
+            {/* Version with Platform Icon */}
+            <div className="flex items-center gap-2">
               {app.platform === "ios" ? (
                 <Apple className="h-4 w-4 text-muted-foreground" />
               ) : (
                 <Bot className="h-4 w-4 text-muted-foreground" />
               )}
+              <span className="font-medium">{app.version}</span>
             </div>
-
-            {/* Version */}
-            <div className="font-medium">{app.version}</div>
 
             {/* Rating */}
             <div className="flex items-center gap-2">
@@ -77,10 +74,12 @@ export function AppDetailsTable({ currentApp, linkedApps = [], className = "" }:
             </div>
 
             {/* Latest Update */}
-            <div className="flex items-start gap-2">
-              <p className="text-sm text-foreground line-clamp-2 leading-relaxed flex-1">
-                {app.latestUpdate}
-              </p>
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-foreground leading-relaxed flex-1">
+                {isUpdateTextTruncated(app.latestUpdate) 
+                  ? `${app.latestUpdate.substring(0, 80)}...` 
+                  : app.latestUpdate}
+              </span>
               {isUpdateTextTruncated(app.latestUpdate) && (
                 <Button
                   size="sm"
@@ -102,11 +101,6 @@ export function AppDetailsTable({ currentApp, linkedApps = [], className = "" }:
           <div key={`mobile-${app.platform}-${app.bundleId}-${index}`} className="space-y-4 p-4 bg-muted/30 rounded-lg border">
             {/* Platform Badge */}
             <div className="flex items-center gap-2">
-              {app.platform === "ios" ? (
-                <Apple className="h-4 w-4 text-muted-foreground" />
-              ) : (
-                <Bot className="h-4 w-4 text-muted-foreground" />
-              )}
               <Badge variant="secondary" className="text-xs font-medium">
                 {app.platform.toUpperCase()}
               </Badge>
@@ -116,7 +110,14 @@ export function AppDetailsTable({ currentApp, linkedApps = [], className = "" }:
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1">
                 <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium">Version</p>
-                <p className="font-semibold text-base">{app.version}</p>
+                <div className="flex items-center gap-2">
+                  {app.platform === "ios" ? (
+                    <Apple className="h-4 w-4 text-muted-foreground" />
+                  ) : (
+                    <Bot className="h-4 w-4 text-muted-foreground" />
+                  )}
+                  <span className="font-semibold text-base">{app.version}</span>
+                </div>
               </div>
               <div className="space-y-1">
                 <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium">Rating</p>
@@ -130,15 +131,17 @@ export function AppDetailsTable({ currentApp, linkedApps = [], className = "" }:
             {/* Last Update Section */}
             <div className="space-y-2">
               <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium">Latest Update</p>
-              <div className="space-y-2">
-                <p className="text-sm text-foreground leading-relaxed line-clamp-3">
-                  {app.latestUpdate}
-                </p>
+               <div className="flex items-center gap-2">
+                <span className="text-sm text-foreground leading-relaxed flex-1">
+                  {isUpdateTextTruncated(app.latestUpdate) 
+                    ? `${app.latestUpdate.substring(0, 80)}...` 
+                    : app.latestUpdate}
+                </span>
                 {isUpdateTextTruncated(app.latestUpdate) && (
                   <Button
                     size="sm"
                     variant="link"
-                    className="h-auto p-0 text-xs text-primary hover:text-primary/80 font-medium justify-start"
+                    className="h-auto p-0 text-xs text-primary hover:text-primary/80 font-medium flex-shrink-0"
                     onClick={() => handleShowMore(app.latestUpdate)}
                   >
                     Show more
