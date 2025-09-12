@@ -111,7 +111,7 @@ export default function RevoxAppDetails() {
   const navigate = useNavigate();
   const { platform, bundleId } = useParams<{ platform: "ios" | "android"; bundleId: string }>();
 
-  const truncate = (s?: string, n = 80) => (s && s.length > n ? s.slice(0, n) + "..." : s || "");
+  const truncate = (s?: string, n = 60) => (s && s.length > n ? s.slice(0, n) + "..." : s || "");
 
   // Get app_pks from URL parameters for merged apps
   const urlParams = new URLSearchParams(window.location.search);
@@ -194,7 +194,7 @@ export default function RevoxAppDetails() {
   };
 
   // Check if text is truncated by length
-  const isUpdateTextTruncated = (text: string) => text.length > 80;
+  const isUpdateTextTruncated = (text: string) => text.length > 60;
 
   // --- Chargement initial (reset) ---
   async function fetchReviewsInitial() {
@@ -550,7 +550,7 @@ export default function RevoxAppDetails() {
                       name: displayApp.name,
                       version: displayApp.version,
                       rating: displayApp.rating,
-                      latestUpdate: displayApp.latestUpdate,
+                      latestUpdate: truncate(displayApp.latestUpdate, 60),
                       lastUpdatedAt: displayApp.lastUpdatedAt,
                       platform: platform!,
                       bundleId: bundleId!
@@ -559,9 +559,11 @@ export default function RevoxAppDetails() {
                       name: linkedApp.name || linkedApp.bundleId,
                       version: (linkedApp as any).version || "Unknown",
                       rating: linkedApp.rating || 4.1,
-                      latestUpdate: (linkedApp as any).releaseNotes
-                        || `Enhanced ${linkedApp.platform === 'ios' ? 'iOS' : 'Android'} compatibility and bug fixes for better performance.`,
-                      lastUpdatedAt: (linkedApp as any).lastUpdatedAt,
+                      latestUpdate: truncate(
+                        (linkedApp as any).releaseNotes ||
+                        `Enhanced ${linkedApp.platform === 'ios' ? 'iOS' : 'Android'} compatibility and bug fixes for better performance.`,
+                        60
+                      ),                      lastUpdatedAt: (linkedApp as any).lastUpdatedAt,
                       platform: linkedApp.platform,
                       bundleId: linkedApp.bundleId
                     }))}
