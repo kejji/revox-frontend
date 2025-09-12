@@ -111,6 +111,8 @@ export default function RevoxAppDetails() {
   const navigate = useNavigate();
   const { platform, bundleId } = useParams<{ platform: "ios" | "android"; bundleId: string }>();
 
+  const truncate = (s?: string, n = 60) => (s && s.length > n ? s.slice(0, n) + "..." : s || "");
+
   // Get app_pks from URL parameters for merged apps
   const urlParams = new URLSearchParams(window.location.search);
   const urlAppPks = urlParams.get('app_pks')?.split(',').filter(Boolean) || [];
@@ -138,7 +140,7 @@ export default function RevoxAppDetails() {
   const [searchTerm, setSearchTerm] = useState("");
   const [platformFilter, setPlatformFilter] = useState<"all" | "ios" | "android">("all");
   const [ratingFilter, setRatingFilter] = useState<"all" | "1" | "2" | "3" | "4" | "5">("all");
-  
+
   // Dialog state
   const [showUpdateDialog, setShowUpdateDialog] = useState(false);
 
@@ -551,7 +553,7 @@ export default function RevoxAppDetails() {
                       version: displayApp.version,
                       rating: displayApp.rating,
                       ratingCount: displayApp.ratingCount,
-                      latestUpdate: displayApp.latestUpdate,
+                      latestUpdate: truncate(displayApp.latestUpdate, 60),
                       lastUpdatedAt: displayApp.lastUpdatedAt,
                       platform: platform!,
                       bundleId: bundleId!
@@ -561,13 +563,59 @@ export default function RevoxAppDetails() {
                       version: (linkedApp as any).version || "Unknown",
                       rating: linkedApp.rating || 4.1,
                       ratingCount: (linkedApp as any).ratingCount,
-                      latestUpdate: (linkedApp as any).releaseNotes || `Enhanced ${linkedApp.platform === 'ios' ? 'iOS' : 'Android'} compatibility and bug fixes for better performance.`,
-                      lastUpdatedAt: (linkedApp as any).lastUpdatedAt,
+                      latestUpdate: truncate(
+                        (linkedApp as any).releaseNotes ||
+                        `Enhanced ${linkedApp.platform === 'ios' ? 'iOS' : 'Android'} compatibility and bug fixes for better performance.`,
+                        60
+                      ), lastUpdatedAt: (linkedApp as any).lastUpdatedAt,
                       platform: linkedApp.platform,
                       bundleId: linkedApp.bundleId
                     }))}
                     className="mt-4"
                   />
+                  <div className="mt-2">
+                    {(displayApp.latestUpdate && displayApp.latestUpdate.length > 60) && (
+                      <Button
+                        variant="link"
+                        size="sm"
+                        className="px-0"
+                        onClick={() => setShowUpdateDialog(true)}
+                      >
+                        Show more
+                      </Button>
+                    )}
+                  </div>
+
+                  <Dialog open={showUpdateDialog} onOpenChange={setShowUpdateDialog}>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Latest Update</DialogTitle>
+                      </DialogHeader>
+                      <div className="space-y-4">
+                        {/* Texte complet de l’app courante */}
+                        {displayApp.latestUpdate && (
+                          <p className="text-sm leading-relaxed">{displayApp.latestUpdate}</p>
+                        )}
+
+                        {/* Si tu veux aussi afficher les notes des apps liées en entier : */}
+                        {linkedApps.length > 0 && (
+                          <div className="space-y-3">
+                            {linkedApps.map((la) => (
+                              <div key={la.bundleId}>
+                                <div className="text-xs font-medium mb-1">
+                                  {la.name || la.bundleId} ({la.platform.toUpperCase()})
+                                </div>
+                                <p className="text-sm leading-relaxed">
+                                  {(la as any).releaseNotes ||
+                                    `Enhanced ${la.platform === 'ios' ? 'iOS' : 'Android'} compatibility and bug fixes for better performance.`}
+                                </p>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </DialogContent>
+                  </Dialog>
                 </div>
               </div>
             </CardContent>
