@@ -15,12 +15,12 @@ interface UpdateDialogProps {
 export function UpdateDialog({ open, onOpenChange, updateText, appName }: UpdateDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg">
+      <DialogContent className="max-w-2xl max-h-[80vh]">
         <DialogHeader>
           <DialogTitle>Latest Update Details</DialogTitle>
         </DialogHeader>
-        <div className="pt-4">
-          <p className="text-sm leading-relaxed">{updateText}</p>
+        <div className="pt-4 overflow-y-auto">
+          <p className="text-sm leading-relaxed whitespace-pre-wrap">{updateText}</p>
         </div>
       </DialogContent>
     </Dialog>
