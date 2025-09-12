@@ -74,9 +74,6 @@ export function AppDetailsTable({ currentApp, linkedApps = [], className = "" }:
             <div className="flex items-center gap-2">
               <div className="flex">{renderStars(Math.floor(app.rating))}</div>
               <span className="font-medium">{app.rating}</span>
-              {app.ratingCount && (
-                <span className="text-xs text-muted-foreground">({app.ratingCount})</span>
-              )}
             </div>
 
             {/* Latest Update */}
@@ -126,9 +123,6 @@ export function AppDetailsTable({ currentApp, linkedApps = [], className = "" }:
                 <div className="flex items-center gap-2">
                   <div className="flex">{renderStars(Math.floor(app.rating))}</div>
                   <span className="font-semibold text-base">{app.rating}</span>
-                  {app.ratingCount && (
-                    <span className="text-xs text-muted-foreground">({app.ratingCount})</span>
-                  )}
                 </div>
               </div>
             </div>
