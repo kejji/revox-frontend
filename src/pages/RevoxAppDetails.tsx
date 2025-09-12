@@ -550,7 +550,7 @@ export default function RevoxAppDetails() {
                       name: displayApp.name,
                       version: displayApp.version,
                       rating: displayApp.rating,
-                      latestUpdate: truncate(displayApp.latestUpdate, 80),
+                      latestUpdate: displayApp.latestUpdate,
                       lastUpdatedAt: displayApp.lastUpdatedAt,
                       platform: platform!,
                       bundleId: bundleId!
@@ -559,11 +559,9 @@ export default function RevoxAppDetails() {
                       name: linkedApp.name || linkedApp.bundleId,
                       version: (linkedApp as any).version || "Unknown",
                       rating: linkedApp.rating || 4.1,
-                      latestUpdate: truncate(
-                        (linkedApp as any).releaseNotes ||
-                        `Enhanced ${linkedApp.platform === 'ios' ? 'iOS' : 'Android'} compatibility and bug fixes for better performance.`,
-                        80
-                      ),                      lastUpdatedAt: (linkedApp as any).lastUpdatedAt,
+                      latestUpdate: (linkedApp as any).releaseNotes
+                        || `Enhanced ${linkedApp.platform === 'ios' ? 'iOS' : 'Android'} compatibility and bug fixes for better performance.`,
+                      lastUpdatedAt: (linkedApp as any).lastUpdatedAt,
                       platform: linkedApp.platform,
                       bundleId: linkedApp.bundleId
                     }))}
