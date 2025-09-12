@@ -1,5 +1,5 @@
 // src/pages/RevoxAppDetails.tsx
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -15,6 +15,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { AppDetailsTable } from "@/components/app-details/AppDetailsTable";
 import {
   ArrowLeft,
   Star,
@@ -34,8 +47,6 @@ import {
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { LanguageToggle } from "@/components/ui/language-toggle";
 import { api, appPkFromRoute, getReviewsExportUrl, linkApps, unlinkApps } from "@/api";
-import { AppDetailsTable } from "@/components/app-details/AppDetailsTable";
-import { UpdateDialog } from "@/components/app-details/UpdateDialog";
 
 // -------- Types alignés avec le backend --------
 type ReviewItem = {
@@ -100,10 +111,7 @@ export default function RevoxAppDetails() {
   const navigate = useNavigate();
   const { platform, bundleId } = useParams<{ platform: "ios" | "android"; bundleId: string }>();
 
-  // Dialog (piloté par le parent) pour afficher le texte COMPLET
-  const [showUpdateDialog, setShowUpdateDialog] = useState(false);
-  const [dialogText, setDialogText] = useState<string>("");
-  const [dialogAppName, setDialogAppName] = useState<string>("");
+  const truncate = (s?: string, n = 80) => (s && s.length > n ? s.slice(0, n) + "..." : s || "");
 
   // Get app_pks from URL parameters for merged apps
   const urlParams = new URLSearchParams(window.location.search);
@@ -133,18 +141,19 @@ export default function RevoxAppDetails() {
   const [platformFilter, setPlatformFilter] = useState<"all" | "ios" | "android">("all");
   const [ratingFilter, setRatingFilter] = useState<"all" | "1" | "2" | "3" | "4" | "5">("all");
 
+  // Dialog state
+  const [showUpdateDialog, setShowUpdateDialog] = useState(false);
+
   // Use real app data from API when available, fallback to mock
   const displayApp = currentApp ? {
     name: currentApp.name || bundleId || 'Unknown App',
     icon: currentApp.icon,
     version: (currentApp as any).version || 'Unknown',
     rating: currentApp.rating || 0,
-    ratingCount: (currentApp as any).ratingCount,
     latestUpdate: (currentApp as any).releaseNotes || 'No update information available.',
     lastUpdatedAt: (currentApp as any).lastUpdatedAt
   } : {
     ...app,
-    ratingCount: app.totalReviews,
     lastUpdatedAt: undefined
   };
 
@@ -183,6 +192,9 @@ export default function RevoxAppDetails() {
       console.error("Failed to load app data:", e);
     }
   };
+
+  // Check if text is truncated by length
+  const isUpdateTextTruncated = (text: string) => text.length > 80;
 
   // --- Chargement initial (reset) ---
   async function fetchReviewsInitial() {
@@ -349,6 +361,42 @@ export default function RevoxAppDetails() {
     }
   };
 
+  // Link app handler
+  const handleLinkApp = async (targetApp: FollowedApp) => {
+    if (!currentApp) return;
+
+    setLinkingLoading(true);
+    try {
+      const currentAppPk = appPkFromRoute(currentApp.platform, currentApp.bundleId);
+      const targetAppPk = appPkFromRoute(targetApp.platform, targetApp.bundleId);
+
+      await linkApps(currentAppPk, targetAppPk);
+      await loadAppData();
+    } catch (e: any) {
+      setErr(e?.response?.data?.message || e?.message || "Failed to link apps.");
+    } finally {
+      setLinkingLoading(false);
+    }
+  };
+
+  // Unlink app handler
+  const handleUnlinkApp = async () => {
+    if (!currentApp || linkedApps.length === 0) return;
+
+    setLinkingLoading(true);
+    try {
+      const currentAppPk = appPkFromRoute(currentApp.platform, currentApp.bundleId);
+      const linkedAppPk = appPkFromRoute(linkedApps[0].platform, linkedApps[0].bundleId);
+
+      await unlinkApps(currentAppPk, linkedAppPk);
+      await loadAppData();
+    } catch (e: any) {
+      setErr(e?.response?.data?.message || e?.message || "Failed to unlink apps.");
+    } finally {
+      setLinkingLoading(false);
+    }
+  };
+
   const filteredReviews = useMemo(() => {
     let out = reviews;
 
@@ -374,7 +422,8 @@ export default function RevoxAppDetails() {
     Array.from({ length: 5 }, (_, i) => (
       <Star
         key={i}
-        className={`h-4 w-4 ${i < Math.round(rating) ? "text-yellow-500 fill-yellow-500" : "text-muted-foreground"}`}
+        className={`h-4 w-4 ${i < Math.round(rating) ? "text-yellow-500 fill-yellow-500" : "text-muted-foreground"
+          }`}
       />
     ));
 
@@ -405,7 +454,7 @@ export default function RevoxAppDetails() {
         </header>
 
         <div className="container mx-auto p-4 sm:p-6 max-w-7xl space-y-4 sm:space-y-6">
-          {/* App Info */}
+          {/* App Info (mock) */}
           <Card>
             <CardContent className="p-4 sm:p-6">
               <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
@@ -451,17 +500,7 @@ export default function RevoxAppDetails() {
                           <Button
                             size="sm"
                             variant="ghost"
-                            onClick={async () => {
-                              if (!currentApp || linkedApps.length === 0) return;
-                              const currentAppPk = appPkFromRoute(currentApp.platform, currentApp.bundleId);
-                              const linkedAppPk = appPkFromRoute(linkedApps[0].platform, linkedApps[0].bundleId);
-                              try {
-                                await unlinkApps(currentAppPk, linkedAppPk);
-                                await loadAppData();
-                              } catch (e) {
-                                // noop
-                              }
-                            }}
+                            onClick={handleUnlinkApp}
                             disabled={linkingLoading}
                             className="h-6 px-2 text-xs gap-1 text-muted-foreground hover:text-destructive"
                             title="Unlink apps"
@@ -471,31 +510,36 @@ export default function RevoxAppDetails() {
                           </Button>
                         )}
                         {linkedApps.length === 0 && availableApps.length > 0 && (
-                          <div className="relative">
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              disabled={linkingLoading}
-                              className="h-6 px-2 text-xs gap-1 text-muted-foreground hover:text-primary"
-                              title="Link with counterpart app"
-                              onClick={() => {
-                                // simple menu-less link to the first available for brevity
-                                const target = availableApps[0];
-                                if (!target) return;
-                                (async () => {
-                                  try {
-                                    const currentAppPk = appPkFromRoute(platform!, bundleId!);
-                                    const targetAppPk = appPkFromRoute(target.platform, target.bundleId);
-                                    await linkApps(currentAppPk, targetAppPk);
-                                    await loadAppData();
-                                  } catch { /* noop */ }
-                                })();
-                              }}
-                            >
-                              <Plus className="h-3 w-3" />
-                              Link
-                            </Button>
-                          </div>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                disabled={linkingLoading}
+                                className="h-6 px-2 text-xs gap-1 text-muted-foreground hover:text-primary"
+                                title="Link with counterpart app"
+                              >
+                                <Plus className="h-3 w-3" />
+                                Link
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent>
+                              {availableApps.map((availableApp) => (
+                                <DropdownMenuItem
+                                  key={`${availableApp.platform}-${availableApp.bundleId}`}
+                                  onClick={() => handleLinkApp(availableApp)}
+                                  className="gap-2"
+                                >
+                                  {availableApp.platform === "ios" ? (
+                                    <Apple className="h-4 w-4" />
+                                  ) : (
+                                    <Bot className="h-4 w-4" />
+                                  )}
+                                  {availableApp.name || availableApp.bundleId}
+                                </DropdownMenuItem>
+                              ))}
+                            </DropdownMenuContent>
+                          </DropdownMenu>
                         )}
                       </div>
                     </div>
@@ -506,7 +550,7 @@ export default function RevoxAppDetails() {
                       name: displayApp.name,
                       version: displayApp.version,
                       rating: displayApp.rating,
-                      latestUpdate: displayApp.latestUpdate, // ✅ TEXTE COMPLET
+                      latestUpdate: displayApp.latestUpdate,
                       lastUpdatedAt: displayApp.lastUpdatedAt,
                       platform: platform!,
                       bundleId: bundleId!
@@ -515,28 +559,45 @@ export default function RevoxAppDetails() {
                       name: linkedApp.name || linkedApp.bundleId,
                       version: (linkedApp as any).version || "Unknown",
                       rating: linkedApp.rating || 4.1,
-                      latestUpdate:
-                        (linkedApp as any).releaseNotes // ✅ TEXTE COMPLET
+                      latestUpdate: (linkedApp as any).releaseNotes
                         || `Enhanced ${linkedApp.platform === 'ios' ? 'iOS' : 'Android'} compatibility and bug fixes for better performance.`,
                       lastUpdatedAt: (linkedApp as any).lastUpdatedAt,
                       platform: linkedApp.platform,
                       bundleId: linkedApp.bundleId
                     }))}
                     className="mt-4"
-                    truncateAt={80} // ou 60 si tu préfères
-                    onShowMore={(fullText, appName) => {
-                      setDialogText(fullText);      // ✅ texte complet pour le Dialog
-                      setDialogAppName(appName);
-                      setShowUpdateDialog(true);
-                    }}
                   />
 
-                  <UpdateDialog
-                    open={showUpdateDialog}
-                    onOpenChange={setShowUpdateDialog}
-                    updateText={dialogText}         // ✅ affiche le texte complet
-                    appName={dialogAppName || displayApp.name}
-                  />
+                  <Dialog open={showUpdateDialog} onOpenChange={setShowUpdateDialog}>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Latest Update</DialogTitle>
+                      </DialogHeader>
+                      <div className="space-y-4">
+                        {/* Texte complet de l’app courante */}
+                        {displayApp.latestUpdate && (
+                          <p className="text-sm leading-relaxed">{displayApp.latestUpdate}</p>
+                        )}
+
+                        {/* Si tu veux aussi afficher les notes des apps liées en entier : */}
+                        {linkedApps.length > 0 && (
+                          <div className="space-y-3">
+                            {linkedApps.map((la) => (
+                              <div key={la.bundleId}>
+                                <div className="text-xs font-medium mb-1">
+                                  {la.name || la.bundleId} ({la.platform.toUpperCase()})
+                                </div>
+                                <p className="text-sm leading-relaxed">
+                                  {(la as any).releaseNotes ||
+                                    `Enhanced ${la.platform === 'ios' ? 'iOS' : 'Android'} compatibility and bug fixes for better performance.`}
+                                </p>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </DialogContent>
+                  </Dialog>
                 </div>
               </div>
             </CardContent>
@@ -599,7 +660,10 @@ export default function RevoxAppDetails() {
                 {mockAlerts.map((a) => (
                   <div key={a.id} className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <div className={`w-1.5 h-1.5 rounded-full ${a.type === "error" ? "bg-red-500" : "bg-orange-500"}`} />
+                      <div
+                        className={`w-1.5 h-1.5 rounded-full ${a.type === "error" ? "bg-red-500" : "bg-orange-500"
+                          }`}
+                      />
                       <span className="text-sm text-foreground">{a.message}</span>
                     </div>
                     <Button variant="ghost" size="sm" className="h-6 w-6 p-0 hover:bg-muted">
