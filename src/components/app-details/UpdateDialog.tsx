@@ -1,3 +1,4 @@
+// src/components/UpdateDialog.tsx
 import {
   Dialog,
   DialogContent,
@@ -8,7 +9,7 @@ import {
 interface UpdateDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  updateText: string;
+  updateText: string; // ← TEXTE COMPLET reçu du parent
   appName: string;
 }
 
@@ -17,10 +18,10 @@ export function UpdateDialog({ open, onOpenChange, updateText, appName }: Update
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-lg">
         <DialogHeader>
-          <DialogTitle>Latest Update Details</DialogTitle>
+          <DialogTitle>Latest Update — {appName}</DialogTitle>
         </DialogHeader>
         <div className="pt-4">
-          <p className="text-sm leading-relaxed">{updateText}</p>
+          <p className="text-sm leading-relaxed whitespace-pre-wrap">{updateText}</p>
         </div>
       </DialogContent>
     </Dialog>
