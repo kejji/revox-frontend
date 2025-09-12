@@ -25,8 +25,8 @@ export function AppDetailsTable({ currentApp, linkedApps = [], className = "" }:
   const [showUpdateDialog, setShowUpdateDialog] = useState(false);
   const [selectedUpdateText, setSelectedUpdateText] = useState("");
 
-  // Check if text should be truncated (more than 80 characters)
-  const isUpdateTextTruncated = (text: string) => text.length > 80;
+  // Check if text should be truncated (more than 60 characters)
+  const isUpdateTextTruncated = (text: string) => text.length > 60;
 
   const renderStars = (rating: number) =>
     Array.from({ length: 5 }, (_, i) => (
@@ -80,18 +80,18 @@ export function AppDetailsTable({ currentApp, linkedApps = [], className = "" }:
             </div>
 
             {/* Latest Update */}
-            <div className="flex items-center gap-2">
-              <p className="text-sm text-foreground truncate flex-1 line-clamp-2">
+            <div className="space-y-1">
+              <p className="text-sm text-foreground line-clamp-2 leading-relaxed">
                 {app.latestUpdate}
               </p>
               {isUpdateTextTruncated(app.latestUpdate) && (
                 <Button
                   size="sm"
-                  variant="ghost"
-                  className="h-6 px-2 text-xs text-muted-foreground hover:text-primary flex-shrink-0"
+                  variant="link"
+                  className="h-auto p-0 text-xs text-primary hover:text-primary/80 font-medium"
                   onClick={() => handleShowMore(app.latestUpdate)}
                 >
-                  See more
+                  Show more
                 </Button>
               )}
             </div>
@@ -143,11 +143,11 @@ export function AppDetailsTable({ currentApp, linkedApps = [], className = "" }:
                 {isUpdateTextTruncated(app.latestUpdate) && (
                   <Button
                     size="sm"
-                    variant="ghost"
-                    className="h-8 px-3 text-xs text-muted-foreground hover:text-primary w-full justify-center"
+                    variant="link"
+                    className="h-auto p-0 text-xs text-primary hover:text-primary/80 font-medium justify-start"
                     onClick={() => handleShowMore(app.latestUpdate)}
                   >
-                    See more
+                    Show more
                   </Button>
                 )}
               </div>

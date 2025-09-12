@@ -553,7 +553,7 @@ export default function RevoxAppDetails() {
                       version: displayApp.version,
                       rating: displayApp.rating,
                       ratingCount: displayApp.ratingCount,
-                      latestUpdate: truncate(displayApp.latestUpdate, 60),
+                      latestUpdate: displayApp.latestUpdate,
                       lastUpdatedAt: displayApp.lastUpdatedAt,
                       platform: platform!,
                       bundleId: bundleId!
@@ -563,28 +563,13 @@ export default function RevoxAppDetails() {
                       version: (linkedApp as any).version || "Unknown",
                       rating: linkedApp.rating || 4.1,
                       ratingCount: (linkedApp as any).ratingCount,
-                      latestUpdate: truncate(
-                        (linkedApp as any).releaseNotes ||
-                        `Enhanced ${linkedApp.platform === 'ios' ? 'iOS' : 'Android'} compatibility and bug fixes for better performance.`,
-                        60
-                      ), lastUpdatedAt: (linkedApp as any).lastUpdatedAt,
+                      latestUpdate: (linkedApp as any).releaseNotes || `Enhanced ${linkedApp.platform === 'ios' ? 'iOS' : 'Android'} compatibility and bug fixes for better performance.`,
+                      lastUpdatedAt: (linkedApp as any).lastUpdatedAt,
                       platform: linkedApp.platform,
                       bundleId: linkedApp.bundleId
                     }))}
                     className="mt-4"
                   />
-                  <div className="mt-2">
-                    {(displayApp.latestUpdate && displayApp.latestUpdate.length > 60) && (
-                      <Button
-                        variant="link"
-                        size="sm"
-                        className="px-0"
-                        onClick={() => setShowUpdateDialog(true)}
-                      >
-                        Show more
-                      </Button>
-                    )}
-                  </div>
 
                   <Dialog open={showUpdateDialog} onOpenChange={setShowUpdateDialog}>
                     <DialogContent>
