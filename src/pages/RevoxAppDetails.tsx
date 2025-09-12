@@ -150,12 +150,10 @@ export default function RevoxAppDetails() {
     icon: currentApp.icon,
     version: (currentApp as any).version || 'Unknown',
     rating: currentApp.rating || 0,
-    ratingCount: (currentApp as any).ratingCount,
     latestUpdate: (currentApp as any).releaseNotes || 'No update information available.',
     lastUpdatedAt: (currentApp as any).lastUpdatedAt
   } : {
     ...app,
-    ratingCount: app.totalReviews,
     lastUpdatedAt: undefined
   };
 
@@ -552,7 +550,6 @@ export default function RevoxAppDetails() {
                       name: displayApp.name,
                       version: displayApp.version,
                       rating: displayApp.rating,
-                      ratingCount: displayApp.ratingCount,
                       latestUpdate: truncate(displayApp.latestUpdate, 60),
                       lastUpdatedAt: displayApp.lastUpdatedAt,
                       platform: platform!,
@@ -562,7 +559,6 @@ export default function RevoxAppDetails() {
                       name: linkedApp.name || linkedApp.bundleId,
                       version: (linkedApp as any).version || "Unknown",
                       rating: linkedApp.rating || 4.1,
-                      ratingCount: (linkedApp as any).ratingCount,
                       latestUpdate: truncate(
                         (linkedApp as any).releaseNotes ||
                         `Enhanced ${linkedApp.platform === 'ios' ? 'iOS' : 'Android'} compatibility and bug fixes for better performance.`,
