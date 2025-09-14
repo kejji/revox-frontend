@@ -17,7 +17,7 @@ import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { LanguageToggle } from "@/components/ui/language-toggle";
 import { Link, useNavigate } from "react-router-dom";
 
-import { api, linkApps, unlinkApps, appPkFromRoute, markAppAsRead } from "@/api";
+import { api, linkApps, unlinkApps, appPkFromRoute } from "@/api";
 import { doSignOut } from "@/lib/auth";
 
 // ✅ Amplify v6: lire l'utilisateur courant + attributs
@@ -444,17 +444,10 @@ export default function RevoxDashboard() {
 
                   {/* Clickable main content area */}
                   <div
-                    onClick={async () => {
+                    onClick={() => {
                       // Navigate to first platform
                       const firstPlatform = app.platforms[0];
                       const url = `/revox/apps/${firstPlatform.platform}/${encodeURIComponent(firstPlatform.bundleId)}`;
-                      
-                      // Mark app as read before navigation
-                      try {
-                        await markAppAsRead(firstPlatform.platform, firstPlatform.bundleId);
-                      } catch (error) {
-                        console.error('Failed to mark app as read:', error);
-                      }
                       
                       // For merged apps, add all app_pks as URL parameters
                       if (app.isLinked && app.appPks.length > 1) {
