@@ -370,11 +370,6 @@ export default function RevoxDashboard() {
                 }`}
               >
                 <CardContent className="p-0">
-                  {/* New reviews notification dot */}
-                  {(app.totalBadgeCount || 0) > 0 && (
-                    <div className="absolute top-2 right-2 w-3 h-3 bg-destructive rounded-full z-10"></div>
-                  )}
-
                   {/* Delete/Options button */}
                   <div className="absolute top-3 right-3 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                     <DropdownMenu>
@@ -523,10 +518,17 @@ export default function RevoxDashboard() {
                         </div>
                       )}
 
-                      <div className="text-xs text-muted-foreground font-medium">
-                        {(app.totalBadgeCount || 0) > 0
-                          ? `${app.totalBadgeCount} new reviews`
-                          : "No recent reviews"}
+                      <div className="flex items-center gap-2">
+                        <div className="text-xs text-muted-foreground font-medium">
+                          {(app.totalBadgeCount || 0) > 0
+                            ? `${app.totalBadgeCount} new reviews`
+                            : "No recent reviews"}
+                        </div>
+                        {(app.totalBadgeCount || 0) > 0 && (
+                          <Badge variant="destructive" className="text-xs h-5 px-1.5">
+                            {app.totalBadgeCount}
+                          </Badge>
+                        )}
                       </div>
                     </div>
 
