@@ -32,6 +32,7 @@ type FollowedApp = {
   rating?: number | null;
   reviewsThisWeek?: number | null;
   linked_app_pks?: string[] | null;
+  badge_count?: number | null;
 };
 
 type MergedApp = {
@@ -43,9 +44,11 @@ type MergedApp = {
     bundleId: string;
     rating?: number | null;
     reviewsThisWeek?: number | null;
+    badge_count?: number | null;
   }>;
   totalRating?: number;
   totalReviewsThisWeek?: number;
+  totalBadgeCount?: number;
   isLinked: boolean;
   appPks: string[];
 };
@@ -87,6 +90,7 @@ export default function RevoxDashboard() {
           bundleId: a.bundleId,
           rating: a.rating,
           reviewsThisWeek: a.reviewsThisWeek,
+          badge_count: a.badge_count,
         }));
 
         const totalRating = allApps
@@ -96,6 +100,9 @@ export default function RevoxDashboard() {
         const totalReviewsThisWeek = allApps
           .reduce((sum, a) => sum + (a.reviewsThisWeek || 0), 0);
 
+        const totalBadgeCount = allApps
+          .reduce((sum, a) => sum + (a.badge_count || 0), 0);
+
         processed.push({
           id: `merged-${appPk}`,
           name: app.name || app.bundleId,
@@ -103,6 +110,7 @@ export default function RevoxDashboard() {
           platforms,
           totalRating: totalRating > 0 ? totalRating : undefined,
           totalReviewsThisWeek,
+          totalBadgeCount,
           isLinked: true,
           appPks: [appPk, ...linkedAppPks],
         });
@@ -123,10 +131,12 @@ export default function RevoxDashboard() {
               bundleId: app.bundleId,
               rating: app.rating,
               reviewsThisWeek: app.reviewsThisWeek,
+              badge_count: app.badge_count,
             },
           ],
           totalRating: app.rating || undefined,
           totalReviewsThisWeek: app.reviewsThisWeek || 0,
+          totalBadgeCount: app.badge_count || 0,
           isLinked: false,
           appPks: [appPk],
         });
@@ -508,10 +518,17 @@ export default function RevoxDashboard() {
                         </div>
                       )}
 
-                      <div className="text-xs text-muted-foreground font-medium">
-                        {typeof app.totalReviewsThisWeek === "number" && app.totalReviewsThisWeek > 0
-                          ? `${app.totalReviewsThisWeek} reviews this week`
-                          : "No recent reviews"}
+                      <div className="flex items-center gap-2">
+                        <div className="text-xs text-muted-foreground font-medium">
+                          {(app.totalBadgeCount || 0) > 0
+                            ? `${app.totalBadgeCount} new reviews`
+                            : "No recent reviews"}
+                        </div>
+                        {(app.totalBadgeCount || 0) > 0 && (
+                          <Badge variant="destructive" className="text-xs h-5 px-1.5">
+                            {app.totalBadgeCount}
+                          </Badge>
+                        )}
                       </div>
                     </div>
 
