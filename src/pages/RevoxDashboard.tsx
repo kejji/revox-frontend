@@ -519,16 +519,16 @@ export default function RevoxDashboard() {
                       )}
 
                       <div className="flex items-center gap-2">
-                        <div className="text-xs text-muted-foreground font-medium">
-                          {(app.totalBadgeCount || 0) > 0
-                            ? `${app.totalBadgeCount} new reviews`
-                            : "No recent reviews"}
-                        </div>
                         {(app.totalBadgeCount || 0) > 0 && (
                           <Badge variant="destructive" className="text-xs h-5 px-1.5">
                             {app.totalBadgeCount}
                           </Badge>
                         )}
+                        <div className="text-xs text-muted-foreground font-medium">
+                          {(app.totalBadgeCount || 0) > 0
+                            ? "new reviews"
+                            : "No recent reviews"}
+                        </div>
                       </div>
                     </div>
 
