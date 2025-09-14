@@ -28,6 +28,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { AppDetailsTable } from "@/components/app-details/AppDetailsTable";
+import { DataExtractionLoader } from "@/components/app-details/DataExtractionLoader";
 import {
   ArrowLeft,
   Star,
@@ -113,6 +114,8 @@ export default function RevoxAppDetails() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [err, setErr] = useState<string | null>(null);
+  const [isFirstTimeExtraction, setIsFirstTimeExtraction] = useState(false);
+  const [showExtractionLoader, setShowExtractionLoader] = useState(false);
 
   const [cursor, setCursor] = useState<string | undefined>(undefined);
   const [hasMore, setHasMore] = useState<boolean>(false);
@@ -217,12 +220,10 @@ export default function RevoxAppDetails() {
       setCursor(next);
       setHasMore(!!next);
 
-      // Auto-refresh if no results and not already refreshing
-      if (rows.length === 0 && !refreshing) {
-        setTimeout(() => {
-          setRefreshing(true);
-          handleRefresh();
-        }, 2000);
+      // Show extraction loader if no results and not already refreshing (first time)
+      if (rows.length === 0 && !refreshing && !isFirstTimeExtraction) {
+        setIsFirstTimeExtraction(true);
+        setShowExtractionLoader(true);
       }
     } catch (e: any) {
       setErr(e?.response?.data?.error || e?.message || "Failed to load reviews.");
@@ -293,6 +294,13 @@ export default function RevoxAppDetails() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentApp]);
+
+  // Handle extraction loader completion
+  const handleExtractionComplete = () => {
+    setShowExtractionLoader(false);
+    setRefreshing(true);
+    handleRefresh();
+  };
 
   // Ingest (refresh) → POST puis reset
   const handleRefresh = async () => {
@@ -751,7 +759,13 @@ export default function RevoxAppDetails() {
               </div>
 
               {/* Liste */}
-              {loading && (
+              {showExtractionLoader ? (
+                <DataExtractionLoader 
+                  appName={displayApp?.name || bundleId}
+                  platform={platform}
+                  onComplete={handleExtractionComplete}
+                />
+              ) : loading ? (
                 <div className="space-y-4 animate-fade-in">
                   {Array.from({ length: 3 }).map((_, i) => (
                     <div key={i} className="border rounded-lg p-4 space-y-3">
@@ -773,7 +787,7 @@ export default function RevoxAppDetails() {
                     </div>
                   ))}
                 </div>
-              )}
+              ) : null}
 
               {refreshing && !loading && (
                 <div className="text-sm text-muted-foreground flex items-center gap-2 animate-fade-in">
