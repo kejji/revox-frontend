@@ -65,6 +65,14 @@ export async function unlinkApps(appPk1: string, appPk2: string): Promise<void> 
   });
 }
 
+/** Mark app as read */
+export async function markAppAsRead(platform: "ios" | "android", bundleId: string): Promise<void> {
+  await api.put("/follow-app/mark-read", {
+    platform,
+    bundleId,
+  });
+}
+
 /** Construit l'URL d'export CSV (sans cursor) */
 export function getReviewsExportUrl(params: {
   app_pk: string;

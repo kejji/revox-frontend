@@ -47,7 +47,7 @@ import {
 } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { LanguageToggle } from "@/components/ui/language-toggle";
-import { api, appPkFromRoute, getReviewsExportUrl, linkApps, unlinkApps } from "@/api";
+import { api, appPkFromRoute, getReviewsExportUrl, linkApps, unlinkApps, markAppAsRead } from "@/api";
 
 // -------- Types alignés avec le backend --------
 type ReviewItem = {
@@ -224,6 +224,15 @@ export default function RevoxAppDetails() {
       if (rows.length === 0 && !refreshing && !isFirstTimeExtraction) {
         setIsFirstTimeExtraction(true);
         setShowExtractionLoader(true);
+      }
+
+      // Mark app as read after successfully loading reviews with content
+      if (rows.length > 0 && platform && bundleId) {
+        try {
+          await markAppAsRead(platform, bundleId);
+        } catch (error) {
+          console.error("Failed to mark app as read:", error);
+        }
       }
     } catch (e: any) {
       setErr(e?.response?.data?.error || e?.message || "Failed to load reviews.");
