@@ -229,9 +229,31 @@ export default function RevoxAppDetails() {
       // Mark app as read after successfully loading reviews with content
       if (rows.length > 0 && platform && bundleId) {
         try {
-          await markAppAsRead(platform, bundleId);
+          // For merged apps, mark all apps as read
+          const appsToMarkRead: Array<{ platform: "ios" | "android"; bundleId: string }> = [];
+          
+          if (urlAppPks.length > 0) {
+            // URL contains merged app_pks - extract platform and bundleId from each
+            urlAppPks.forEach(appPk => {
+              const [appPlatform, appBundleId] = appPk.split('#');
+              if (appPlatform && appBundleId && (appPlatform === 'ios' || appPlatform === 'android')) {
+                appsToMarkRead.push({ platform: appPlatform, bundleId: appBundleId });
+              }
+            });
+          } else {
+            // Single app or construct from current + linked
+            appsToMarkRead.push({ platform, bundleId });
+            linkedApps.forEach(linkedApp => {
+              appsToMarkRead.push({ platform: linkedApp.platform, bundleId: linkedApp.bundleId });
+            });
+          }
+
+          // Make separate API calls for each app
+          await Promise.all(
+            appsToMarkRead.map(app => markAppAsRead(app.platform, app.bundleId))
+          );
         } catch (error) {
-          console.error("Failed to mark app as read:", error);
+          console.error("Failed to mark app(s) as read:", error);
         }
       }
     } catch (e: any) {
