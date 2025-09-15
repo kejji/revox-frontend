@@ -101,7 +101,10 @@ export default function RevoxDashboard() {
           .reduce((sum, a) => sum + (a.reviewsThisWeek || 0), 0);
 
         const totalBadgeCount = allApps
-          .reduce((sum, a) => sum + (a.badge_count || 0), 0);
+          .reduce((sum, a) => {
+            const count = typeof a.badge_count === 'number' ? a.badge_count : 0;
+            return sum + count;
+          }, 0);
 
         processed.push({
           id: `merged-${appPk}`,
