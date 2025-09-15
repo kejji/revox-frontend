@@ -100,8 +100,12 @@ export default function RevoxDashboard() {
         const totalReviewsThisWeek = allApps
           .reduce((sum, a) => sum + (a.reviewsThisWeek || 0), 0);
 
+        // Sum badge counts from all linked apps
         const totalBadgeCount = allApps
-          .reduce((sum, a) => sum + (a.badge_count || 0), 0);
+          .reduce((sum, a) => {
+            const badgeCount = typeof a.badge_count === 'number' ? a.badge_count : 0;
+            return sum + badgeCount;
+          }, 0);
 
         processed.push({
           id: `merged-${appPk}`,
