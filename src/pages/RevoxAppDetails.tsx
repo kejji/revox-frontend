@@ -704,9 +704,10 @@ export default function RevoxAppDetails() {
             </CardContent>
           </Card>
 
-          {/* Themes Analysis */}
-          <div className="space-y-6">
-            <Card>
+          {/* Theme Analysis and Alert Status */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Theme Analysis */}
+            <Card className="lg:col-span-2">
               <CardHeader className="pb-4">
                 <div className="flex items-center justify-between">
                   <CardTitle className="flex items-center gap-2 text-lg font-semibold">
@@ -814,40 +815,38 @@ export default function RevoxAppDetails() {
               </CardContent>
             </Card>
 
-            {/* Alerts */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <Card>
-                <CardHeader className="pb-4">
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="flex items-center gap-2 text-base font-medium">
-                      <AlertTriangle className="h-4 w-4 text-orange-500" />
-                      Alert Status
-                    </CardTitle>
-                    <Button size="sm" variant="outline" className="h-7 text-xs gap-1">
-                      <Plus className="h-3 w-3" />
-                      Create New Alert
+            {/* Alert Status */}
+            <Card>
+              <CardHeader className="pb-4">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="flex items-center gap-2 text-base font-medium">
+                    <AlertTriangle className="h-4 w-4 text-orange-500" />
+                    Alert Status
+                  </CardTitle>
+                  <Button size="sm" variant="outline" className="h-7 text-xs gap-1">
+                    <Plus className="h-3 w-3" />
+                    Create New Alert
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent className="pt-0 space-y-3">
+                {mockAlerts.map((a) => (
+                  <div key={a.id} className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div
+                        className={`w-1.5 h-1.5 rounded-full ${a.type === "error" ? "bg-red-500" : "bg-orange-500"
+                          }`}
+                      />
+                      <span className="text-sm text-foreground">{a.message}</span>
+                    </div>
+                    <Button variant="ghost" size="sm" className="h-6 w-6 p-0 hover:bg-muted">
+                      <X className="h-3 w-3" />
                     </Button>
                   </div>
-                </CardHeader>
-                <CardContent className="pt-0 space-y-3">
-                  {mockAlerts.map((a) => (
-                    <div key={a.id} className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <div
-                          className={`w-1.5 h-1.5 rounded-full ${a.type === "error" ? "bg-red-500" : "bg-orange-500"
-                            }`}
-                        />
-                        <span className="text-sm text-foreground">{a.message}</span>
-                      </div>
-                      <Button variant="ghost" size="sm" className="h-6 w-6 p-0 hover:bg-muted">
-                        <X className="h-3 w-3" />
-                      </Button>
-                    </div>
-                  ))}
-                  <Button className="w-full mt-4">Create New Alert</Button>
-                </CardContent>
-              </Card>
-            </div>
+                ))}
+                <Button className="w-full mt-4">Create New Alert</Button>
+              </CardContent>
+            </Card>
           </div>
 
           {/* Theme Samples Dialog */}
