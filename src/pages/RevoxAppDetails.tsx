@@ -1,6 +1,7 @@
 // src/pages/RevoxAppDetails.tsx
 import { useEffect, useMemo, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { format, parseISO } from "date-fns";
 import { Layout } from "@/components/layout/Layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -29,6 +30,7 @@ import {
 } from "@/components/ui/dialog";
 import { AppDetailsTable } from "@/components/app-details/AppDetailsTable";
 import { DataExtractionLoader } from "@/components/app-details/DataExtractionLoader";
+import { ThemeSamplesDialog } from "@/components/app-details/ThemeSamplesDialog";
 import {
   ArrowLeft,
   Star,
@@ -44,10 +46,14 @@ import {
   Bot,
   Link as LinkIcon,
   Unlink,
+  ChevronRight,
+  Calendar,
+  MessageSquare,
 } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { LanguageToggle } from "@/components/ui/language-toggle";
-import { api, appPkFromRoute, getReviewsExportUrl, linkApps, unlinkApps, markAppAsRead, fetchThemes, type ThemesResponse } from "@/api";
+import { api, appPkFromRoute, getReviewsExportUrl, linkApps, unlinkApps, markAppAsRead, fetchThemes, type ThemesResponse, type ThemeAxis } from "@/api";
+import { useToast } from "@/hooks/use-toast";
 
 // -------- Types alignés avec le backend --------
 type ReviewItem = {
@@ -130,6 +136,9 @@ export default function RevoxAppDetails() {
   // Themes state
   const [themesData, setThemesData] = useState<ThemesResponse | null>(null);
   const [themesLoading, setThemesLoading] = useState(false);
+  const [selectedTheme, setSelectedTheme] = useState<ThemeAxis | null>(null);
+  const [isThemeDialogOpen, setIsThemeDialogOpen] = useState(false);
+  const [selectedThemeType, setSelectedThemeType] = useState<"positive" | "negative">("positive");
 
   // Filtres UI (client)
   const [searchTerm, setSearchTerm] = useState("");
@@ -487,6 +496,45 @@ export default function RevoxAppDetails() {
       />
     ));
 
+  const handleThemeClick = (theme: ThemeAxis, isPositive: boolean) => {
+    setSelectedTheme(theme);
+    setSelectedThemeType(isPositive ? "positive" : "negative");
+    setIsThemeDialogOpen(true);
+  };
+
+  // Theme Card Component
+  const ThemeCard = ({ theme, isPositive }: { theme: ThemeAxis; isPositive: boolean }) => (
+    <button
+      onClick={() => handleThemeClick(theme, isPositive)}
+      className="w-full p-3 rounded-lg border bg-card/50 backdrop-blur-sm transition-all hover:bg-card hover:shadow-sm hover:border-primary/20 text-left group"
+    >
+      <div className="flex items-center justify-between mb-2">
+        <h4 className="font-medium text-sm text-foreground group-hover:text-primary transition-colors">
+          {theme.axis_label}
+        </h4>
+        <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+      </div>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Badge 
+            variant="secondary" 
+            className={`text-xs ${
+              isPositive 
+                ? "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950 dark:text-emerald-300" 
+                : "bg-orange-50 text-orange-700 border-orange-200 dark:bg-orange-950 dark:text-orange-300"
+            }`}
+          >
+            {theme.count} mentions
+          </Badge>
+        </div>
+        <div className="flex items-center gap-1">
+          <Star className="h-3 w-3 text-yellow-500 fill-yellow-500" />
+          <span className="text-xs text-muted-foreground">{theme.avg_rating.toFixed(1)}</span>
+        </div>
+      </div>
+    </button>
+  );
+
   return (
     <Layout showTopbar={false}>
       <div className="min-h-screen bg-background">
@@ -693,94 +741,122 @@ export default function RevoxAppDetails() {
             </CardContent>
           </Card>
 
-          {/* Widgets mockés */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <Card>
-              <CardHeader className="pb-4">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="flex items-center gap-2 text-base font-medium">
-                    <TrendingUp className="h-4 w-4 text-green-600" />
-                    Top 3 Positive Themes
-                  </CardTitle>
-                </div>
-              </CardHeader>
-              <CardContent className="pt-0 space-y-4">
-                {themesLoading ? (
-                  <div className="space-y-4">
-                    {Array.from({ length: 3 }).map((_, i) => (
-                      <div key={i} className="flex items-center justify-between">
-                        <Skeleton className="h-4 w-32" />
-                        <Skeleton className="h-4 w-12" />
-                      </div>
-                    ))}
+          {/* Themes Analysis */}
+          <div className="space-y-6">
+            {/* Analysis Period Indicator */}
+            {themesData && (
+              <Card className="bg-muted/50">
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <Calendar className="h-4 w-4" />
+                      Analysis Period: {format(new Date(themesData.selection.from), "MMM dd, yyyy")} - {format(new Date(themesData.selection.to), "MMM dd, yyyy")}
+                    </div>
+                    <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                      <span>{themesData.total_reviews_considered} reviews analyzed</span>
+                      <Badge variant="outline" className="text-xs">
+                        3 months default
+                      </Badge>
+                    </div>
                   </div>
-                ) : themesData && themesData.top_positive_axes.length > 0 ? (
-                  <div className="space-y-4">
-                    {themesData.top_positive_axes.slice(0, 3).map((theme, i) => (
-                      <div key={i} className="flex items-center justify-between">
-                        <span className="text-sm text-foreground">{theme.axis_label}</span>
-                        <span className="text-sm font-medium text-green-600">{theme.count}</span>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-4 text-muted-foreground">
-                    <p className="text-sm">No positive themes data available</p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            )}
 
-            <Card>
-              <CardHeader className="pb-4">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="flex items-center gap-2 text-base font-medium">
-                    <TrendingDown className="h-4 w-4 text-orange-600" />
-                    Top 3 Negative Themes
-                  </CardTitle>
-                </div>
-              </CardHeader>
-              <CardContent className="pt-0 space-y-4">
-                {themesLoading ? (
-                  <div className="space-y-4">
-                    {Array.from({ length: 3 }).map((_, i) => (
-                      <div key={i} className="flex items-center justify-between">
-                        <Skeleton className="h-4 w-32" />
-                        <Skeleton className="h-4 w-12" />
-                      </div>
-                    ))}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader className="pb-4">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="flex items-center gap-2 text-base font-medium">
+                      <TrendingUp className="h-4 w-4 text-emerald-600" />
+                      Top Positive Themes
+                    </CardTitle>
                   </div>
-                ) : themesData && themesData.top_negative_axes.length > 0 ? (
-                  <div className="space-y-4">
-                    {themesData.top_negative_axes.slice(0, 3).map((theme, i) => (
-                      <div key={i} className="flex items-center justify-between">
-                        <span className="text-sm text-foreground">{theme.axis_label}</span>
-                        <span className="text-sm font-medium text-orange-600">{theme.count}</span>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-4 text-muted-foreground">
-                    <p className="text-sm">No negative themes data available</p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+                </CardHeader>
+                <CardContent className="pt-0 space-y-3">
+                  {themesLoading ? (
+                    <div className="space-y-3">
+                      {Array.from({ length: 3 }).map((_, i) => (
+                        <div key={i} className="p-3 rounded-lg border">
+                          <Skeleton className="h-4 w-full mb-2" />
+                          <Skeleton className="h-3 w-24" />
+                        </div>
+                      ))}
+                    </div>
+                  ) : themesData && themesData.top_positive_axes.length > 0 ? (
+                    <div className="space-y-3">
+                      {themesData.top_positive_axes.slice(0, 3).map((theme, i) => (
+                        <ThemeCard
+                          key={i}
+                          theme={theme}
+                          isPositive={true}
+                        />
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-8 text-muted-foreground">
+                      <MessageSquare className="h-12 w-12 mx-auto mb-3 opacity-50" />
+                      <p className="text-sm">No positive themes data available</p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
 
-            <Card>
-              <CardHeader className="pb-4">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="flex items-center gap-2 text-base font-medium">
-                    <AlertTriangle className="h-4 w-4 text-orange-500" />
-                    Alert Status
-                  </CardTitle>
-                  <Button size="sm" variant="outline" className="h-7 text-xs gap-1">
-                    <Plus className="h-3 w-3" />
-                    Create New Alert
-                  </Button>
-                </div>
-              </CardHeader>
-              <CardContent className="pt-0 space-y-3">
+              <Card>
+                <CardHeader className="pb-4">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="flex items-center gap-2 text-base font-medium">
+                      <TrendingDown className="h-4 w-4 text-orange-600" />
+                      Top Negative Themes
+                    </CardTitle>
+                  </div>
+                </CardHeader>
+                <CardContent className="pt-0 space-y-3">
+                  {themesLoading ? (
+                    <div className="space-y-3">
+                      {Array.from({ length: 3 }).map((_, i) => (
+                        <div key={i} className="p-3 rounded-lg border">
+                          <Skeleton className="h-4 w-full mb-2" />
+                          <Skeleton className="h-3 w-24" />
+                        </div>
+                      ))}
+                    </div>
+                  ) : themesData && themesData.top_negative_axes.length > 0 ? (
+                    <div className="space-y-3">
+                      {themesData.top_negative_axes.slice(0, 3).map((theme, i) => (
+                        <ThemeCard
+                          key={i}
+                          theme={theme}
+                          isPositive={false}
+                        />
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-8 text-muted-foreground">
+                      <MessageSquare className="h-12 w-12 mx-auto mb-3 opacity-50" />
+                      <p className="text-sm">No negative themes data available</p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+
+          {/* Alert Status Widget */}
+          <Card>
+            <CardHeader className="pb-4">
+              <div className="flex items-center justify-between">
+                <CardTitle className="flex items-center gap-2 text-base font-medium">
+                  <AlertTriangle className="h-4 w-4 text-orange-500" />
+                  Alert Status
+                </CardTitle>
+                <Button size="sm" variant="outline" className="h-7 text-xs gap-1">
+                  <Plus className="h-3 w-3" />
+                  Create New Alert
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent className="pt-0 space-y-3">
                 {mockAlerts.map((a) => (
                   <div key={a.id} className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
@@ -975,7 +1051,19 @@ export default function RevoxAppDetails() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Theme Samples Dialog */}
+        {selectedTheme && (
+          <ThemeSamplesDialog
+            theme={selectedTheme}
+            isPositive={selectedThemeType === "positive"}
+            open={isThemeDialogOpen}
+            onOpenChange={setIsThemeDialogOpen}
+          />
+        )}
       </div>
     </Layout>
   );
 }
+
+export default RevoxAppDetails;
