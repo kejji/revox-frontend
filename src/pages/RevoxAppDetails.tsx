@@ -1,6 +1,8 @@
 // src/pages/RevoxAppDetails.tsx
 import { useEffect, useMemo, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { format, subMonths } from "date-fns";
+import { cn } from "@/lib/utils";
 import { Layout } from "@/components/layout/Layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,6 +10,12 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   Select,
   SelectContent,
@@ -30,6 +38,7 @@ import {
 import { AppDetailsTable } from "@/components/app-details/AppDetailsTable";
 import { DataExtractionLoader } from "@/components/app-details/DataExtractionLoader";
 import { ThemeSamplesDialog } from "@/components/app-details/ThemeSamplesDialog";
+import { AnalysisPeriodPicker } from "@/components/app-details/AnalysisPeriodPicker";
 import {
   ArrowLeft,
   Star,
@@ -45,6 +54,7 @@ import {
   Bot,
   Link as LinkIcon,
   Unlink,
+  CalendarIcon,
 } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { LanguageToggle } from "@/components/ui/language-toggle";
@@ -131,6 +141,10 @@ export default function RevoxAppDetails() {
   // Themes state
   const [themesData, setThemesData] = useState<ThemesResponse | null>(null);
   const [themesLoading, setThemesLoading] = useState(false);
+  
+  // Date range state for analysis period
+  const [analysisFromDate, setAnalysisFromDate] = useState<Date>(() => subMonths(new Date(), 3));
+  const [analysisToDate, setAnalysisToDate] = useState<Date>(new Date());
 
   // Filtres UI (client)
   const [searchTerm, setSearchTerm] = useState("");
@@ -191,7 +205,7 @@ export default function RevoxAppDetails() {
   };
 
   // Load themes data
-  const loadThemesData = async () => {
+  const loadThemesData = async (fromDate?: Date, toDate?: Date) => {
     if (!platform || !bundleId) return;
 
     setThemesLoading(true);
@@ -210,7 +224,10 @@ export default function RevoxAppDetails() {
         appPkParam = allAppPks.join(",");
       }
 
-      const data = await fetchThemes(appPkParam);
+      const fromDateStr = fromDate ? format(fromDate, 'yyyy-MM-dd') : undefined;
+      const toDateStr = toDate ? format(toDate, 'yyyy-MM-dd') : undefined;
+
+      const data = await fetchThemes(appPkParam, fromDateStr, toDateStr);
       setThemesData(data);
     } catch (e: any) {
       console.error("Failed to load themes data:", e);
@@ -348,18 +365,9 @@ export default function RevoxAppDetails() {
 
   useEffect(() => {
     fetchReviewsInitial();
-    loadThemesData();
+    loadThemesData(analysisFromDate, analysisToDate);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [platform, bundleId, linkedApps.length, urlAppPks.join(',')]);
-
-  // Initial fetch when app data is loaded
-  useEffect(() => {
-    if (currentApp && linkedApps.length >= 0) { // Check after loadAppData completes
-      fetchReviewsInitial();
-      loadThemesData();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentApp]);
+  }, [platform, bundleId, linkedApps.length, urlAppPks.join(','), analysisFromDate, analysisToDate]);
 
   // Handle extraction loader completion
   const handleExtractionComplete = () => {
@@ -697,36 +705,28 @@ export default function RevoxAppDetails() {
 
           {/* Analysis Period & Widgets */}
           <div className="space-y-6">
-            {/* Analysis Period Indicator */}
-            {themesData && (
-              <Card>
-                <CardContent className="p-4">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <span>Analysis period:</span>
-                      <Badge variant="secondary" className="font-mono">
-                        {new Date(themesData.selection.from).toLocaleDateString()} - {new Date(themesData.selection.to).toLocaleDateString()}
-                      </Badge>
-                      <span>({themesData.total_reviews_considered} reviews)</span>
-                    </div>
-                    <div className="text-xs text-muted-foreground">
-                      Last updated: {new Date(themesData.created_at).toLocaleString()}
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <Card>
-              <CardHeader className="pb-4">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="flex items-center gap-2 text-base font-medium">
-                    <TrendingUp className="h-4 w-4 text-green-600" />
-                    Top 3 Positive Themes
-                  </CardTitle>
-                </div>
-              </CardHeader>
+              <Card>
+                <CardHeader className="pb-4">
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <CardTitle className="flex items-center gap-2 text-base font-medium">
+                        <TrendingUp className="h-4 w-4 text-green-600" />
+                        Top 3 Positive Themes
+                      </CardTitle>
+                    </div>
+                    
+                    {/* Analysis Period Controls */}
+                    <AnalysisPeriodPicker
+                      fromDate={analysisFromDate}
+                      toDate={analysisToDate}
+                      onFromDateChange={setAnalysisFromDate}
+                      onToDateChange={setAnalysisToDate}
+                      reviewsCount={themesData?.total_reviews_considered}
+                      lastUpdated={themesData?.created_at}
+                    />
+                  </div>
+                </CardHeader>
               <CardContent className="pt-0 space-y-3">
                 {themesLoading ? (
                   <div className="space-y-3">
@@ -764,15 +764,27 @@ export default function RevoxAppDetails() {
               </CardContent>
             </Card>
 
-            <Card>
-              <CardHeader className="pb-4">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="flex items-center gap-2 text-base font-medium">
-                    <TrendingDown className="h-4 w-4 text-orange-600" />
-                    Top 3 Negative Themes
-                  </CardTitle>
-                </div>
-              </CardHeader>
+              <Card>
+                <CardHeader className="pb-4">
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <CardTitle className="flex items-center gap-2 text-base font-medium">
+                        <TrendingDown className="h-4 w-4 text-orange-600" />
+                        Top 3 Negative Themes
+                      </CardTitle>
+                    </div>
+                    
+                    {/* Analysis Period Controls - Same as positive themes */}
+                    <AnalysisPeriodPicker
+                      fromDate={analysisFromDate}
+                      toDate={analysisToDate}
+                      onFromDateChange={setAnalysisFromDate}
+                      onToDateChange={setAnalysisToDate}
+                      reviewsCount={themesData?.total_reviews_considered}
+                      lastUpdated={themesData?.created_at}
+                    />
+                  </div>
+                </CardHeader>
               <CardContent className="pt-0 space-y-3">
                 {themesLoading ? (
                   <div className="space-y-3">
