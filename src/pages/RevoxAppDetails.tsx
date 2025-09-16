@@ -714,17 +714,15 @@ export default function RevoxAppDetails() {
                         <TrendingUp className="h-4 w-4 text-green-600" />
                         Top 3 Positive Themes
                       </CardTitle>
+                      <AnalysisPeriodPicker
+                        fromDate={analysisFromDate}
+                        toDate={analysisToDate}
+                        onFromDateChange={setAnalysisFromDate}
+                        onToDateChange={setAnalysisToDate}
+                        reviewsCount={themesData?.total_reviews_considered}
+                        lastUpdated={themesData?.created_at}
+                      />
                     </div>
-                    
-                    {/* Analysis Period Controls */}
-                    <AnalysisPeriodPicker
-                      fromDate={analysisFromDate}
-                      toDate={analysisToDate}
-                      onFromDateChange={setAnalysisFromDate}
-                      onToDateChange={setAnalysisToDate}
-                      reviewsCount={themesData?.total_reviews_considered}
-                      lastUpdated={themesData?.created_at}
-                    />
                   </div>
                 </CardHeader>
               <CardContent className="pt-0 space-y-3">
@@ -773,16 +771,6 @@ export default function RevoxAppDetails() {
                         Top 3 Negative Themes
                       </CardTitle>
                     </div>
-                    
-                    {/* Analysis Period Controls - Same as positive themes */}
-                    <AnalysisPeriodPicker
-                      fromDate={analysisFromDate}
-                      toDate={analysisToDate}
-                      onFromDateChange={setAnalysisFromDate}
-                      onToDateChange={setAnalysisToDate}
-                      reviewsCount={themesData?.total_reviews_considered}
-                      lastUpdated={themesData?.created_at}
-                    />
                   </div>
                 </CardHeader>
               <CardContent className="pt-0 space-y-3">

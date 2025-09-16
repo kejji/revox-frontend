@@ -8,6 +8,7 @@ import {
 import { CalendarIcon } from "lucide-react";
 import { format, subMonths } from "date-fns";
 import { cn } from "@/lib/utils";
+import { useState } from "react";
 
 interface AnalysisPeriodPickerProps {
   fromDate: Date;
@@ -26,10 +27,45 @@ export function AnalysisPeriodPicker({
   reviewsCount,
   lastUpdated,
 }: AnalysisPeriodPickerProps) {
-  const presetPeriods = [
-    { label: "1 Month", action: () => onFromDateChange(subMonths(new Date(), 1)) },
-    { label: "3 Months", action: () => onFromDateChange(subMonths(new Date(), 3)) },
-    { label: "6 Months", action: () => onFromDateChange(subMonths(new Date(), 6)) },
+  const [selectedOption, setSelectedOption] = useState<string>("3 Months");
+  const [showCustom, setShowCustom] = useState(false);
+
+  const presetOptions = [
+    { 
+      label: "1 Month", 
+      value: "1 Month",
+      action: () => {
+        onFromDateChange(subMonths(new Date(), 1));
+        setSelectedOption("1 Month");
+        setShowCustom(false);
+      }
+    },
+    { 
+      label: "3 Months", 
+      value: "3 Months",
+      action: () => {
+        onFromDateChange(subMonths(new Date(), 3));
+        setSelectedOption("3 Months");
+        setShowCustom(false);
+      }
+    },
+    { 
+      label: "6 Months", 
+      value: "6 Months",
+      action: () => {
+        onFromDateChange(subMonths(new Date(), 6));
+        setSelectedOption("6 Months");
+        setShowCustom(false);
+      }
+    },
+    { 
+      label: "Custom", 
+      value: "Custom",
+      action: () => {
+        setSelectedOption("Custom");
+        setShowCustom(true);
+      }
+    },
   ];
 
   return (
@@ -57,46 +93,45 @@ export function AnalysisPeriodPicker({
             )}
           </div>
           
-          <div>
-            <h5 className="font-medium text-sm mb-2">Quick Presets</h5>
-            <div className="flex flex-col gap-1">
-              {presetPeriods.map((preset) => (
-                <Button
-                  key={preset.label}
-                  variant="ghost"
-                  size="sm"
-                  className="justify-start h-8 text-sm"
-                  onClick={preset.action}
-                >
-                  {preset.label}
-                </Button>
-              ))}
-            </div>
+          <div className="space-y-2">
+            {presetOptions.map((option) => (
+              <Button
+                key={option.value}
+                variant={selectedOption === option.value ? "default" : "ghost"}
+                size="sm"
+                className="w-full justify-start h-8 text-sm"
+                onClick={option.action}
+              >
+                {option.label}
+              </Button>
+            ))}
           </div>
           
-          <div className="space-y-3">
-            <div>
-              <label className="text-sm font-medium mb-2 block">From Date</label>
-              <Calendar
-                mode="single"
-                selected={fromDate}
-                onSelect={(date) => date && onFromDateChange(date)}
-                disabled={(date) => date > new Date()}
-                className={cn("rounded-md border pointer-events-auto")}
-              />
+          {showCustom && (
+            <div className="space-y-3 pt-2 border-t">
+              <div>
+                <label className="text-sm font-medium mb-2 block">From Date</label>
+                <Calendar
+                  mode="single"
+                  selected={fromDate}
+                  onSelect={(date) => date && onFromDateChange(date)}
+                  disabled={(date) => date > new Date()}
+                  className={cn("rounded-md border pointer-events-auto")}
+                />
+              </div>
+              
+              <div>
+                <label className="text-sm font-medium mb-2 block">To Date</label>
+                <Calendar
+                  mode="single"
+                  selected={toDate}
+                  onSelect={(date) => date && onToDateChange(date)}
+                  disabled={(date) => date > new Date() || date < fromDate}
+                  className={cn("rounded-md border pointer-events-auto")}
+                />
+              </div>
             </div>
-            
-            <div>
-              <label className="text-sm font-medium mb-2 block">To Date</label>
-              <Calendar
-                mode="single"
-                selected={toDate}
-                onSelect={(date) => date && onToDateChange(date)}
-                disabled={(date) => date > new Date() || date < fromDate}
-                className={cn("rounded-md border pointer-events-auto")}
-              />
-            </div>
-          </div>
+          )}
         </div>
       </PopoverContent>
     </Popover>
