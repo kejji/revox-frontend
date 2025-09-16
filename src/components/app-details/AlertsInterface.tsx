@@ -88,11 +88,11 @@ export function AlertsInterface({ alerts = [], onAlertsChange }: AlertsInterface
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost" size="sm" className="gap-2 relative">
-          <Bell className="h-4 w-4" />
+        <Button variant="outline" size="default" className="gap-2 relative border-orange-200 hover:border-orange-300 hover:bg-orange-50">
+          <Bell className="h-5 w-5 text-orange-600" />
           {alerts.filter(a => a.active).length > 0 && (
-            <div className="absolute -top-1 -right-1 w-4 h-4 bg-orange-500 rounded-full flex items-center justify-center">
-              <span className="text-xs text-white font-medium">
+            <div className="absolute -top-2 -right-2 w-5 h-5 bg-orange-500 rounded-full flex items-center justify-center shadow-sm">
+              <span className="text-xs text-white font-bold">
                 {alerts.filter(a => a.active).length}
               </span>
             </div>
