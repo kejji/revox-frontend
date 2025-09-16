@@ -29,6 +29,7 @@ import {
 } from "@/components/ui/dialog";
 import { AppDetailsTable } from "@/components/app-details/AppDetailsTable";
 import { DataExtractionLoader } from "@/components/app-details/DataExtractionLoader";
+import { ThemeSamplesDialog } from "@/components/app-details/ThemeSamplesDialog";
 import {
   ArrowLeft,
   Star,
@@ -138,6 +139,7 @@ export default function RevoxAppDetails() {
 
   // Dialog state
   const [showUpdateDialog, setShowUpdateDialog] = useState(false);
+  const [selectedTheme, setSelectedTheme] = useState<{ theme: any; type: "positive" | "negative" } | null>(null);
 
   // Use real app data from API when available
   const displayApp = currentApp ? {
@@ -693,8 +695,29 @@ export default function RevoxAppDetails() {
             </CardContent>
           </Card>
 
-          {/* Widgets mockés */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Analysis Period & Widgets */}
+          <div className="space-y-6">
+            {/* Analysis Period Indicator */}
+            {themesData && (
+              <Card>
+                <CardContent className="p-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <span>Analysis period:</span>
+                      <Badge variant="secondary" className="font-mono">
+                        {new Date(themesData.selection.from).toLocaleDateString()} - {new Date(themesData.selection.to).toLocaleDateString()}
+                      </Badge>
+                      <span>({themesData.total_reviews_considered} reviews)</span>
+                    </div>
+                    <div className="text-xs text-muted-foreground">
+                      Last updated: {new Date(themesData.created_at).toLocaleString()}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <Card>
               <CardHeader className="pb-4">
                 <div className="flex items-center justify-between">
@@ -704,23 +727,33 @@ export default function RevoxAppDetails() {
                   </CardTitle>
                 </div>
               </CardHeader>
-              <CardContent className="pt-0 space-y-4">
+              <CardContent className="pt-0 space-y-3">
                 {themesLoading ? (
-                  <div className="space-y-4">
+                  <div className="space-y-3">
                     {Array.from({ length: 3 }).map((_, i) => (
-                      <div key={i} className="flex items-center justify-between">
-                        <Skeleton className="h-4 w-32" />
-                        <Skeleton className="h-4 w-12" />
+                      <div key={i} className="p-3 border rounded-lg">
+                        <Skeleton className="h-4 w-full" />
                       </div>
                     ))}
                   </div>
                 ) : themesData && themesData.top_positive_axes.length > 0 ? (
-                  <div className="space-y-4">
+                  <div className="space-y-3">
                     {themesData.top_positive_axes.slice(0, 3).map((theme, i) => (
-                      <div key={i} className="flex items-center justify-between">
-                        <span className="text-sm text-foreground">{theme.axis_label}</span>
-                        <span className="text-sm font-medium text-green-600">{theme.count}</span>
-                      </div>
+                      <button
+                        key={i}
+                        onClick={() => setSelectedTheme({ theme, type: "positive" })}
+                        className="w-full p-3 text-left border rounded-lg hover:bg-muted/50 hover:border-green-200 transition-all duration-200 group"
+                      >
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 rounded-full bg-green-500 flex-shrink-0" />
+                          <span className="text-sm text-foreground group-hover:text-green-700 transition-colors">
+                            {theme.axis_label}
+                          </span>
+                        </div>
+                        <div className="text-xs text-muted-foreground mt-1 ml-4">
+                          Click to view sample comments
+                        </div>
+                      </button>
                     ))}
                   </div>
                 ) : (
@@ -740,23 +773,33 @@ export default function RevoxAppDetails() {
                   </CardTitle>
                 </div>
               </CardHeader>
-              <CardContent className="pt-0 space-y-4">
+              <CardContent className="pt-0 space-y-3">
                 {themesLoading ? (
-                  <div className="space-y-4">
+                  <div className="space-y-3">
                     {Array.from({ length: 3 }).map((_, i) => (
-                      <div key={i} className="flex items-center justify-between">
-                        <Skeleton className="h-4 w-32" />
-                        <Skeleton className="h-4 w-12" />
+                      <div key={i} className="p-3 border rounded-lg">
+                        <Skeleton className="h-4 w-full" />
                       </div>
                     ))}
                   </div>
                 ) : themesData && themesData.top_negative_axes.length > 0 ? (
-                  <div className="space-y-4">
+                  <div className="space-y-3">
                     {themesData.top_negative_axes.slice(0, 3).map((theme, i) => (
-                      <div key={i} className="flex items-center justify-between">
-                        <span className="text-sm text-foreground">{theme.axis_label}</span>
-                        <span className="text-sm font-medium text-orange-600">{theme.count}</span>
-                      </div>
+                      <button
+                        key={i}
+                        onClick={() => setSelectedTheme({ theme, type: "negative" })}
+                        className="w-full p-3 text-left border rounded-lg hover:bg-muted/50 hover:border-orange-200 transition-all duration-200 group"
+                      >
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 rounded-full bg-orange-500 flex-shrink-0" />
+                          <span className="text-sm text-foreground group-hover:text-orange-700 transition-colors">
+                            {theme.axis_label}
+                          </span>
+                        </div>
+                        <div className="text-xs text-muted-foreground mt-1 ml-4">
+                          Click to view sample comments
+                        </div>
+                      </button>
                     ))}
                   </div>
                 ) : (
@@ -798,7 +841,16 @@ export default function RevoxAppDetails() {
                 <Button className="w-full mt-4">Create New Alert</Button>
               </CardContent>
             </Card>
+            </div>
           </div>
+
+          {/* Theme Samples Dialog */}
+          <ThemeSamplesDialog
+            theme={selectedTheme?.theme || null}
+            type={selectedTheme?.type || "positive"}
+            open={!!selectedTheme}
+            onOpenChange={(open) => !open && setSelectedTheme(null)}
+          />
 
           {/* Reviews */}
           <Card>
