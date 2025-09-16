@@ -125,9 +125,6 @@ export type ThemesResponse = {
 export async function fetchThemes(appPk: string, fromDate?: string, toDate?: string): Promise<ThemesResponse> {
   const params: Record<string, string> = { app_pk: appPk };
   
-  if (fromDate) params.from = fromDate;
-  if (toDate) params.to = toDate;
-  
   const { data } = await api.get<ThemesResponse>("/themes/latest", {
     params,
   });
