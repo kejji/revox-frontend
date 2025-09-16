@@ -520,7 +520,6 @@ export default function RevoxAppDetails() {
               )}
             </div>
             <div className="flex items-center gap-2">
-              <AlertsInterface />
               <ThemeToggle />
               <LanguageToggle />
             </div>

@@ -7,6 +7,7 @@ import { Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { LanguageToggle } from "@/components/ui/language-toggle";
+import { AlertsInterface } from "@/components/app-details/AlertsInterface";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 export type HeaderProps = {
@@ -36,6 +37,9 @@ export function Header({ showTopbar = true }: HeaderProps) {
     if (href === "/") return location.pathname === "/";
     return location.pathname.startsWith(href);
   };
+
+  // Show alerts only on Revox pages
+  const showAlerts = location.pathname.startsWith("/revox");
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-md">
@@ -78,6 +82,7 @@ export function Header({ showTopbar = true }: HeaderProps) {
                 ))}
                 <div className="mt-4 space-y-2">
                   <div className="flex justify-center gap-2 mb-4">
+                    {showAlerts && <AlertsInterface />}
                     <ThemeToggle />
                     <LanguageToggle />
                   </div>
@@ -116,6 +121,7 @@ export function Header({ showTopbar = true }: HeaderProps) {
 
         {/* Desktop CTA buttons */}
         <div className="hidden lg:flex lg:flex-1 lg:justify-end lg:gap-x-4 lg:items-center">
+          {showAlerts && <AlertsInterface />}
           <LanguageToggle />
           <ThemeToggle />
           <Button asChild variant="outline">
