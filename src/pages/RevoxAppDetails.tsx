@@ -39,6 +39,7 @@ import { AppDetailsTable } from "@/components/app-details/AppDetailsTable";
 import { DataExtractionLoader } from "@/components/app-details/DataExtractionLoader";
 import { ThemeSamplesDialog } from "@/components/app-details/ThemeSamplesDialog";
 import { AnalysisPeriodPicker } from "@/components/app-details/AnalysisPeriodPicker";
+import { AlertsInterface } from "@/components/app-details/AlertsInterface";
 import {
   ArrowLeft,
   Star,
@@ -55,6 +56,7 @@ import {
   Link as LinkIcon,
   Unlink,
   CalendarIcon,
+  Bell,
 } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { LanguageToggle } from "@/components/ui/language-toggle";
@@ -99,10 +101,6 @@ const mockNegativeThemes = [
   { theme: "Crashes", percentage: 34 },
   { theme: "Sync Issues", percentage: 28 },
   { theme: "Battery Drain", percentage: 19 },
-];
-const mockAlerts = [
-  { id: 1, type: "warning" as const, message: "Rating drops below 4.0", active: true },
-  { id: 2, type: "error" as const, message: "Crash mentions spike", active: true },
 ];
 
 const LIMIT = 10;
@@ -522,6 +520,7 @@ export default function RevoxAppDetails() {
               )}
             </div>
             <div className="flex items-center gap-2">
+              <AlertsInterface />
               <ThemeToggle />
               <LanguageToggle />
             </div>
@@ -705,9 +704,9 @@ export default function RevoxAppDetails() {
           </Card>
 
           {/* Theme Analysis and Alert Status */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-1 gap-6">
             {/* Theme Analysis */}
-            <Card className="lg:col-span-2">
+            <Card>
               <CardHeader className="pb-4">
                 <div className="flex items-center justify-between">
                   <CardTitle className="flex items-center gap-2 text-lg font-semibold">
@@ -812,39 +811,6 @@ export default function RevoxAppDetails() {
                     </div>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-
-            {/* Alert Status */}
-            <Card>
-              <CardHeader className="pb-4">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="flex items-center gap-2 text-base font-medium">
-                    <AlertTriangle className="h-4 w-4 text-orange-500" />
-                    Alert Status
-                  </CardTitle>
-                  <Button size="sm" variant="outline" className="h-7 text-xs gap-1">
-                    <Plus className="h-3 w-3" />
-                    Create New Alert
-                  </Button>
-                </div>
-              </CardHeader>
-              <CardContent className="pt-0 space-y-3">
-                {mockAlerts.map((a) => (
-                  <div key={a.id} className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div
-                        className={`w-1.5 h-1.5 rounded-full ${a.type === "error" ? "bg-red-500" : "bg-orange-500"
-                          }`}
-                      />
-                      <span className="text-sm text-foreground">{a.message}</span>
-                    </div>
-                    <Button variant="ghost" size="sm" className="h-6 w-6 p-0 hover:bg-muted">
-                      <X className="h-3 w-3" />
-                    </Button>
-                  </div>
-                ))}
-                <Button className="w-full mt-4">Create New Alert</Button>
               </CardContent>
             </Card>
           </div>
