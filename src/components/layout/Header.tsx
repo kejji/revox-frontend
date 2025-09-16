@@ -82,7 +82,6 @@ export function Header({ showTopbar = true }: HeaderProps) {
                 ))}
                 <div className="mt-4 space-y-2">
                   <div className="flex justify-center gap-2 mb-4">
-                    {showAlerts && <AlertsInterface />}
                     <ThemeToggle />
                     <LanguageToggle />
                   </div>
@@ -121,7 +120,6 @@ export function Header({ showTopbar = true }: HeaderProps) {
 
         {/* Desktop CTA buttons */}
         <div className="hidden lg:flex lg:flex-1 lg:justify-end lg:gap-x-4 lg:items-center">
-          {showAlerts && <AlertsInterface />}
           <LanguageToggle />
           <ThemeToggle />
           <Button asChild variant="outline">
