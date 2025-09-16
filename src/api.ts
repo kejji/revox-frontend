@@ -91,3 +91,40 @@ export function getReviewsExportUrl(params: {
   });
   return `/reviews/export?${qp.toString()}`;
 }
+
+/** Types for themes API */
+export type ThemeExample = {
+  date: string;
+  rating: number;
+  text: string;
+};
+
+export type ThemeAxis = {
+  count: number;
+  examples: ThemeExample[];
+  axis_label: string;
+  axis_id: string;
+  avg_rating: number;
+};
+
+export type ThemesResponse = {
+  ok: boolean;
+  app_pk: string;
+  sk: string;
+  selection: {
+    from: string;
+    to: string;
+  };
+  total_reviews_considered: number;
+  created_at: string;
+  top_positive_axes: ThemeAxis[];
+  top_negative_axes: ThemeAxis[];
+};
+
+/** Fetch latest themes for app(s) */
+export async function fetchThemes(appPk: string): Promise<ThemesResponse> {
+  const { data } = await api.get<ThemesResponse>("/themes/latest", {
+    params: { app_pk: appPk },
+  });
+  return data;
+}

@@ -47,7 +47,7 @@ import {
 } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { LanguageToggle } from "@/components/ui/language-toggle";
-import { api, appPkFromRoute, getReviewsExportUrl, linkApps, unlinkApps, markAppAsRead } from "@/api";
+import { api, appPkFromRoute, getReviewsExportUrl, linkApps, unlinkApps, markAppAsRead, fetchThemes, type ThemesResponse } from "@/api";
 
 // -------- Types alignés avec le backend --------
 type ReviewItem = {
@@ -127,6 +127,10 @@ export default function RevoxAppDetails() {
   const [currentApp, setCurrentApp] = useState<FollowedApp | null>(null);
   const [linkingLoading, setLinkingLoading] = useState(false);
 
+  // Themes state
+  const [themesData, setThemesData] = useState<ThemesResponse | null>(null);
+  const [themesLoading, setThemesLoading] = useState(false);
+
   // Filtres UI (client)
   const [searchTerm, setSearchTerm] = useState("");
   const [platformFilter, setPlatformFilter] = useState<"all" | "ios" | "android">("all");
@@ -184,8 +188,35 @@ export default function RevoxAppDetails() {
     }
   };
 
-  // Check if text is truncated by length
-  const isUpdateTextTruncated = (text: string) => text.length > 80;
+  // Load themes data
+  const loadThemesData = async () => {
+    if (!platform || !bundleId) return;
+
+    setThemesLoading(true);
+    try {
+      // Always use URL app_pks if available (for merged apps), otherwise construct from current + linked apps
+      let appPkParam: string;
+      if (urlAppPks.length > 0) {
+        // URL contains the merged app_pks - use them directly
+        appPkParam = urlAppPks.join(",");
+      } else {
+        // Construct from current app + any linked apps
+        const allAppPks = [appPkFromRoute(platform, bundleId)];
+        if (linkedApps.length > 0) {
+          allAppPks.push(...linkedApps.map(app => appPkFromRoute(app.platform, app.bundleId)));
+        }
+        appPkParam = allAppPks.join(",");
+      }
+
+      const data = await fetchThemes(appPkParam);
+      setThemesData(data);
+    } catch (e: any) {
+      console.error("Failed to load themes data:", e);
+      setThemesData(null);
+    } finally {
+      setThemesLoading(false);
+    }
+  };
 
   // --- Chargement initial (reset) ---
   async function fetchReviewsInitial() {
@@ -315,6 +346,7 @@ export default function RevoxAppDetails() {
 
   useEffect(() => {
     fetchReviewsInitial();
+    loadThemesData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [platform, bundleId, linkedApps.length, urlAppPks.join(',')]);
 
@@ -322,6 +354,7 @@ export default function RevoxAppDetails() {
   useEffect(() => {
     if (currentApp && linkedApps.length >= 0) { // Check after loadAppData completes
       fetchReviewsInitial();
+      loadThemesData();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentApp]);
@@ -672,12 +705,29 @@ export default function RevoxAppDetails() {
                 </div>
               </CardHeader>
               <CardContent className="pt-0 space-y-4">
-                {mockPositiveThemes.map((t, i) => (
-                  <div key={i} className="flex items-center justify-between">
-                    <span className="text-sm text-foreground">{t.theme}</span>
-                    <span className="text-sm font-medium text-green-600">+{t.percentage}%</span>
+                {themesLoading ? (
+                  <div className="space-y-4">
+                    {Array.from({ length: 3 }).map((_, i) => (
+                      <div key={i} className="flex items-center justify-between">
+                        <Skeleton className="h-4 w-32" />
+                        <Skeleton className="h-4 w-12" />
+                      </div>
+                    ))}
                   </div>
-                ))}
+                ) : themesData && themesData.top_positive_axes.length > 0 ? (
+                  <div className="space-y-4">
+                    {themesData.top_positive_axes.slice(0, 3).map((theme, i) => (
+                      <div key={i} className="flex items-center justify-between">
+                        <span className="text-sm text-foreground">{theme.axis_label}</span>
+                        <span className="text-sm font-medium text-green-600">{theme.count}</span>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-4 text-muted-foreground">
+                    <p className="text-sm">No positive themes data available</p>
+                  </div>
+                )}
               </CardContent>
             </Card>
 
@@ -691,12 +741,29 @@ export default function RevoxAppDetails() {
                 </div>
               </CardHeader>
               <CardContent className="pt-0 space-y-4">
-                {mockNegativeThemes.map((t, i) => (
-                  <div key={i} className="flex items-center justify-between">
-                    <span className="text-sm text-foreground">{t.theme}</span>
-                    <span className="text-sm font-medium text-orange-600">-{t.percentage}%</span>
+                {themesLoading ? (
+                  <div className="space-y-4">
+                    {Array.from({ length: 3 }).map((_, i) => (
+                      <div key={i} className="flex items-center justify-between">
+                        <Skeleton className="h-4 w-32" />
+                        <Skeleton className="h-4 w-12" />
+                      </div>
+                    ))}
                   </div>
-                ))}
+                ) : themesData && themesData.top_negative_axes.length > 0 ? (
+                  <div className="space-y-4">
+                    {themesData.top_negative_axes.slice(0, 3).map((theme, i) => (
+                      <div key={i} className="flex items-center justify-between">
+                        <span className="text-sm text-foreground">{theme.axis_label}</span>
+                        <span className="text-sm font-medium text-orange-600">{theme.count}</span>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-4 text-muted-foreground">
+                    <p className="text-sm">No negative themes data available</p>
+                  </div>
+                )}
               </CardContent>
             </Card>
 
