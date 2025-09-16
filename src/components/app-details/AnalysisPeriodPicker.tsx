@@ -9,6 +9,7 @@ import { CalendarIcon } from "lucide-react";
 import { format, subMonths } from "date-fns";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
+import type { DateRange } from "react-day-picker";
 
 interface AnalysisPeriodPickerProps {
   fromDate: Date;
@@ -68,6 +69,15 @@ export function AnalysisPeriodPicker({
     },
   ];
 
+  const handleRangeSelect = (range: DateRange | undefined) => {
+    if (range?.from) {
+      onFromDateChange(range.from);
+    }
+    if (range?.to) {
+      onToDateChange(range.to);
+    }
+  };
+
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -110,24 +120,17 @@ export function AnalysisPeriodPicker({
           {showCustom && (
             <div className="space-y-3 pt-2 border-t">
               <div>
-                <label className="text-sm font-medium mb-2 block">From Date</label>
+                <label className="text-sm font-medium mb-2 block">Select Date Range</label>
+                <p className="text-xs text-muted-foreground mb-3">
+                  Click to select start date, then click to select end date
+                </p>
                 <Calendar
-                  mode="single"
-                  selected={fromDate}
-                  onSelect={(date) => date && onFromDateChange(date)}
+                  mode="range"
+                  selected={{ from: fromDate, to: toDate }}
+                  onSelect={handleRangeSelect}
                   disabled={(date) => date > new Date()}
                   className={cn("rounded-md border pointer-events-auto")}
-                />
-              </div>
-              
-              <div>
-                <label className="text-sm font-medium mb-2 block">To Date</label>
-                <Calendar
-                  mode="single"
-                  selected={toDate}
-                  onSelect={(date) => date && onToDateChange(date)}
-                  disabled={(date) => date > new Date() || date < fromDate}
-                  className={cn("rounded-md border pointer-events-auto")}
+                  numberOfMonths={1}
                 />
               </div>
             </div>
