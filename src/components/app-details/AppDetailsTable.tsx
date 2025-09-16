@@ -75,21 +75,9 @@ export function AppDetailsTable({ currentApp, linkedApps = [], className = "" }:
 
             {/* Latest Update */}
             <div className="flex items-center gap-2">
-              <span className="text-sm text-foreground leading-relaxed flex-1">
-                {isUpdateTextTruncated(app.latestUpdate) 
-                  ? `${app.latestUpdate.substring(0, 80)}...` 
-                  : app.latestUpdate}
+              <span className="text-sm text-foreground truncate flex-1 whitespace-nowrap overflow-hidden">
+                {app.latestUpdate}
               </span>
-              {isUpdateTextTruncated(app.latestUpdate) && (
-                <Button
-                  size="sm"
-                  variant="link"
-                  className="h-auto p-0 text-xs text-primary hover:text-primary/80 font-medium flex-shrink-0"
-                  onClick={() => handleShowMore(app.latestUpdate)}
-                >
-                  Show more
-                </Button>
-              )}
             </div>
           </div>
         ))}
@@ -132,21 +120,9 @@ export function AppDetailsTable({ currentApp, linkedApps = [], className = "" }:
             <div className="space-y-2">
               <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium">Latest Update</p>
                <div className="flex items-center gap-2">
-                <span className="text-sm text-foreground leading-relaxed flex-1">
-                  {isUpdateTextTruncated(app.latestUpdate) 
-                    ? `${app.latestUpdate.substring(0, 80)}...` 
-                    : app.latestUpdate}
+                <span className="text-sm text-foreground truncate flex-1 whitespace-nowrap overflow-hidden">
+                  {app.latestUpdate}
                 </span>
-                {isUpdateTextTruncated(app.latestUpdate) && (
-                  <Button
-                    size="sm"
-                    variant="link"
-                    className="h-auto p-0 text-xs text-primary hover:text-primary/80 font-medium flex-shrink-0"
-                    onClick={() => handleShowMore(app.latestUpdate)}
-                  >
-                    Show more
-                  </Button>
-                )}
               </div>
             </div>
           </div>
