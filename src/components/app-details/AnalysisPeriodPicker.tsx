@@ -16,6 +16,7 @@ interface AnalysisPeriodPickerProps {
   toDate: Date;
   onFromDateChange: (date: Date) => void;
   onToDateChange: (date: Date) => void;
+  onValidate: () => void;
   reviewsCount?: number;
   lastUpdated?: string;
 }
@@ -25,6 +26,7 @@ export function AnalysisPeriodPicker({
   toDate,
   onFromDateChange,
   onToDateChange,
+  onValidate,
   reviewsCount,
   lastUpdated,
 }: AnalysisPeriodPickerProps) {
@@ -135,6 +137,12 @@ export function AnalysisPeriodPicker({
               </div>
             </div>
           )}
+          
+          <div className="pt-3 border-t">
+            <Button onClick={onValidate} className="w-full" size="sm">
+              Validate Analysis
+            </Button>
+          </div>
         </div>
       </PopoverContent>
     </Popover>

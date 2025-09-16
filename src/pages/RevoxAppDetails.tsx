@@ -365,9 +365,10 @@ export default function RevoxAppDetails() {
 
   useEffect(() => {
     fetchReviewsInitial();
+    // Only load themes initially, not on date changes
     loadThemesData(analysisFromDate, analysisToDate);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [platform, bundleId, linkedApps.length, urlAppPks.join(','), analysisFromDate, analysisToDate]);
+  }, [platform, bundleId, linkedApps.length, urlAppPks.join(',')]);
 
   // Handle extraction loader completion
   const handleExtractionComplete = () => {
@@ -703,144 +704,149 @@ export default function RevoxAppDetails() {
             </CardContent>
           </Card>
 
-          {/* Analysis Period & Widgets */}
+          {/* Themes Analysis */}
           <div className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <Card>
-                <CardHeader className="pb-4">
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <CardTitle className="flex items-center gap-2 text-base font-medium">
-                        <TrendingUp className="h-4 w-4 text-green-600" />
-                        Top 3 Positive Themes
-                      </CardTitle>
-                      <AnalysisPeriodPicker
-                        fromDate={analysisFromDate}
-                        toDate={analysisToDate}
-                        onFromDateChange={setAnalysisFromDate}
-                        onToDateChange={setAnalysisToDate}
-                        reviewsCount={themesData?.total_reviews_considered}
-                        lastUpdated={themesData?.created_at}
-                      />
-                    </div>
-                  </div>
-                </CardHeader>
-              <CardContent className="pt-0 space-y-3">
-                {themesLoading ? (
-                  <div className="space-y-3">
-                    {Array.from({ length: 3 }).map((_, i) => (
-                      <div key={i} className="p-3 border rounded-lg">
-                        <Skeleton className="h-4 w-full" />
-                      </div>
-                    ))}
-                  </div>
-                ) : themesData && themesData.top_positive_axes.length > 0 ? (
-                  <div className="space-y-3">
-                    {themesData.top_positive_axes.slice(0, 3).map((theme, i) => (
-                      <button
-                        key={i}
-                        onClick={() => setSelectedTheme({ theme, type: "positive" })}
-                        className="w-full p-3 text-left border rounded-lg hover:bg-muted/50 hover:border-green-200 transition-all duration-200 group"
-                      >
-                        <div className="flex items-center gap-2">
-                          <div className="w-2 h-2 rounded-full bg-green-500 flex-shrink-0" />
-                          <span className="text-sm text-foreground group-hover:text-green-700 transition-colors">
-                            {theme.axis_label}
-                          </span>
-                        </div>
-                        <div className="text-xs text-muted-foreground mt-1 ml-4">
-                          Click to view sample comments
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-4 text-muted-foreground">
-                    <p className="text-sm">No positive themes data available</p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-
-              <Card>
-                <CardHeader className="pb-4">
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <CardTitle className="flex items-center gap-2 text-base font-medium">
-                        <TrendingDown className="h-4 w-4 text-orange-600" />
-                        Top 3 Negative Themes
-                      </CardTitle>
-                    </div>
-                  </div>
-                </CardHeader>
-              <CardContent className="pt-0 space-y-3">
-                {themesLoading ? (
-                  <div className="space-y-3">
-                    {Array.from({ length: 3 }).map((_, i) => (
-                      <div key={i} className="p-3 border rounded-lg">
-                        <Skeleton className="h-4 w-full" />
-                      </div>
-                    ))}
-                  </div>
-                ) : themesData && themesData.top_negative_axes.length > 0 ? (
-                  <div className="space-y-3">
-                    {themesData.top_negative_axes.slice(0, 3).map((theme, i) => (
-                      <button
-                        key={i}
-                        onClick={() => setSelectedTheme({ theme, type: "negative" })}
-                        className="w-full p-3 text-left border rounded-lg hover:bg-muted/50 hover:border-orange-200 transition-all duration-200 group"
-                      >
-                        <div className="flex items-center gap-2">
-                          <div className="w-2 h-2 rounded-full bg-orange-500 flex-shrink-0" />
-                          <span className="text-sm text-foreground group-hover:text-orange-700 transition-colors">
-                            {theme.axis_label}
-                          </span>
-                        </div>
-                        <div className="text-xs text-muted-foreground mt-1 ml-4">
-                          Click to view sample comments
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-4 text-muted-foreground">
-                    <p className="text-sm">No negative themes data available</p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-
             <Card>
               <CardHeader className="pb-4">
                 <div className="flex items-center justify-between">
-                  <CardTitle className="flex items-center gap-2 text-base font-medium">
-                    <AlertTriangle className="h-4 w-4 text-orange-500" />
-                    Alert Status
+                  <CardTitle className="flex items-center gap-2 text-lg font-semibold">
+                    Theme Analysis
                   </CardTitle>
-                  <Button size="sm" variant="outline" className="h-7 text-xs gap-1">
-                    <Plus className="h-3 w-3" />
-                    Create New Alert
-                  </Button>
+                  <AnalysisPeriodPicker
+                    fromDate={analysisFromDate}
+                    toDate={analysisToDate}
+                    onFromDateChange={setAnalysisFromDate}
+                    onToDateChange={setAnalysisToDate}
+                    onValidate={() => loadThemesData(analysisFromDate, analysisToDate)}
+                    reviewsCount={themesData?.total_reviews_considered}
+                    lastUpdated={themesData?.created_at}
+                  />
                 </div>
               </CardHeader>
-              <CardContent className="pt-0 space-y-3">
-                {mockAlerts.map((a) => (
-                  <div key={a.id} className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div
-                        className={`w-1.5 h-1.5 rounded-full ${a.type === "error" ? "bg-red-500" : "bg-orange-500"
-                          }`}
-                      />
-                      <span className="text-sm text-foreground">{a.message}</span>
+              <CardContent className="pt-0">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Positive Themes */}
+                  <div className="space-y-4">
+                    <h3 className="flex items-center gap-2 text-base font-medium text-green-600">
+                      <TrendingUp className="h-4 w-4" />
+                      Top 3 Positive Themes
+                    </h3>
+                    <div className="space-y-3">
+                      {themesLoading ? (
+                        <div className="space-y-3">
+                          {Array.from({ length: 3 }).map((_, i) => (
+                            <div key={i} className="p-3 border rounded-lg">
+                              <Skeleton className="h-4 w-full" />
+                            </div>
+                          ))}
+                        </div>
+                      ) : themesData && themesData.top_positive_axes.length > 0 ? (
+                        <div className="space-y-3">
+                          {themesData.top_positive_axes.slice(0, 3).map((theme, i) => (
+                            <button
+                              key={i}
+                              onClick={() => setSelectedTheme({ theme, type: "positive" })}
+                              className="w-full p-3 text-left border rounded-lg hover:bg-muted/50 hover:border-green-200 transition-all duration-200 group"
+                            >
+                              <div className="flex items-center gap-2">
+                                <div className="w-2 h-2 rounded-full bg-green-500 flex-shrink-0" />
+                                <span className="text-sm text-foreground group-hover:text-green-700 transition-colors">
+                                  {theme.axis_label}
+                                </span>
+                              </div>
+                              <div className="text-xs text-muted-foreground mt-1 ml-4">
+                                Click to view sample comments
+                              </div>
+                            </button>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="text-center py-4 text-muted-foreground">
+                          <p className="text-sm">No positive themes data available</p>
+                        </div>
+                      )}
                     </div>
-                    <Button variant="ghost" size="sm" className="h-6 w-6 p-0 hover:bg-muted">
-                      <X className="h-3 w-3" />
-                    </Button>
                   </div>
-                ))}
-                <Button className="w-full mt-4">Create New Alert</Button>
+
+                  {/* Negative Themes */}
+                  <div className="space-y-4">
+                    <h3 className="flex items-center gap-2 text-base font-medium text-orange-600">
+                      <TrendingDown className="h-4 w-4" />
+                      Top 3 Negative Themes
+                    </h3>
+                    <div className="space-y-3">
+                      {themesLoading ? (
+                        <div className="space-y-3">
+                          {Array.from({ length: 3 }).map((_, i) => (
+                            <div key={i} className="p-3 border rounded-lg">
+                              <Skeleton className="h-4 w-full" />
+                            </div>
+                          ))}
+                        </div>
+                      ) : themesData && themesData.top_negative_axes.length > 0 ? (
+                        <div className="space-y-3">
+                          {themesData.top_negative_axes.slice(0, 3).map((theme, i) => (
+                            <button
+                              key={i}
+                              onClick={() => setSelectedTheme({ theme, type: "negative" })}
+                              className="w-full p-3 text-left border rounded-lg hover:bg-muted/50 hover:border-orange-200 transition-all duration-200 group"
+                            >
+                              <div className="flex items-center gap-2">
+                                <div className="w-2 h-2 rounded-full bg-orange-500 flex-shrink-0" />
+                                <span className="text-sm text-foreground group-hover:text-orange-700 transition-colors">
+                                  {theme.axis_label}
+                                </span>
+                              </div>
+                              <div className="text-xs text-muted-foreground mt-1 ml-4">
+                                Click to view sample comments
+                              </div>
+                            </button>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="text-center py-4 text-muted-foreground">
+                          <p className="text-sm">No negative themes data available</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
               </CardContent>
             </Card>
+
+            {/* Alerts */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <Card>
+                <CardHeader className="pb-4">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="flex items-center gap-2 text-base font-medium">
+                      <AlertTriangle className="h-4 w-4 text-orange-500" />
+                      Alert Status
+                    </CardTitle>
+                    <Button size="sm" variant="outline" className="h-7 text-xs gap-1">
+                      <Plus className="h-3 w-3" />
+                      Create New Alert
+                    </Button>
+                  </div>
+                </CardHeader>
+                <CardContent className="pt-0 space-y-3">
+                  {mockAlerts.map((a) => (
+                    <div key={a.id} className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div
+                          className={`w-1.5 h-1.5 rounded-full ${a.type === "error" ? "bg-red-500" : "bg-orange-500"
+                            }`}
+                        />
+                        <span className="text-sm text-foreground">{a.message}</span>
+                      </div>
+                      <Button variant="ghost" size="sm" className="h-6 w-6 p-0 hover:bg-muted">
+                        <X className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  ))}
+                  <Button className="w-full mt-4">Create New Alert</Button>
+                </CardContent>
+              </Card>
             </div>
           </div>
 
