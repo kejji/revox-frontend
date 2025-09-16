@@ -977,7 +977,7 @@ export default function RevoxAppDetails() {
               {!loading && !refreshing && !err && (
                 <div className="animate-fade-in">
                   {filteredReviews.length > 0 ? (
-                    <>
+                    <div className="space-y-4">
                       <ScrollArea className="h-96">
                         <div className="space-y-4 pr-4">
                           {filteredReviews.map((r, idx) => (
@@ -1039,7 +1039,7 @@ export default function RevoxAppDetails() {
                           </Button>
                         </div>
                       )}
-                    </>
+                    </div>
                   ) : (
                     <div className="text-center py-8 text-muted-foreground">
                       <p className="text-sm">No reviews found.</p>
