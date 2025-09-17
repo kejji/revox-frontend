@@ -797,7 +797,7 @@ export default function RevoxAppDetails() {
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-lg">
-                  Reviews ({filteredReviews.length})
+                  Reviews
                 </CardTitle>
                 <div className="flex items-center gap-2">
                   <Button size="sm" variant="outline" onClick={handleRefresh} className="gap-2">
