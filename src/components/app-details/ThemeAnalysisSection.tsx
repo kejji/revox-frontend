@@ -69,12 +69,17 @@ export function ThemeAnalysisSection({
   // Launch new theme analysis
   const handleLaunchAnalysis = async () => {
     try {
-      // Launch the analysis
+      // First launch the analysis
       await launchThemeAnalysis(appPk);
       
-      // Set status to pending and start polling
-      setThemesData(prev => prev ? { ...prev, status: "pending" } : null);
-      startPolling();
+      // Then fetch the results
+      const data = await fetchThemesResult(appPk);
+      setThemesData(data);
+      
+      // If status is pending, start polling
+      if (data.status === "pending") {
+        startPolling();
+      }
     } catch (error) {
       console.error("Failed to launch theme analysis:", error);
     }
