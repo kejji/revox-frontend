@@ -65,7 +65,7 @@ export function ThemeAnalysisSection({
       console.log("Schedule result:", scheduleResult);
       
       // Step 2: Check if job_id is not null
-      if (!scheduleResult.job_id) {
+      if (!scheduleResult.run_now?.job_id) {
         console.log("No job_id received:", scheduleResult);
         toast({
           title: "Error",
