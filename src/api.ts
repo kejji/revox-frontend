@@ -130,3 +130,11 @@ export async function fetchThemes(appPk: string, fromDate?: string, toDate?: str
   });
   return data;
 }
+
+/** Fetch themes result for app(s) - returns top 3 positive and negative themes */
+export async function fetchThemesResult(appPk: string): Promise<ThemesResponse> {
+  const { data } = await api.get<ThemesResponse>("/themes/result", {
+    params: { app_pk: appPk },
+  });
+  return data;
+}

@@ -60,7 +60,7 @@ import {
 } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { LanguageToggle } from "@/components/ui/language-toggle";
-import { api, appPkFromRoute, getReviewsExportUrl, linkApps, unlinkApps, markAppAsRead, fetchThemes, type ThemesResponse } from "@/api";
+import { api, appPkFromRoute, getReviewsExportUrl, linkApps, unlinkApps, markAppAsRead, fetchThemes, fetchThemesResult, type ThemesResponse } from "@/api";
 
 // -------- Types alignés avec le backend --------
 type ReviewItem = {
@@ -225,7 +225,7 @@ export default function RevoxAppDetails() {
       const fromDateStr = fromDate ? format(fromDate, 'yyyy-MM-dd') : undefined;
       const toDateStr = toDate ? format(toDate, 'yyyy-MM-dd') : undefined;
 
-      const data = await fetchThemes(appPkParam, fromDateStr, toDateStr);
+      const data = await fetchThemesResult(appPkParam);
       setThemesData(data);
     } catch (e: any) {
       console.error("Failed to load themes data:", e);
