@@ -64,8 +64,8 @@ export function ThemeAnalysisSection({
       // Step 2: Check if job_id is not null
       if (!scheduleResult.job_id) {
         toast({
-          title: "Erreur",
-          description: "Impossible de démarrer l'analyse des thèmes. Veuillez réessayer.",
+          title: "Error",
+          description: "Unable to start theme analysis. Please try again.",
           variant: "destructive",
         });
         setIsAnalyzing(false);
@@ -84,8 +84,8 @@ export function ThemeAnalysisSection({
     } catch (error) {
       console.error("Failed to launch theme analysis:", error);
       toast({
-        title: "Erreur",
-        description: "Une erreur est survenue lors du lancement de l'analyse.",
+        title: "Error",
+        description: "An error occurred while launching the analysis.",
         variant: "destructive",
       });
       setIsAnalyzing(false);
