@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { TrendingUp, TrendingDown, Play, Loader2 } from "lucide-react";
-import { fetchThemesResult, launchThemeAnalysis, type ThemesResponse, type ThemeAxis } from "@/api";
+import { fetchThemesResult, type ThemesResponse, type ThemeAxis } from "@/api";
 import { AnalysisPeriodPicker } from "./AnalysisPeriodPicker";
 
 interface ThemeAnalysisSectionProps {
