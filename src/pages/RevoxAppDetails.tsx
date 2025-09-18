@@ -674,7 +674,7 @@ export default function RevoxAppDetails() {
 
           {/* Theme Analysis */}
           <section className="space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3">
               <h2 className="text-xl font-semibold">Theme Analysis</h2>
               <AnalysisPeriodPicker
                 fromDate={analysisFromDate}
