@@ -2,7 +2,8 @@ import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { TrendingUp, TrendingDown, Play, Loader2 } from "lucide-react";
-import { fetchThemesResult, type ThemesResponse, type ThemeAxis } from "@/api";
+import { fetchThemesResult, scheduleThemeAnalysis, type ThemesResponse, type ThemeAxis } from "@/api";
+import { useToast } from "@/hooks/use-toast";
 import { AnalysisPeriodPicker } from "./AnalysisPeriodPicker";
 
 interface ThemeAnalysisSectionProps {
@@ -16,26 +17,11 @@ interface ThemeAnalysisSectionProps {
 }
 
 const ANALYSIS_STEPS = [
-  "Collecting reviews",
-  "Cleaning data",
-  "Analyzing text",
-  "Processing feedback",
-  "Building semantic map",
-  "Understanding context",
-  "Detecting patterns",
-  "Identifying topics",
-  "Grouping feedback",
-  "Extracting insights",
-  "Sorting positive and negative signals",
-  "Highlighting key themes",
-  "Structuring results",
-  "Evaluating sentiment",
-  "Classifying reviews",
-  "Refining themes",
-  "Summarizing findings",
-  "Generating insights",
-  "Validating analysis",
-  "Preparing results"
+  "Prétraitement des données",
+  "Représentation sémantique", 
+  "Détection de thèmes",
+  "Classification",
+  "Analyse des thèmes"
 ];
 
 export function ThemeAnalysisSection({
@@ -50,7 +36,9 @@ export function ThemeAnalysisSection({
   const [themesData, setThemesData] = useState<ThemesResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
   const pollingRef = useRef<NodeJS.Timeout | null>(null);
+  const { toast } = useToast();
 
   // Load initial themes data
   const loadThemesData = async () => {
@@ -66,18 +54,41 @@ export function ThemeAnalysisSection({
     }
   };
 
-  // Launch new theme analysis
+  // Launch new theme analysis with orchestrated API calls
   const handleLaunchAnalysis = async () => {
+    setIsAnalyzing(true);
     try {
+      // Step 1: Call PUT /themes/schedule?run_now=true
+      const scheduleResult = await scheduleThemeAnalysis(appPk);
+      
+      // Step 2: Check if job_id is not null
+      if (!scheduleResult.job_id) {
+        toast({
+          title: "Erreur",
+          description: "Impossible de démarrer l'analyse des thèmes. Veuillez réessayer.",
+          variant: "destructive",
+        });
+        setIsAnalyzing(false);
+        return;
+      }
+      
+      // Step 3: Call GET /themes/result and start polling if pending
       const data = await fetchThemesResult(appPk);
       setThemesData(data);
       
-      // If status is pending, start polling
       if (data.status === "pending") {
         startPolling();
+      } else {
+        setIsAnalyzing(false);
       }
     } catch (error) {
       console.error("Failed to launch theme analysis:", error);
+      toast({
+        title: "Erreur",
+        description: "Une erreur est survenue lors du lancement de l'analyse.",
+        variant: "destructive",
+      });
+      setIsAnalyzing(false);
     }
   };
 
@@ -92,12 +103,15 @@ export function ThemeAnalysisSection({
         const data = await fetchThemesResult(appPk);
         if (data.status === "done") {
           setThemesData(data);
+          setIsAnalyzing(false);
           stopPolling();
         }
         // Cycle through steps for visual feedback
         setCurrentStepIndex(prev => (prev + 1) % ANALYSIS_STEPS.length);
       } catch (error) {
         console.error("Polling error:", error);
+        setIsAnalyzing(false);
+        stopPolling();
       }
     }, 5000);
   };
@@ -155,10 +169,15 @@ export function ThemeAnalysisSection({
         <div className="space-y-4 py-6">
           <Button
             onClick={handleLaunchAnalysis}
+            disabled={isAnalyzing}
             className="gap-2 bg-primary/90 hover:bg-primary shadow-sm transition-all duration-200"
             size="default"
           >
-            <Play className="h-4 w-4" />
+            {isAnalyzing ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Play className="h-4 w-4" />
+            )}
             Analyze Themes
           </Button>
           
@@ -202,12 +221,12 @@ export function ThemeAnalysisSection({
     }
 
     // Status is pending - show spinner and cycling messages
-    if (themesData?.status === "pending") {
+    if (themesData?.status === "pending" || isAnalyzing) {
       return (
         <div className="text-center space-y-4 py-8">
           <div className="flex items-center justify-center gap-3">
             <Loader2 className="h-6 w-6 animate-spin text-primary" />
-            <span className="text-lg font-medium">Analysis in progress...</span>
+            <span className="text-lg font-medium">Analyse en cours...</span>
           </div>
           <p className="text-muted-foreground transition-all duration-500">
             {ANALYSIS_STEPS[currentStepIndex]}

@@ -140,6 +140,15 @@ export async function fetchThemesResult(appPk: string): Promise<ThemesResponse> 
   return data;
 }
 
+/** Schedule theme analysis for app(s) with run_now option */
+export async function scheduleThemeAnalysis(appPk: string): Promise<{ job_id: string | null }> {
+  const { data } = await api.put<{ job_id: string | null }>("/themes/schedule", 
+    { app_pk: appPk },
+    { params: { run_now: true } }
+  );
+  return data;
+}
+
 /** Launch theme analysis for app(s) */
 export async function launchThemeAnalysis(appPk: string): Promise<void> {
   await api.post("/themes/analyze", {
