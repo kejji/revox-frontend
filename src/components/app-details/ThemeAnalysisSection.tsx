@@ -152,14 +152,14 @@ export function ThemeAnalysisSection({
     // Status is null - show launch button and historical data if available
     if (!themesData?.status) {
       return (
-        <div className="text-center space-y-4 py-6">
+        <div className="space-y-4 py-6">
           <Button
             onClick={handleLaunchAnalysis}
-            className="gap-2"
-            size="lg"
+            className="gap-2 bg-primary/90 hover:bg-primary shadow-sm transition-all duration-200"
+            size="default"
           >
             <Play className="h-4 w-4" />
-            Launch Theme Analysis
+            Analyze Themes
           </Button>
           
           {/* Show historical data if available */}
