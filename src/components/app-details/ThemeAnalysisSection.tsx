@@ -74,15 +74,10 @@ export function ThemeAnalysisSection({
         return;
       }
       
-      // Step 3: Call GET /themes/result and start polling if pending
-      const data = await fetchThemesResult(appPk);
-      setThemesData(data);
+      // Step 3: Call GET /themes/result and start polling
+      // Always start polling after launching analysis since it takes time to process
+      startPolling();
       
-      if (data.status === "pending") {
-        startPolling();
-      } else {
-        setIsAnalyzing(false);
-      }
     } catch (error) {
       console.error("Failed to launch theme analysis:", error);
       toast({
@@ -103,13 +98,18 @@ export function ThemeAnalysisSection({
     pollingRef.current = setInterval(async () => {
       try {
         const data = await fetchThemesResult(appPk);
+        setThemesData(data);
+        
         if (data.status === "done") {
-          setThemesData(data);
           setIsAnalyzing(false);
           stopPolling();
+        } else if (data.status === null) {
+          // If status is still null, continue polling as analysis might not have started yet
+          setCurrentStepIndex(prev => (prev + 1) % ANALYSIS_STEPS.length);
+        } else if (data.status === "pending") {
+          // Continue polling and cycle through steps
+          setCurrentStepIndex(prev => (prev + 1) % ANALYSIS_STEPS.length);
         }
-        // Cycle through steps for visual feedback
-        setCurrentStepIndex(prev => (prev + 1) % ANALYSIS_STEPS.length);
       } catch (error) {
         console.error("Polling error:", error);
         setIsAnalyzing(false);
