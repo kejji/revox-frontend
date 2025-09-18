@@ -557,13 +557,13 @@ export default function RevoxAppDetails() {
                       <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-2">
                         <h2 className="text-xl sm:text-2xl font-bold">{displayApp.name}</h2>
                         <div className="flex items-center gap-2 flex-wrap">
-                          <Badge variant="secondary" className="flex items-center gap-1">
-                            {platform === "ios" ? <Apple className="h-3 w-3" /> : <Bot className="h-3 w-3" />}
+                          <Badge variant="outline" className="text-xs flex items-center">
+                            {platform === "ios" ? <Apple className="h-3 w-3 mr-1" /> : <Bot className="h-3 w-3 mr-1" />}
                             {platform?.toUpperCase()}
                           </Badge>
                           {linkedApps.map((linkedApp) => (
-                            <Badge key={linkedApp.bundleId} variant="secondary" className="flex items-center gap-1">
-                              {linkedApp.platform === "ios" ? <Apple className="h-3 w-3" /> : <Bot className="h-3 w-3" />}
+                            <Badge key={linkedApp.bundleId} variant="outline" className="text-xs flex items-center">
+                              {linkedApp.platform === "ios" ? <Apple className="h-3 w-3 mr-1" /> : <Bot className="h-3 w-3 mr-1" />}
                               {linkedApp.platform.toUpperCase()}
                             </Badge>
                           ))}
