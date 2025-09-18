@@ -7,6 +7,7 @@ import { AnalysisPeriodPicker } from "./AnalysisPeriodPicker";
 
 interface ThemeAnalysisSectionProps {
   appPk: string;
+  appName: string;
   onThemeClick: (theme: { theme: ThemeAxis; type: "positive" | "negative" }) => void;
   analysisFromDate: Date;
   analysisToDate: Date;
@@ -40,6 +41,7 @@ const ANALYSIS_STEPS = [
 
 export function ThemeAnalysisSection({
   appPk,
+  appName,
   onThemeClick,
   analysisFromDate,
   analysisToDate,
@@ -68,12 +70,17 @@ export function ThemeAnalysisSection({
 
   // Launch new theme analysis
   const handleLaunchAnalysis = async () => {
+    setLoading(true);
     try {
-      await launchThemeAnalysis(appPk);
-      setThemesData(prev => prev ? { ...prev, status: "pending" } : null);
-      startPolling();
+      const data = await launchThemeAnalysis(appPk, appName);
+      setThemesData(data);
+      if (data.status === "pending") {
+        startPolling();
+      }
     } catch (error) {
       console.error("Failed to launch theme analysis:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -148,20 +155,33 @@ export function ThemeAnalysisSection({
     // Status is null - show launch button and historical data if available
     if (!themesData?.status) {
       return (
-        <div className="text-center space-y-4 py-6">
-          <Button
-            onClick={handleLaunchAnalysis}
-            className="gap-2"
-            size="lg"
-          >
-            <Play className="h-4 w-4" />
-            Launch Theme Analysis
-          </Button>
+        <div className="space-y-6">
+          <div className="text-center">
+            <Button
+              onClick={handleLaunchAnalysis}
+              disabled={loading}
+              className="gap-2 bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-200"
+              size="lg"
+            >
+              {loading ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Play className="h-4 w-4" />
+              )}
+              {loading ? "Launching Analysis..." : "Launch Theme Analysis"}
+            </Button>
+            <p className="text-sm text-muted-foreground mt-2">
+              Analyze user feedback to discover key themes and insights
+            </p>
+          </div>
           
           {/* Show historical data if available */}
           {themesData && (themesData.top_positive_axes.length > 0 || themesData.top_negative_axes.length > 0) && (
-            <div className="mt-6 pt-6 border-t">
-              <p className="text-sm text-muted-foreground mb-4">Previous analysis results:</p>
+            <div className="pt-6 border-t border-border/50">
+              <div className="flex items-center gap-2 mb-4">
+                <div className="w-2 h-2 rounded-full bg-muted-foreground/50" />
+                <p className="text-sm text-muted-foreground">Previous analysis results</p>
+              </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-4">
                   <h3 className="flex items-center gap-2 text-base font-medium text-green-600">
@@ -200,14 +220,22 @@ export function ThemeAnalysisSection({
     // Status is pending - show spinner and cycling messages
     if (themesData?.status === "pending") {
       return (
-        <div className="text-center space-y-4 py-8">
-          <div className="flex items-center justify-center gap-3">
-            <Loader2 className="h-6 w-6 animate-spin text-primary" />
-            <span className="text-lg font-medium">Analysis in progress...</span>
+        <div className="text-center space-y-6 py-12">
+          <div className="relative">
+            <div className="absolute inset-0 bg-primary/10 rounded-full animate-pulse" />
+            <div className="relative bg-background rounded-full p-6 border border-primary/20">
+              <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto" />
+            </div>
           </div>
-          <p className="text-muted-foreground transition-all duration-500">
-            {ANALYSIS_STEPS[currentStepIndex]}
-          </p>
+          <div className="space-y-2">
+            <h3 className="text-lg font-semibold">Theme Analysis in Progress</h3>
+            <p className="text-primary font-medium transition-all duration-700 animate-pulse">
+              {ANALYSIS_STEPS[currentStepIndex]}
+            </p>
+            <p className="text-sm text-muted-foreground">
+              This usually takes 1-2 minutes
+            </p>
+          </div>
         </div>
       );
     }
