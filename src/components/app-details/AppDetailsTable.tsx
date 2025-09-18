@@ -45,103 +45,45 @@ export function AppDetailsTable({ currentApp, linkedApps = [], className = "" }:
 
   return (
     <div className={`${className}`}>
-      {/* Desktop Layout */}
-      <div className="hidden md:block space-y-1">
-        {/* Header Row */}
-        <div className="grid grid-cols-[200px_200px_1fr] gap-6 pb-2">
-          <h4 className="font-medium text-xs text-muted-foreground uppercase tracking-wider">Version</h4>
-          <h4 className="font-medium text-xs text-muted-foreground uppercase tracking-wider">Rating</h4>
-          <h4 className="font-medium text-xs text-muted-foreground uppercase tracking-wider">Latest Update</h4>
-        </div>
-
-        {/* App Rows */}
+      {/* Modern Card Layout */}
+      <div className="grid gap-3 md:grid-cols-3">
         {allApps.map((app, index) => (
-          <div key={`${app.platform}-${app.bundleId}-${index}`} className="grid grid-cols-[200px_200px_1fr] gap-6 items-center py-2">
-            {/* Version with Platform Icon */}
-            <div className="flex items-center gap-2">
-              {app.platform === "ios" ? (
-                <Apple className="h-4 w-4 text-muted-foreground" />
-              ) : (
-                <Bot className="h-4 w-4 text-muted-foreground" />
-              )}
-              <span className="font-medium">{app.version}</span>
-            </div>
-
-            {/* Rating */}
-            <div className="flex items-center gap-2">
-              <div className="flex">{renderStars(Math.floor(app.rating))}</div>
-              <span className="font-medium">{app.rating}</span>
-            </div>
-
-            {/* Latest Update */}
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-foreground leading-relaxed flex-1">
-                {isUpdateTextTruncated(app.latestUpdate) 
-                  ? `${app.latestUpdate.substring(0, 60)}...` 
-                  : app.latestUpdate}
-              </span>
-              {isUpdateTextTruncated(app.latestUpdate) && (
-                <Button
-                  size="sm"
-                  variant="link"
-                  className="h-auto p-0 text-xs text-primary hover:text-primary/80 font-medium flex-shrink-0"
-                  onClick={() => handleShowMore(app.latestUpdate)}
-                >
-                  Show more
-                </Button>
-              )}
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Mobile Layout */}
-      <div className="md:hidden space-y-4">
-        {allApps.map((app, index) => (
-          <div key={`mobile-${app.platform}-${app.bundleId}-${index}`} className="space-y-4 p-4 bg-muted/30 rounded-lg border">
-            {/* Platform Badge */}
-            <div className="flex items-center gap-2">
-              <Badge variant="secondary" className="text-xs font-medium">
+          <div key={`${app.platform}-${app.bundleId}-${index}`} className="bg-muted/20 rounded-lg p-4 border border-border/50 hover:border-border/70 transition-all duration-200">
+            {/* Platform & Version */}
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                {app.platform === "ios" ? (
+                  <Apple className="h-4 w-4 text-muted-foreground" />
+                ) : (
+                  <Bot className="h-4 w-4 text-muted-foreground" />
+                )}
+                <span className="font-semibold text-foreground">{app.version}</span>
+              </div>
+              <Badge variant="secondary" className="text-xs">
                 {app.platform.toUpperCase()}
               </Badge>
             </div>
-            
-            {/* Version + Rating Row */}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-1">
-                <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium">Version</p>
-                <div className="flex items-center gap-2">
-                  {app.platform === "ios" ? (
-                    <Apple className="h-4 w-4 text-muted-foreground" />
-                  ) : (
-                    <Bot className="h-4 w-4 text-muted-foreground" />
-                  )}
-                  <span className="font-semibold text-base">{app.version}</span>
-                </div>
-              </div>
-              <div className="space-y-1">
-                <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium">Rating</p>
-                <div className="flex items-center gap-2">
-                  <div className="flex">{renderStars(Math.floor(app.rating))}</div>
-                  <span className="font-semibold text-base">{app.rating}</span>
-                </div>
-              </div>
+
+            {/* Rating */}
+            <div className="flex items-center gap-2 mb-4">
+              <div className="flex gap-0.5">{renderStars(Math.floor(app.rating))}</div>
+              <span className="font-semibold text-sm">{app.rating}</span>
             </div>
 
-            {/* Last Update Section */}
-            <div className="space-y-2">
-              <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium">Latest Update</p>
-               <div className="flex items-center gap-2">
-                <span className="text-sm text-foreground leading-relaxed flex-1">
+            {/* Latest Update */}
+            <div>
+              <p className="text-xs text-muted-foreground font-medium mb-2">Latest Update</p>
+              <div className="space-y-2">
+                <p className="text-sm text-foreground leading-relaxed">
                   {isUpdateTextTruncated(app.latestUpdate) 
-                    ? `${app.latestUpdate.substring(0, 60)}...` 
+                    ? `${app.latestUpdate.substring(0, 80)}...` 
                     : app.latestUpdate}
-                </span>
+                </p>
                 {isUpdateTextTruncated(app.latestUpdate) && (
                   <Button
                     size="sm"
-                    variant="link"
-                    className="h-auto p-0 text-xs text-primary hover:text-primary/80 font-medium flex-shrink-0"
+                    variant="ghost"
+                    className="h-7 px-2 text-xs font-medium"
                     onClick={() => handleShowMore(app.latestUpdate)}
                   >
                     Show more
