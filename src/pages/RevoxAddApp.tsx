@@ -155,7 +155,6 @@ const handleFollowApps = async () => {
         return {
           bundleId: bundleInfo?.bundleId || '',
           platform, // "ios" | "android"
-          preventAutoMerge: true, // Prevent automatic merging on backend
         };
       }).filter(p => p.bundleId) // Filter out empty bundleIds
     );
