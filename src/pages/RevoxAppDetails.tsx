@@ -529,146 +529,142 @@ export default function RevoxAppDetails() {
         <div className="container mx-auto p-4 sm:p-6 max-w-7xl space-y-6 sm:space-y-8">
           {/* App Info */}
           <section className="space-y-4">
-            <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
-              <div className="flex-1">
-                {appDataLoading ? (
-                  <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
-                    <div className="flex-shrink-0">
-                      <Skeleton className="w-20 h-20 rounded-2xl" />
-                    </div>
-                    <div className="flex-1 space-y-3 sm:space-y-4">
-                      <div>
-                        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-2">
-                          <Skeleton className="h-8 w-48" />
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <Skeleton className="h-6 w-20" />
-                          </div>
+            <div className="flex-1">
+              {appDataLoading ? (
+                <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
+                  <div className="flex-shrink-0">
+                    <Skeleton className="w-20 h-20 rounded-2xl" />
+                  </div>
+                  <div className="flex-1 space-y-3 sm:space-y-4">
+                    <div>
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-2">
+                        <Skeleton className="h-8 w-48" />
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <Skeleton className="h-6 w-20" />
                         </div>
                       </div>
-                      <div className="space-y-2">
-                        <Skeleton className="h-8 w-full" />
-                        <Skeleton className="h-8 w-full" />
-                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Skeleton className="h-8 w-full" />
+                      <Skeleton className="h-8 w-full" />
                     </div>
                   </div>
-                ) : displayApp ? (
-                  <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
-                    <div className="flex-shrink-0">
-                      <div className="relative">
-                        {displayApp.icon ? (
-                          <img
-                            src={displayApp.icon}
-                            alt={displayApp.name}
-                            className="w-20 h-20 rounded-2xl border-2 border-border/50 shadow-sm"
-                          />
-                        ) : (
-                          <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-muted to-muted/50 border-2 border-border/50 flex items-center justify-center">
-                            <span className="text-2xl font-bold text-muted-foreground">
-                              {displayApp.name.substring(0, 2).toUpperCase()}
-                            </span>
-                          </div>
-                        )}
-                        {linkedApps.length > 0 && (
-                          <div className="absolute -top-1 -right-1 w-6 h-6 bg-primary rounded-full flex items-center justify-center">
-                            <LinkIcon className="h-4 w-4 text-primary-foreground" />
-                          </div>
-                        )}
-                      </div>
+                </div>
+              ) : displayApp ? (
+                <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
+                  <div className="flex-shrink-0">
+                    <div className="relative">
+                      {displayApp.icon ? (
+                        <img
+                          src={displayApp.icon}
+                          alt={displayApp.name}
+                          className="w-20 h-20 rounded-2xl border-2 border-border/50 shadow-sm"
+                        />
+                      ) : (
+                        <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-muted to-muted/50 border-2 border-border/50 flex items-center justify-center">
+                          <span className="text-2xl font-bold text-muted-foreground">
+                            {displayApp.name.substring(0, 2).toUpperCase()}
+                          </span>
+                        </div>
+                      )}
+                      {linkedApps.length > 0 && (
+                        <div className="absolute -top-1 -right-1 w-6 h-6 bg-primary rounded-full flex items-center justify-center">
+                          <LinkIcon className="h-4 w-4 text-primary-foreground" />
+                        </div>
+                      )}
                     </div>
+                  </div>
 
-                    <div className="flex-1 space-y-3 sm:space-y-4">
-                      <div>
-                        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-2">
-                          <h2 className="text-xl sm:text-2xl font-bold">{displayApp.name}</h2>
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <Badge variant="secondary" className="flex items-center gap-1">
-                              {platform === "ios" ? <Apple className="h-3 w-3" /> : <Bot className="h-3 w-3" />}
-                              {platform?.toUpperCase()}
-                            </Badge>
-                            {linkedApps.map((linkedApp) => (
-                              <Badge key={linkedApp.bundleId} variant="secondary" className="flex items-center gap-1">
-                                {linkedApp.platform === "ios" ? <Apple className="h-3 w-3" /> : <Bot className="h-3 w-3" />}
-                                {linkedApp.platform.toUpperCase()}
-                              </Badge>
-                            ))}
-                            {linkedApps.length > 0 && (
+                  <div className="flex-1 space-y-3 sm:space-y-4">
+                    <div>
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-2">
+                        <h2 className="text-xl sm:text-2xl font-bold">{displayApp.name}</h2>
+                        <AlertsInterface />
+                      </div>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <Badge variant="secondary" className="flex items-center gap-1">
+                          {platform === "ios" ? <Apple className="h-3 w-3" /> : <Bot className="h-3 w-3" />}
+                          {platform?.toUpperCase()}
+                        </Badge>
+                        {linkedApps.map((linkedApp) => (
+                          <Badge key={linkedApp.bundleId} variant="secondary" className="flex items-center gap-1">
+                            {linkedApp.platform === "ios" ? <Apple className="h-3 w-3" /> : <Bot className="h-3 w-3" />}
+                            {linkedApp.platform.toUpperCase()}
+                          </Badge>
+                        ))}
+                        {linkedApps.length > 0 && (
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={handleUnlinkApp}
+                            disabled={linkingLoading}
+                            className="h-6 px-2 text-xs gap-1 text-muted-foreground hover:text-destructive"
+                            title="Unlink apps"
+                          >
+                            <Unlink className="h-3 w-3" />
+                            <span className="hidden sm:inline">Unlink</span>
+                          </Button>
+                        )}
+                        {linkedApps.length === 0 && availableApps.length > 0 && (
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
                               <Button
                                 size="sm"
                                 variant="ghost"
-                                onClick={handleUnlinkApp}
                                 disabled={linkingLoading}
-                                className="h-6 px-2 text-xs gap-1 text-muted-foreground hover:text-destructive"
-                                title="Unlink apps"
+                                className="h-6 px-2 text-xs gap-1 text-muted-foreground hover:text-primary"
+                                title="Link with counterpart app"
                               >
-                                <Unlink className="h-3 w-3" />
-                                <span className="hidden sm:inline">Unlink</span>
+                                <Plus className="h-3 w-3" />
+                                <span className="hidden sm:inline">Link</span>
                               </Button>
-                            )}
-                            {linkedApps.length === 0 && availableApps.length > 0 && (
-                              <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                  <Button
-                                    size="sm"
-                                    variant="ghost"
-                                    disabled={linkingLoading}
-                                    className="h-6 px-2 text-xs gap-1 text-muted-foreground hover:text-primary"
-                                    title="Link with counterpart app"
-                                  >
-                                    <Plus className="h-3 w-3" />
-                                    <span className="hidden sm:inline">Link</span>
-                                  </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent>
-                                  {availableApps.map((availableApp) => (
-                                    <DropdownMenuItem
-                                      key={`${availableApp.platform}-${availableApp.bundleId}`}
-                                      onClick={() => handleLinkApp(availableApp)}
-                                      className="gap-2"
-                                    >
-                                      {availableApp.platform === "ios" ? (
-                                        <Apple className="h-4 w-4" />
-                                      ) : (
-                                        <Bot className="h-4 w-4" />
-                                      )}
-                                      {availableApp.name || availableApp.bundleId}
-                                    </DropdownMenuItem>
-                                  ))}
-                                </DropdownMenuContent>
-                              </DropdownMenu>
-                            )}
-                          </div>
-                        </div>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent>
+                              {availableApps.map((availableApp) => (
+                                <DropdownMenuItem
+                                  key={`${availableApp.platform}-${availableApp.bundleId}`}
+                                  onClick={() => handleLinkApp(availableApp)}
+                                  className="gap-2"
+                                >
+                                  {availableApp.platform === "ios" ? (
+                                    <Apple className="h-4 w-4" />
+                                  ) : (
+                                    <Bot className="h-4 w-4" />
+                                  )}
+                                  {availableApp.name || availableApp.bundleId}
+                                </DropdownMenuItem>
+                              ))}
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        )}
                       </div>
-
-                      <AppDetailsTable
-                        currentApp={{
-                          name: displayApp.name,
-                          version: displayApp.version,
-                          rating: displayApp.rating,
-                          latestUpdate: displayApp.latestUpdate,
-                          lastUpdatedAt: displayApp.lastUpdatedAt,
-                          platform: platform!,
-                          bundleId: bundleId!
-                        }}
-                        linkedApps={linkedApps.map(linkedApp => ({
-                          name: linkedApp.name || linkedApp.bundleId,
-                          version: (linkedApp as any).version || "Unknown",
-                          rating: linkedApp.rating || 4.1,
-                          latestUpdate: (linkedApp as any).releaseNotes ||
-                            `Enhanced ${linkedApp.platform === 'ios' ? 'iOS' : 'Android'} compatibility and bug fixes for better performance.`,
-                          lastUpdatedAt: (linkedApp as any).lastUpdatedAt,
-                          platform: linkedApp.platform,
-                          bundleId: linkedApp.bundleId
-                        }))}
-                        className="mt-4"
-                      />
                     </div>
+
+                    <AppDetailsTable
+                      currentApp={{
+                        name: displayApp.name,
+                        version: displayApp.version,
+                        rating: displayApp.rating,
+                        latestUpdate: displayApp.latestUpdate,
+                        lastUpdatedAt: displayApp.lastUpdatedAt,
+                        platform: platform!,
+                        bundleId: bundleId!
+                      }}
+                      linkedApps={linkedApps.map(linkedApp => ({
+                        name: linkedApp.name || linkedApp.bundleId,
+                        version: (linkedApp as any).version || "Unknown",
+                        rating: linkedApp.rating || 4.1,
+                        latestUpdate: (linkedApp as any).releaseNotes ||
+                          `Enhanced ${linkedApp.platform === 'ios' ? 'iOS' : 'Android'} compatibility and bug fixes for better performance.`,
+                        lastUpdatedAt: (linkedApp as any).lastUpdatedAt,
+                        platform: linkedApp.platform,
+                        bundleId: linkedApp.bundleId
+                      }))}
+                      className="mt-4"
+                    />
                   </div>
-                ) : null}
-              </div>
-              <div className="lg:ml-4">
-                <AlertsInterface />
-              </div>
+                </div>
+              ) : null}
             </div>
           </section>
 
