@@ -111,6 +111,7 @@ export type ThemesResponse = {
   ok: boolean;
   app_pk: string;
   sk: string;
+  status?: "pending" | "done" | null;
   selection: {
     from: string;
     to: string;
@@ -137,4 +138,11 @@ export async function fetchThemesResult(appPk: string): Promise<ThemesResponse> 
     params: { app_pk: appPk },
   });
   return data;
+}
+
+/** Launch theme analysis for app(s) */
+export async function launchThemeAnalysis(appPk: string): Promise<void> {
+  await api.post("/themes/analyze", {
+    app_pk: appPk,
+  });
 }

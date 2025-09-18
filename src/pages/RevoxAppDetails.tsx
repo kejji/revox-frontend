@@ -60,7 +60,8 @@ import {
 } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { LanguageToggle } from "@/components/ui/language-toggle";
-import { api, appPkFromRoute, getReviewsExportUrl, linkApps, unlinkApps, markAppAsRead, fetchThemes, fetchThemesResult, type ThemesResponse } from "@/api";
+import { api, appPkFromRoute, getReviewsExportUrl, linkApps, unlinkApps, markAppAsRead, fetchThemes, fetchThemesResult, type ThemesResponse, type ThemeAxis } from "@/api";
+import { ThemeAnalysisSection } from "@/components/app-details/ThemeAnalysisSection";
 
 // -------- Types alignés avec le backend --------
 type ReviewItem = {
@@ -136,9 +137,7 @@ export default function RevoxAppDetails() {
   const [currentApp, setCurrentApp] = useState<FollowedApp | null>(null);
   const [linkingLoading, setLinkingLoading] = useState(false);
 
-  // Themes state
-  const [themesData, setThemesData] = useState<ThemesResponse | null>(null);
-  const [themesLoading, setThemesLoading] = useState(false);
+  // Themes state - moved to ThemeAnalysisSection component
   
   // Date range state for analysis period
   const [analysisFromDate, setAnalysisFromDate] = useState<Date>(() => subMonths(new Date(), 3));
@@ -151,7 +150,7 @@ export default function RevoxAppDetails() {
 
   // Dialog state
   const [showUpdateDialog, setShowUpdateDialog] = useState(false);
-  const [selectedTheme, setSelectedTheme] = useState<{ theme: any; type: "positive" | "negative" } | null>(null);
+  const [selectedTheme, setSelectedTheme] = useState<{ theme: ThemeAxis; type: "positive" | "negative" } | null>(null);
 
   // Use real app data from API when available
   const displayApp = currentApp ? {
@@ -202,36 +201,16 @@ export default function RevoxAppDetails() {
     }
   };
 
-  // Load themes data
-  const loadThemesData = async (fromDate?: Date, toDate?: Date) => {
-    if (!platform || !bundleId) return;
-
-    setThemesLoading(true);
-    try {
-      // Always use URL app_pks if available (for merged apps), otherwise construct from current + linked apps
-      let appPkParam: string;
-      if (urlAppPks.length > 0) {
-        // URL contains the merged app_pks - use them directly
-        appPkParam = urlAppPks.join(",");
-      } else {
-        // Construct from current app + any linked apps
-        const allAppPks = [appPkFromRoute(platform, bundleId)];
-        if (linkedApps.length > 0) {
-          allAppPks.push(...linkedApps.map(app => appPkFromRoute(app.platform, app.bundleId)));
-        }
-        appPkParam = allAppPks.join(",");
+  // Get app_pk for themes (moved to ThemeAnalysisSection)
+  const getAppPkParam = () => {
+    if (urlAppPks.length > 0) {
+      return urlAppPks.join(",");
+    } else {
+      const allAppPks = [appPkFromRoute(platform!, bundleId!)];
+      if (linkedApps.length > 0) {
+        allAppPks.push(...linkedApps.map(app => appPkFromRoute(app.platform, app.bundleId)));
       }
-
-      const fromDateStr = fromDate ? format(fromDate, 'yyyy-MM-dd') : undefined;
-      const toDateStr = toDate ? format(toDate, 'yyyy-MM-dd') : undefined;
-
-      const data = await fetchThemesResult(appPkParam);
-      setThemesData(data);
-    } catch (e: any) {
-      console.error("Failed to load themes data:", e);
-      setThemesData(null);
-    } finally {
-      setThemesLoading(false);
+      return allAppPks.join(",");
     }
   };
 
@@ -363,8 +342,6 @@ export default function RevoxAppDetails() {
 
   useEffect(() => {
     fetchReviewsInitial();
-    // Only load themes initially, not on date changes
-    loadThemesData(analysisFromDate, analysisToDate);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [platform, bundleId, linkedApps.length, urlAppPks.join(',')]);
 
@@ -669,108 +646,17 @@ export default function RevoxAppDetails() {
           </section>
 
           {/* Theme Analysis */}
-          <section className="space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-              <h2 className="text-xl font-semibold">Theme Analysis</h2>
-              <AnalysisPeriodPicker
-                fromDate={analysisFromDate}
-                toDate={analysisToDate}
-                onFromDateChange={setAnalysisFromDate}
-                onToDateChange={setAnalysisToDate}
-                onValidate={() => loadThemesData(analysisFromDate, analysisToDate)}
-                reviewsCount={themesData?.total_reviews_considered}
-                lastUpdated={themesData?.created_at}
-              />
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Positive Themes */}
-              <div className="space-y-4">
-                <h3 className="flex items-center gap-2 text-base font-medium text-green-600">
-                  <TrendingUp className="h-4 w-4" />
-                  Top 3 Positive Themes
-                </h3>
-                <div className="space-y-3">
-                  {themesLoading ? (
-                    <div className="space-y-3">
-                      {Array.from({ length: 3 }).map((_, i) => (
-                        <div key={i} className="p-3 border rounded-lg">
-                          <Skeleton className="h-4 w-full" />
-                        </div>
-                      ))}
-                    </div>
-                  ) : themesData && themesData.top_positive_axes.length > 0 ? (
-                    <div className="space-y-3">
-                      {themesData.top_positive_axes.slice(0, 3).map((theme, i) => (
-                        <button
-                          key={i}
-                          onClick={() => setSelectedTheme({ theme, type: "positive" })}
-                          className="w-full p-3 text-left border rounded-lg hover:bg-muted/50 hover:border-green-200 transition-all duration-200 group"
-                        >
-                          <div className="flex items-center gap-2">
-                            <div className="w-2 h-2 rounded-full bg-green-500 flex-shrink-0" />
-                            <span className="text-sm text-foreground group-hover:text-green-700 transition-colors">
-                              {theme.axis_label}
-                            </span>
-                          </div>
-                          <div className="text-xs text-muted-foreground mt-1 ml-4">
-                            Click to view sample comments
-                          </div>
-                        </button>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="text-center py-4 text-muted-foreground">
-                      <p className="text-sm">No positive themes data available</p>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Negative Themes */}
-              <div className="space-y-4">
-                <h3 className="flex items-center gap-2 text-base font-medium text-orange-600">
-                  <TrendingDown className="h-4 w-4" />
-                  Top 3 Negative Themes
-                </h3>
-                <div className="space-y-3">
-                  {themesLoading ? (
-                    <div className="space-y-3">
-                      {Array.from({ length: 3 }).map((_, i) => (
-                        <div key={i} className="p-3 border rounded-lg">
-                          <Skeleton className="h-4 w-full" />
-                        </div>
-                      ))}
-                    </div>
-                  ) : themesData && themesData.top_negative_axes.length > 0 ? (
-                    <div className="space-y-3">
-                      {themesData.top_negative_axes.slice(0, 3).map((theme, i) => (
-                        <button
-                          key={i}
-                          onClick={() => setSelectedTheme({ theme, type: "negative" })}
-                          className="w-full p-3 text-left border rounded-lg hover:bg-muted/50 hover:border-orange-200 transition-all duration-200 group"
-                        >
-                          <div className="flex items-center gap-2">
-                            <div className="w-2 h-2 rounded-full bg-orange-500 flex-shrink-0" />
-                            <span className="text-sm text-foreground group-hover:text-orange-700 transition-colors">
-                              {theme.axis_label}
-                            </span>
-                          </div>
-                          <div className="text-xs text-muted-foreground mt-1 ml-4">
-                            Click to view sample comments
-                          </div>
-                        </button>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="text-center py-4 text-muted-foreground">
-                      <p className="text-sm">No negative themes data available</p>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          </section>
+          {platform && bundleId && (
+            <ThemeAnalysisSection
+              appPk={getAppPkParam()}
+              onThemeClick={setSelectedTheme}
+              analysisFromDate={analysisFromDate}
+              analysisToDate={analysisToDate}
+              onFromDateChange={setAnalysisFromDate}
+              onToDateChange={setAnalysisToDate}
+              onValidate={() => {/* Theme analysis validation handled inside component */}}
+            />
+          )}
 
           {/* Theme Samples Dialog */}
           <ThemeSamplesDialog
