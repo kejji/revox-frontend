@@ -17,26 +17,11 @@ interface ThemeAnalysisSectionProps {
 }
 
 const ANALYSIS_STEPS = [
-  "Collecting reviews",
-  "Cleaning data",
-  "Analyzing text",
-  "Processing feedback",
-  "Building semantic map",
-  "Understanding context",
-  "Detecting patterns",
-  "Identifying topics",
-  "Grouping feedback",
-  "Extracting insights",
-  "Sorting positive and negative signals",
-  "Highlighting key themes",
-  "Structuring results",
-  "Evaluating sentiment",
-  "Classifying reviews",
-  "Refining themes",
-  "Summarizing findings",
-  "Generating insights",
-  "Validating analysis",
-  "Preparing results"
+  "Prétraitement des données",
+  "Représentation sémantique", 
+  "Détection de thèmes",
+  "Classification",
+  "Analyse des thèmes"
 ];
 
 export function ThemeAnalysisSection({
