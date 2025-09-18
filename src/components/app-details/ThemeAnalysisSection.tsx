@@ -62,9 +62,11 @@ export function ThemeAnalysisSection({
     try {
       // Step 1: Call PUT /themes/schedule?run_now=true
       const scheduleResult = await scheduleThemeAnalysis(appPk, appName);
+      console.log("Schedule result:", scheduleResult);
       
       // Step 2: Check if job_id is not null
       if (!scheduleResult.job_id) {
+        console.log("No job_id received:", scheduleResult);
         toast({
           title: "Error",
           description: "Unable to start theme analysis. Please try again.",
