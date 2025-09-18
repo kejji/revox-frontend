@@ -649,6 +649,7 @@ export default function RevoxAppDetails() {
           {platform && bundleId && (
             <ThemeAnalysisSection
               appPk={getAppPkParam()}
+              appName={displayApp?.name || bundleId}
               onThemeClick={setSelectedTheme}
               analysisFromDate={analysisFromDate}
               analysisToDate={analysisToDate}

@@ -8,6 +8,7 @@ import { AnalysisPeriodPicker } from "./AnalysisPeriodPicker";
 
 interface ThemeAnalysisSectionProps {
   appPk: string;
+  appName: string;
   onThemeClick: (theme: { theme: ThemeAxis; type: "positive" | "negative" }) => void;
   analysisFromDate: Date;
   analysisToDate: Date;
@@ -26,6 +27,7 @@ const ANALYSIS_STEPS = [
 
 export function ThemeAnalysisSection({
   appPk,
+  appName,
   onThemeClick,
   analysisFromDate,
   analysisToDate,
@@ -59,7 +61,7 @@ export function ThemeAnalysisSection({
     setIsAnalyzing(true);
     try {
       // Step 1: Call PUT /themes/schedule?run_now=true
-      const scheduleResult = await scheduleThemeAnalysis(appPk);
+      const scheduleResult = await scheduleThemeAnalysis(appPk, appName);
       
       // Step 2: Check if job_id is not null
       if (!scheduleResult.job_id) {
