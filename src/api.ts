@@ -119,7 +119,6 @@ export type ThemesResponse = {
   created_at: string;
   top_positive_axes: ThemeAxis[];
   top_negative_axes: ThemeAxis[];
-  status?: "null" | "pending" | "done" | null;
 };
 
 /** Fetch latest themes for app(s) */
@@ -138,11 +137,4 @@ export async function fetchThemesResult(appPk: string): Promise<ThemesResponse> 
     params: { app_pk: appPk },
   });
   return data;
-}
-
-/** Launch theme analysis for app(s) */
-export async function launchThemeAnalysis(appPk: string): Promise<void> {
-  await api.post("/themes/analyze", {
-    app_pk: appPk,
-  });
 }
