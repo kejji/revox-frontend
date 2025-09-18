@@ -140,15 +140,9 @@ export async function fetchThemesResult(appPk: string): Promise<ThemesResponse> 
   return data;
 }
 
-/** Schedule theme analysis for app(s) */
-export async function launchThemeAnalysis(appPk: string, appName: string): Promise<ThemesResponse> {
-  await api.put("/themes/schedule?run_now=true", {
+/** Launch theme analysis for app(s) */
+export async function launchThemeAnalysis(appPk: string): Promise<void> {
+  await api.post("/themes/analyze", {
     app_pk: appPk,
-    appName: appName,
-    enabled: true,
-    interval_minutes: 1440
   });
-  
-  // Immediately fetch the result after scheduling
-  return await fetchThemesResult(appPk);
 }
