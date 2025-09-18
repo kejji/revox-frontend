@@ -69,10 +69,7 @@ export function ThemeAnalysisSection({
   // Launch new theme analysis
   const handleLaunchAnalysis = async () => {
     try {
-      // First launch the analysis
-      await launchThemeAnalysis(appPk);
-      
-      // Then fetch the results
+      // Fetch the results using GET /themes/result
       const data = await fetchThemesResult(appPk);
       setThemesData(data);
       
