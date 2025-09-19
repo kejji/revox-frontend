@@ -355,9 +355,6 @@ export default function RevoxDashboard() {
         </div>
 
         {/* ===== Sous-header (titre section) ===== */}
-        <div className="mb-4">
-          <h2 className="text-lg font-semibold">{t('yourApps')}</h2>
-        </div>
 
         {/* ===== Contenu ===== */}
         {loading && <p className="text-sm text-muted-foreground">{t('loading')}</p>}
