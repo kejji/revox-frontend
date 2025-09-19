@@ -1,15 +1,19 @@
 import { useState } from "react";
+import { signUp, confirmSignUp } from "aws-amplify/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Mail, Lock, Eye, EyeOff, User, Github } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { Label } from "@/components/ui/label";
 import revoxLogo from "@/assets/revox-logo.svg";
 import { useTheme } from "@/components/theme-provider";
 
 export default function RevoxSignup() {
   const { theme } = useTheme();
+  const navigate = useNavigate();
+  
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -17,16 +21,78 @@ export default function RevoxSignup() {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  
+  // Confirmation step state
+  const [needsConfirm, setNeedsConfirm] = useState(false);
+  const [code, setCode] = useState("");
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorMsg(null);
+    setSuccessMsg(null);
     setIsLoading(true);
     
-    // Add your authentication logic here
-    // For now, just simulate a delay
-    setTimeout(() => {
+    try {
+      // Split name into first and last name if provided
+      const nameParts = formData.name.trim().split(' ');
+      const firstName = nameParts[0] || '';
+      const lastName = nameParts.slice(1).join(' ') || '';
+      
+      await signUp({
+        username: formData.email,
+        password: formData.password,
+        options: {
+          userAttributes: {
+            email: formData.email,
+            ...(firstName ? { given_name: firstName } : {}),
+            ...(lastName ? { family_name: lastName } : {}),
+          },
+        },
+      });
+      
+      setNeedsConfirm(true);
+      setSuccessMsg("We sent you a confirmation code by email.");
+    } catch (err: any) {
+      if (err?.name === "UsernameExistsException") {
+        setNeedsConfirm(true);
+        setErrorMsg("An account already exists with this email. If not confirmed yet, enter the code below.");
+      } else if (err?.name === "InvalidPasswordException") {
+        setErrorMsg("Password does not meet the policy requirements.");
+      } else {
+        setErrorMsg(err?.message || "Signup failed. Please try again.");
+      }
+    } finally {
       setIsLoading(false);
-    }, 1000);
+    }
+  };
+
+  const handleConfirm = async () => {
+    setErrorMsg(null);
+    setSuccessMsg(null);
+    setIsLoading(true);
+    
+    try {
+      await confirmSignUp({ 
+        username: formData.email, 
+        confirmationCode: code 
+      });
+      setSuccessMsg("Account confirmed! Redirecting to dashboard...");
+      setTimeout(() => {
+        navigate("/revox/dashboard");
+      }, 1500);
+    } catch (err: any) {
+      if (err?.name === "CodeMismatchException") {
+        setErrorMsg("Invalid code. Please try again.");
+      } else if (err?.name === "ExpiredCodeException") {
+        setErrorMsg("Code expired. Please request a new code.");
+      } else {
+        setErrorMsg(err?.message || "Confirmation failed.");
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleInputChange = (field: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -109,6 +175,18 @@ export default function RevoxSignup() {
               </div>
             </div>
 
+            {/* Error and Success Messages */}
+            {errorMsg && (
+              <div className="p-3 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
+                <p className="text-sm text-red-600 dark:text-red-400">{errorMsg}</p>
+              </div>
+            )}
+            {successMsg && (
+              <div className="p-3 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800">
+                <p className="text-sm text-green-600 dark:text-green-400">{successMsg}</p>
+              </div>
+            )}
+
             <Button
               type="submit"
               className="w-full h-12 rounded-xl font-medium"
@@ -123,6 +201,47 @@ export default function RevoxSignup() {
                 "Get started"
               )}
             </Button>
+
+            {/* Confirmation Code Section */}
+            {needsConfirm && (
+              <div className="mt-6 p-4 border border-border/30 rounded-xl bg-muted/30">
+                <h4 className="font-medium mb-2 text-foreground">Confirm your email</h4>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Enter the 6-digit code sent to <strong>{formData.email}</strong>
+                </p>
+                <div className="space-y-3">
+                  <div className="relative">
+                    <Input
+                      id="confirmCode"
+                      type="text"
+                      placeholder="Enter 6-digit code"
+                      value={code}
+                      onChange={(e) => setCode(e.target.value)}
+                      className="h-12 rounded-xl border border-border/30 bg-background focus:border-primary transition-colors"
+                      maxLength={6}
+                    />
+                  </div>
+                  <div className="flex gap-3">
+                    <Button 
+                      onClick={handleConfirm} 
+                      disabled={isLoading || !code.trim()}
+                      className="flex-1 h-10 rounded-lg"
+                      type="button"
+                    >
+                      {isLoading ? "Confirming..." : "Confirm"}
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      onClick={() => setNeedsConfirm(false)} 
+                      className="flex-1 h-10 rounded-lg"
+                      type="button"
+                    >
+                      Edit email
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Divider */}
             <div className="relative py-4">
