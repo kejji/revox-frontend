@@ -52,7 +52,7 @@ export default function RevoxSignup() {
               <img 
                 src={theme === "dark" ? revoxLogoDark : revoxLogo}
                 alt="Revox" 
-                className="h-24 mx-auto animate-pulse"
+                className="h-72 mx-auto animate-pulse"
               />
             </div>
           </div>
