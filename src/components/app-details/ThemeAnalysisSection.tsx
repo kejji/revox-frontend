@@ -209,19 +209,36 @@ export function ThemeAnalysisSection({
     if (!themesData?.status) {
       return (
         <div className="space-y-4 py-6">
-          <Button
-            onClick={handleLaunchAnalysis}
-            disabled={isAnalyzing}
-            className="gap-2 bg-primary/90 hover:bg-primary shadow-sm transition-all duration-200"
-            size="default"
-          >
-            {isAnalyzing ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <Play className="h-4 w-4" />
-            )}
-            Analyze Themes
-          </Button>
+          {/* Button and Loading Section Container - Fixed Height to Prevent Layout Shift */}
+          <div className="min-h-[120px] flex flex-col justify-start">
+            {/* Button - Hidden when analyzing */}
+            <div className={`transition-all duration-200 ${isAnalyzing ? 'opacity-0 h-0 overflow-hidden' : 'opacity-100 h-auto'}`}>
+              <Button
+                onClick={handleLaunchAnalysis}
+                disabled={isAnalyzing}
+                className="gap-2 bg-primary/90 hover:bg-primary shadow-sm transition-all duration-200"
+                size="default"
+              >
+                <Play className="h-4 w-4" />
+                Analyze Themes
+              </Button>
+            </div>
+            
+            {/* Loading Section - Left Aligned, Appears when analyzing */}
+            <div className={`transition-all duration-300 ease-out ${
+              isAnalyzing 
+                ? 'opacity-100 translate-y-0 h-auto' 
+                : 'opacity-0 translate-y-4 h-0 overflow-hidden'
+            }`}>
+              <div className="flex items-center gap-3 mb-3">
+                <Loader2 className="h-6 w-6 animate-spin text-primary flex-shrink-0" />
+                <span className="text-lg font-medium">Analyse en cours...</span>
+              </div>
+              <p className="text-muted-foreground text-sm ml-9 transition-all duration-500">
+                {ANALYSIS_STEPS[currentStepIndex]}
+              </p>
+            </div>
+          </div>
           
           {/* Show historical data if available */}
           {themesData && (themesData.top_positive_axes.length > 0 || themesData.top_negative_axes.length > 0) && (
@@ -262,17 +279,19 @@ export function ThemeAnalysisSection({
       );
     }
 
-    // Status is pending - show spinner and cycling messages
+    // Status is pending - show left-aligned loading section
     if (themesData?.status === "pending" || isAnalyzing) {
       return (
-        <div className="text-center space-y-4 py-8">
-          <div className="flex items-center justify-center gap-3">
-            <Loader2 className="h-6 w-6 animate-spin text-primary" />
-            <span className="text-lg font-medium">Analyse en cours...</span>
+        <div className="py-6">
+          <div className="min-h-[120px] flex flex-col justify-start">
+            <div className="flex items-center gap-3 mb-3 animate-fade-in">
+              <Loader2 className="h-6 w-6 animate-spin text-primary flex-shrink-0" />
+              <span className="text-lg font-medium">Analyse en cours...</span>
+            </div>
+            <p className="text-muted-foreground text-sm ml-9 transition-all duration-500">
+              {ANALYSIS_STEPS[currentStepIndex]}
+            </p>
           </div>
-          <p className="text-muted-foreground transition-all duration-500">
-            {ANALYSIS_STEPS[currentStepIndex]}
-          </p>
         </div>
       );
     }
