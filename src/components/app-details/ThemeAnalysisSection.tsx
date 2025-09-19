@@ -232,7 +232,7 @@ export function ThemeAnalysisSection({
             }`}>
               <div className="flex items-center gap-3 mb-3">
                 <Loader2 className="h-6 w-6 animate-spin text-primary flex-shrink-0" />
-                <span className="text-lg font-medium">Analyse en cours...</span>
+                <span className="text-lg font-medium">Analysis in progress...</span>
               </div>
               <p className="text-muted-foreground text-sm ml-9 transition-all duration-500">
                 {ANALYSIS_STEPS[currentStepIndex]}
@@ -286,7 +286,7 @@ export function ThemeAnalysisSection({
           <div className="min-h-[120px] flex flex-col justify-start">
             <div className="flex items-center gap-3 mb-3 animate-fade-in">
               <Loader2 className="h-6 w-6 animate-spin text-primary flex-shrink-0" />
-              <span className="text-lg font-medium">Analyse en cours...</span>
+              <span className="text-lg font-medium">Analysis in progress...</span>
             </div>
             <p className="text-muted-foreground text-sm ml-9 transition-all duration-500">
               {ANALYSIS_STEPS[currentStepIndex]}
