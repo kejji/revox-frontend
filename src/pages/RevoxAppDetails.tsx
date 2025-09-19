@@ -27,6 +27,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -35,6 +36,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { AppDetailsTable } from "@/components/app-details/AppDetailsTable";
 import { DataExtractionLoader } from "@/components/app-details/DataExtractionLoader";
 import { ThemeSamplesDialog } from "@/components/app-details/ThemeSamplesDialog";
@@ -57,11 +59,16 @@ import {
   Unlink,
   CalendarIcon,
   Bell,
+  Settings,
+  LogOut,
 } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { LanguageToggle } from "@/components/ui/language-toggle";
 import { api, appPkFromRoute, getReviewsExportUrl, linkApps, unlinkApps, markAppAsRead, fetchThemes, fetchThemesResult, type ThemesResponse, type ThemeAxis } from "@/api";
 import { ThemeAnalysisSection } from "@/components/app-details/ThemeAnalysisSection";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { doSignOut } from "@/lib/auth";
+import { getCurrentUser } from "aws-amplify/auth";
 
 // -------- Types alignés avec le backend --------
 type ReviewItem = {
@@ -109,8 +116,13 @@ const LIMIT = 10;
 export default function RevoxAppDetails() {
   const navigate = useNavigate();
   const { platform, bundleId } = useParams<{ platform: "ios" | "android"; bundleId: string }>();
+  const { t } = useLanguage();
 
   const truncate = (s?: string, n = 80) => (s && s.length > n ? s.slice(0, n) + "..." : s || "");
+
+  // User info state
+  const [userName, setUserName] = useState<string>("");
+  const [userEmail, setUserEmail] = useState<string>("");
 
   // Get app_pks from URL parameters for merged apps
   const urlParams = new URLSearchParams(window.location.search);
@@ -161,6 +173,17 @@ export default function RevoxAppDetails() {
     latestUpdate: (currentApp as any).releaseNotes || 'No update information available.',
     lastUpdatedAt: (currentApp as any).lastUpdatedAt
   } : null;
+
+  // Load user info
+  const loadUserInfo = async () => {
+    try {
+      const user = await getCurrentUser();
+      setUserName(user.signInDetails?.loginId || "");
+      setUserEmail(user.signInDetails?.loginId || "");
+    } catch (error) {
+      console.error("Failed to load user info:", error);
+    }
+  };
 
   // Load app info and linking data
   const loadAppData = async () => {
@@ -336,6 +359,7 @@ export default function RevoxAppDetails() {
   }
 
   useEffect(() => {
+    loadUserInfo();
     loadAppData();
     // eslint-disable-next-line react-hooks/exhaustive-deps  
   }, [platform, bundleId]);
@@ -473,6 +497,18 @@ export default function RevoxAppDetails() {
       />
     ));
 
+  // Initials for avatar fallback
+  const initials = (() => {
+    const source = (userName || userEmail || "").trim();
+    if (!source) return "U";
+    // if email, take part before @
+    const text = source.includes("@") ? source.split("@")[0] : source;
+    const parts = text.split(/[.\s_-]+/).filter(Boolean);
+    const first = parts[0]?.[0] || "";
+    const second = parts[1]?.[0] || "";
+    return (first + second).toUpperCase() || first.toUpperCase() || "U";
+  })();
+
   return (
     <Layout showTopbar={false}>
       <div className="min-h-screen bg-background">
@@ -499,6 +535,41 @@ export default function RevoxAppDetails() {
             <div className="flex items-center gap-2">
               <ThemeToggle />
               <LanguageToggle />
+              
+              {/* User Avatar Dropdown */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src="" alt={userName || userEmail || "User"} />
+                      <AvatarFallback>{initials}</AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56" align="end" forceMount>
+                  <div className="flex items-center justify-start gap-2 p-2">
+                    <div className="flex flex-col space-y-1 leading-none">
+                      <p className="font-medium">{userName || "User"}</p>
+                      <p className="w-[200px] truncate text-sm text-muted-foreground">
+                        {userEmail || "—"}
+                      </p>
+                    </div>
+                  </div>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>
+                    <Settings className="mr-2 h-4 w-4" />
+                    {t('settings')}
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    className="cursor-pointer"
+                    onClick={() => doSignOut(navigate)}
+                  >
+                    <LogOut className="mr-2 h-4 w-4" />
+                    {t('logOut')}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </header>
