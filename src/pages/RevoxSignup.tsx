@@ -49,11 +49,39 @@ export default function RevoxSignup() {
         <div className="text-center space-y-8">
           <div className="animate-fade-in">
             <div className="mb-8">
-              <img 
-                src={theme === "dark" ? revoxLogoDark : revoxLogo}
-                alt="Revox" 
-                className="h-72 mx-auto animate-pulse"
-              />
+              <div className="flex items-center justify-center">
+                {theme === "dark" ? (
+                  // Dark mode SVG logo
+                  <svg width="288" height="72" viewBox="0 0 400 100" className="mx-auto">
+                    <g className="animate-pulse">
+                      {/* Curved lines - animated part */}
+                      <path d="M20 75 Q40 25, 80 35 Q100 40, 85 55" fill="#60A5FA" />
+                      <path d="M15 70 Q35 30, 70 40 Q90 45, 75 60" fill="#3B82F6" />
+                      <path d="M10 65 Q30 35, 60 45 Q80 50, 65 65" fill="#A855F7" />
+                      <path d="M5 60 Q25 40, 50 50 Q70 55, 55 70" fill="#FB923C" />
+                    </g>
+                    {/* Text part - static */}
+                    <text x="120" y="70" className="fill-white font-bold text-4xl" style={{fontFamily: 'system-ui, sans-serif'}}>
+                      REVOX
+                    </text>
+                  </svg>
+                ) : (
+                  // Light mode SVG logo
+                  <svg width="288" height="72" viewBox="0 0 400 100" className="mx-auto">
+                    <g className="animate-pulse">
+                      {/* Curved lines - animated part */}
+                      <path d="M20 75 Q40 25, 80 35 Q100 40, 85 55" fill="#60A5FA" />
+                      <path d="M15 70 Q35 30, 70 40 Q90 45, 75 60" fill="#3B82F6" />
+                      <path d="M10 65 Q30 35, 60 45 Q80 50, 65 65" fill="#A855F7" />
+                      <path d="M5 60 Q25 40, 50 50 Q70 55, 55 70" fill="#FB923C" />
+                    </g>
+                    {/* Text part - static */}
+                    <text x="120" y="70" className="fill-black font-bold text-4xl" style={{fontFamily: 'system-ui, sans-serif'}}>
+                      REVOX
+                    </text>
+                  </svg>
+                )}
+              </div>
             </div>
           </div>
         </div>
