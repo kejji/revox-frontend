@@ -137,11 +137,6 @@ export default function RevoxSignup() {
 
         {/* Signup Form */}
         <div className="animate-fade-in delay-200 space-y-8">
-          <div className="text-center mb-6">
-            <h2 className="text-2xl font-semibold text-foreground mb-2">
-              Reviews. Insights. Growth
-            </h2>
-          </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-4">
