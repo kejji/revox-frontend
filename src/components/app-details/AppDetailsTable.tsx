@@ -76,8 +76,7 @@ export function AppDetailsTable({ currentApp, linkedApps = [], className = "" }:
             <div className="min-h-0">
               <ResponsiveText
                 text={app.latestUpdate}
-                maxLinesDesktop={3}
-                maxLinesMobile={2}
+                maxLines={1}
                 onShowMore={handleShowMore}
               />
             </div>
@@ -123,8 +122,7 @@ export function AppDetailsTable({ currentApp, linkedApps = [], className = "" }:
               <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium">Latest Update</p>
               <ResponsiveText
                 text={app.latestUpdate}
-                maxLinesDesktop={4}
-                maxLinesMobile={3}
+                maxLines={1}
                 onShowMore={handleShowMore}
                 className="bg-background/50 p-3 rounded-md border"
               />

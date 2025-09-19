@@ -3,51 +3,42 @@ import { Button } from "./button";
 
 interface ResponsiveTextProps {
   text: string;
-  maxLinesDesktop?: number;
-  maxLinesMobile?: number;
+  maxLines?: number;
   onShowMore?: (text: string) => void;
   className?: string;
 }
 
 export function ResponsiveText({ 
   text, 
-  maxLinesDesktop = 3, 
-  maxLinesMobile = 2, 
+  maxLines = 1, 
   onShowMore,
   className = ""
 }: ResponsiveTextProps) {
   const [isTruncated, setIsTruncated] = useState(false);
-  const [isDesktop, setIsDesktop] = useState(false);
-  const textRef = useRef<HTMLParagraphElement>(null);
+  const textRef = useRef<HTMLDivElement>(null);
+  const hiddenRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const checkTruncation = () => {
-      if (!textRef.current) return;
+      if (!textRef.current || !hiddenRef.current) return;
       
-      const element = textRef.current;
-      const isDesktopView = window.innerWidth >= 768;
-      setIsDesktop(isDesktopView);
+      const visibleElement = textRef.current;
+      const hiddenElement = hiddenRef.current;
       
-      // Temporarily remove line clamp to measure full height
-      element.style.webkitLineClamp = 'none';
-      element.style.overflow = 'visible';
-      
-      const fullHeight = element.scrollHeight;
-      
-      // Restore line clamp
-      const maxLines = isDesktopView ? maxLinesDesktop : maxLinesMobile;
-      element.style.webkitLineClamp = maxLines.toString();
-      element.style.overflow = 'hidden';
-      
-      const clampedHeight = element.scrollHeight;
-      setIsTruncated(fullHeight > clampedHeight);
+      // Compare the scroll width of the truncated vs full text
+      setIsTruncated(hiddenElement.scrollWidth > visibleElement.clientWidth || 
+                     hiddenElement.scrollHeight > visibleElement.clientHeight);
     };
 
     checkTruncation();
-    window.addEventListener('resize', checkTruncation);
     
-    return () => window.removeEventListener('resize', checkTruncation);
-  }, [text, maxLinesDesktop, maxLinesMobile]);
+    const resizeObserver = new ResizeObserver(checkTruncation);
+    if (textRef.current) {
+      resizeObserver.observe(textRef.current);
+    }
+    
+    return () => resizeObserver.disconnect();
+  }, [text, maxLines]);
 
   const handleShowMore = () => {
     if (onShowMore) {
@@ -55,32 +46,44 @@ export function ResponsiveText({
     }
   };
 
-  const maxLines = isDesktop ? maxLinesDesktop : maxLinesMobile;
-
   return (
-    <div className={`space-y-2 ${className}`}>
-      <p
-        ref={textRef}
-        className="text-sm text-foreground leading-relaxed overflow-hidden"
-        style={{
-          display: '-webkit-box',
-          WebkitBoxOrient: 'vertical',
-          WebkitLineClamp: maxLines,
-        }}
+    <div className={className}>
+      {/* Visible truncated text */}
+      <div className="flex items-start gap-2">
+        <div
+          ref={textRef}
+          className="text-sm text-foreground leading-relaxed flex-1 overflow-hidden"
+          style={{
+            display: '-webkit-box',
+            WebkitBoxOrient: 'vertical',
+            WebkitLineClamp: maxLines,
+            lineClamp: maxLines
+          }}
+        >
+          {text}
+        </div>
+        
+        {isTruncated && onShowMore && (
+          <Button
+            variant="link"
+            size="sm"
+            className="h-auto p-0 text-xs text-primary hover:text-primary/80 font-medium flex-shrink-0 self-start"
+            onClick={handleShowMore}
+          >
+            … Show more
+          </Button>
+        )}
+      </div>
+      
+      {/* Hidden element to measure full text dimensions */}
+      <div
+        ref={hiddenRef}
+        className="text-sm leading-relaxed absolute opacity-0 pointer-events-none whitespace-nowrap overflow-visible"
+        style={{ top: '-9999px', left: '-9999px' }}
+        aria-hidden="true"
       >
         {text}
-      </p>
-      
-      {isTruncated && onShowMore && (
-        <Button
-          variant="link"
-          size="sm"
-          className="h-auto p-0 text-xs text-primary hover:text-primary/80 font-medium"
-          onClick={handleShowMore}
-        >
-          … Show more
-        </Button>
-      )}
+      </div>
     </div>
   );
 }
