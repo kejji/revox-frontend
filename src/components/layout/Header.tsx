@@ -89,7 +89,7 @@ export function Header({ showTopbar = true }: HeaderProps) {
                     <Link to="/contact">{t("getInTouch")}</Link>
                   </Button>
                   <Button asChild variant="outline" className="w-full">
-                    <Link to="/revox">{t("tryRevoxFree")}</Link>
+                    <Link to="/revox/signup">{t("tryRevoxFree")}</Link>
                   </Button>
                 </div>
               </nav>
@@ -126,7 +126,7 @@ export function Header({ showTopbar = true }: HeaderProps) {
             <Link to="/contact">{t("getInTouch")}</Link>
           </Button>
           <Button asChild>
-            <Link to="/revox">{t("tryRevoxFree")}</Link>
+            <Link to="/revox/signup">{t("tryRevoxFree")}</Link>
           </Button>
         </div>
       </nav>
