@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "react-router-dom";
 import { Mail, Lock, Eye, EyeOff, User, Github } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
-import { RevoxLogoTheme } from "@/components/ui/revox-logo-theme";
+import revoxLogo from "@/assets/revox-logo.svg";
 import { useTheme } from "@/components/theme-provider";
 
 export default function RevoxSignup() {
@@ -48,7 +48,6 @@ export default function RevoxSignup() {
         <div className="text-center space-y-8">
           <div className="animate-fade-in">
             <div className="mb-8">
-              <RevoxLogoTheme className="w-48 h-48 mx-auto" />
             </div>
           </div>
         </div>
