@@ -61,9 +61,6 @@ export default function RevoxSignup() {
             <h2 className="text-2xl font-semibold text-foreground mb-2">
               Reviews. Insights. Growth
             </h2>
-            <p className="text-sm text-muted-foreground">
-              Start extracting insights from reviews today
-            </p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
