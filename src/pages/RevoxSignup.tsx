@@ -8,9 +8,10 @@ import { Mail, Lock, Eye, EyeOff, User, Github } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import revoxLogoDark from "@/assets/revox-logo-dark.svg";
 import revoxLogoLight from "@/assets/revox-logo-light.svg";
-import { AnimatedLogo } from "@/components/ui/animated-logo";
+import { useTheme } from "@/components/theme-provider";
 
 export default function RevoxSignup() {
+  const { resolvedTheme } = useTheme();
   const navigate = useNavigate();
   
   const [formData, setFormData] = useState({
@@ -121,7 +122,11 @@ export default function RevoxSignup() {
       <div className="w-full max-w-sm space-y-12">
         {/* Logo Header */}
         <div className="text-center mb-8">
-          <AnimatedLogo />
+          <img 
+            src={resolvedTheme === 'dark' ? revoxLogoDark : revoxLogoLight} 
+            alt="Revox Logo" 
+            className="h-32 w-auto mx-auto"
+          />
         </div>
 
         {/* Signup Form */}
