@@ -7,9 +7,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { Link, useNavigate } from "react-router-dom";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
-import revoxLogo from "@/assets/revox-logo.svg";
+import revoxLogoDark from "@/assets/revox-logo-dark.svg";
+import revoxLogoLight from "@/assets/revox-logo-light.svg";
+import { useTheme } from "@/components/theme-provider";
 
 export default function RevoxLogin() {
+  const { theme } = useTheme();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -93,20 +96,13 @@ export default function RevoxLogin() {
       </div>
       
       <div className="w-full max-w-sm space-y-12">
-        {/* Logo and Brand */}
-        <div className="text-center space-y-8">
-          <div className="animate-fade-in">
-            <div className="mb-8">
-              <img 
-                src={revoxLogo} 
-                alt="Revox" 
-                className="h-24 mx-auto"
-              />
-            </div>
-            <p className="text-muted-foreground text-lg font-light animate-fade-in delay-100">
-              Reviews. Insights. Growth.
-            </p>
-          </div>
+        {/* Logo Header */}
+        <div className="text-center mb-8">
+          <img 
+            src={theme === 'dark' ? revoxLogoDark : revoxLogoLight} 
+            alt="Revox Logo" 
+            className="h-32 w-auto mx-auto"
+          />
         </div>
 
         {/* Login Form */}

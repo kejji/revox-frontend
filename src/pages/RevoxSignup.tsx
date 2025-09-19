@@ -7,7 +7,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { Mail, Lock, Eye, EyeOff, User, Github } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { Label } from "@/components/ui/label";
-import revoxLogo from "@/assets/revox-logo.svg";
+import revoxLogoDark from "@/assets/revox-logo-dark.svg";
+import revoxLogoLight from "@/assets/revox-logo-light.svg";
 import { useTheme } from "@/components/theme-provider";
 
 export default function RevoxSignup() {
@@ -125,12 +126,13 @@ export default function RevoxSignup() {
       </div>
       
       <div className="w-full max-w-sm space-y-12">
-        {/* Logo and Brand */}
-        <div className="text-center space-y-8">
-          <div className="animate-fade-in">
-            <div className="mb-8">
-            </div>
-          </div>
+        {/* Logo Header */}
+        <div className="text-center mb-8">
+          <img 
+            src={theme === 'dark' ? revoxLogoDark : revoxLogoLight} 
+            alt="Revox Logo" 
+            className="h-32 w-auto mx-auto"
+          />
         </div>
 
         {/* Signup Form */}
