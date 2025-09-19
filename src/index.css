@@ -103,3 +103,69 @@ All colors MUST be HSL.
     @apply bg-background text-foreground;
   }
 }
+
+/* Logo Wave Animation */
+@keyframes wave-gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.revox-logo-animated {
+  position: relative;
+}
+
+.revox-logo-animated::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    45deg,
+    rgba(0, 148, 218, 0.3),
+    rgba(156, 71, 187, 0.3),
+    rgba(237, 122, 48, 0.3),
+    rgba(48, 90, 193, 0.3),
+    rgba(0, 148, 218, 0.3)
+  );
+  background-size: 300% 300%;
+  animation: wave-gradient 3s ease-in-out infinite;
+  border-radius: 8px;
+  pointer-events: none;
+  z-index: 1;
+  mix-blend-mode: multiply;
+}
+
+.revox-logo-animated img {
+  position: relative;
+  z-index: 2;
+}
+
+/* Enhanced wave effect for better visibility */
+.revox-logo-wave {
+  filter: drop-shadow(0 0 20px rgba(0, 148, 218, 0.3));
+  animation: logo-pulse 4s ease-in-out infinite;
+}
+
+@keyframes logo-pulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 20px rgba(0, 148, 218, 0.3));
+  }
+  25% {
+    filter: drop-shadow(0 0 25px rgba(156, 71, 187, 0.4));
+  }
+  50% {
+    filter: drop-shadow(0 0 30px rgba(237, 122, 48, 0.4));
+  }
+  75% {
+    filter: drop-shadow(0 0 25px rgba(48, 90, 193, 0.4));
+  }
+}
