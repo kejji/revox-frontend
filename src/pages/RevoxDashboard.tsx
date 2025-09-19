@@ -14,7 +14,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Settings, LogOut, Star, Trash2, ChevronRight, Bot, Apple, MoreVertical, Plus, Link as LinkIcon, Unlink } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
-import { LanguageToggle } from "@/components/ui/language-toggle";
 import { Link, useNavigate } from "react-router-dom";
 
 import { api, linkApps, unlinkApps, appPkFromRoute } from "@/api";
@@ -313,8 +312,6 @@ export default function RevoxDashboard() {
             {/* Theme Toggle */}
             <ThemeToggle />
 
-            {/* Language Toggle */}
-            <LanguageToggle />
 
             {/* Menu avatar */}
             <DropdownMenu>

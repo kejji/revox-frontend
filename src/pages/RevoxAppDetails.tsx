@@ -63,7 +63,6 @@ import {
   LogOut,
 } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
-import { LanguageToggle } from "@/components/ui/language-toggle";
 import { api, appPkFromRoute, getReviewsExportUrl, linkApps, unlinkApps, markAppAsRead, fetchThemes, fetchThemesResult, type ThemesResponse, type ThemeAxis } from "@/api";
 import { ThemeAnalysisSection } from "@/components/app-details/ThemeAnalysisSection";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -534,7 +533,6 @@ export default function RevoxAppDetails() {
             </div>
             <div className="flex items-center gap-2">
               <ThemeToggle />
-              <LanguageToggle />
               
               {/* User Avatar Dropdown */}
               <DropdownMenu>
