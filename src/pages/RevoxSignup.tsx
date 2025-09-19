@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "react-router-dom";
 import { Mail, Lock, Eye, EyeOff, User, Github } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
-import revoxLogo from "@/assets/revox-logo.png";
+import revoxLogo from "@/assets/revox-logo-new.png";
 
 export default function RevoxSignup() {
   const [formData, setFormData] = useState({
