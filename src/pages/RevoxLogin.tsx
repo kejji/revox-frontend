@@ -4,7 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "react-router-dom";
-import { Mail, Lock, Eye, EyeOff, BarChart3 } from "lucide-react";
+import { Mail, Lock, Eye, EyeOff } from "lucide-react";
+import revoxLogo from "@/assets/revox-logo.png";
 
 export default function RevoxLogin() {
   const [email, setEmail] = useState("");
@@ -24,121 +25,103 @@ export default function RevoxLogin() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-primary/5 p-4">
-      <div className="w-full max-w-md space-y-8">
+    <div className="min-h-screen flex items-center justify-center bg-background p-6">
+      <div className="w-full max-w-sm space-y-12">
         {/* Logo and Brand */}
-        <div className="text-center space-y-6">
+        <div className="text-center space-y-8">
           <div className="animate-fade-in">
-            <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 mb-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
-              <BarChart3 className="w-10 h-10 text-primary animate-pulse" />
+            <div className="mb-8">
+              <img 
+                src={revoxLogo} 
+                alt="Revox" 
+                className="h-16 mx-auto animate-pulse"
+              />
             </div>
-            <h1 className="text-4xl font-bold tracking-tight text-foreground mb-2">
-              Revox
-            </h1>
-            <p className="text-muted-foreground text-base font-medium animate-fade-in delay-100">
-              Turn reviews into product insights
+            <p className="text-muted-foreground text-lg font-light animate-fade-in delay-100">
+              Reviews. Insights. Growth.
             </p>
           </div>
         </div>
 
         {/* Login Form */}
-        <Card className="animate-fade-in delay-200 border border-border/50 shadow-2xl bg-card/80 backdrop-blur-lg hover:shadow-3xl transition-all duration-300">
-          <CardContent className="p-8">
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="space-y-3">
-                <Label htmlFor="email" className="text-sm font-semibold text-foreground/90">
-                  Email Address
-                </Label>
-                <div className="relative group">
-                  <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5 group-focus-within:text-primary transition-colors" />
+        <div className="animate-fade-in delay-200 space-y-8">
+          <form onSubmit={handleSubmit} className="space-y-8">
+            <div className="space-y-6">
+              <div className="space-y-2">
+                <div className="relative">
+                  <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
                   <Input
                     id="email"
                     type="email"
-                    placeholder="Enter your email address"
+                    placeholder="Email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="pl-12 h-14 text-base rounded-xl bg-background/60 border-2 border-border/40 focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all duration-200 hover:border-primary/50"
+                    className="pl-12 h-12 rounded-xl border border-border/30 bg-background focus:border-primary transition-colors"
                     required
                   />
                 </div>
               </div>
 
-              <div className="space-y-3">
-                <Label htmlFor="password" className="text-sm font-semibold text-foreground/90">
-                  Password
-                </Label>
-                <div className="relative group">
-                  <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5 group-focus-within:text-primary transition-colors" />
+              <div className="space-y-2">
+                <div className="relative">
+                  <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
                   <Input
                     id="password"
                     type={showPassword ? "text" : "password"}
-                    placeholder="Enter your password"
+                    placeholder="Password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="pl-12 pr-12 h-14 text-base rounded-xl bg-background/60 border-2 border-border/40 focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all duration-200 hover:border-primary/50"
+                    className="pl-12 pr-12 h-12 rounded-xl border border-border/30 bg-background focus:border-primary transition-colors"
                     required
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-primary transition-colors p-1 rounded-md hover:bg-primary/10"
+                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-primary transition-colors"
                   >
                     {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                   </button>
                 </div>
               </div>
+            </div>
 
-              <Button
-                type="submit"
-                className="w-full h-14 text-lg font-semibold rounded-xl bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-primary-foreground shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
-                disabled={isLoading}
-              >
-                {isLoading ? (
-                  <div className="flex items-center gap-3">
-                    <div className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
-                    Signing you in...
-                  </div>
-                ) : (
-                  "Sign In to Revox"
-                )}
-              </Button>
+            <Button
+              type="submit"
+              className="w-full h-12 rounded-xl font-medium"
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
+                  Signing in...
+                </div>
+              ) : (
+                "Sign In"
+              )}
+            </Button>
+          </form>
 
-              <div className="text-center pt-2">
-                <Link 
-                  to="/revox/forgot-password" 
-                  className="text-sm font-medium text-primary hover:text-primary/80 transition-colors hover:underline underline-offset-4"
-                >
-                  Forgot your password?
-                </Link>
-              </div>
-            </form>
-          </CardContent>
-        </Card>
+          <div className="text-center">
+            <Link 
+              to="/revox/forgot-password" 
+              className="text-sm text-muted-foreground hover:text-primary transition-colors"
+            >
+              Forgot password?
+            </Link>
+          </div>
+        </div>
 
         {/* Footer Links */}
-        <div className="text-center space-y-4 animate-fade-in delay-300">
-          <p className="text-base text-muted-foreground">
+        <div className="text-center space-y-6 animate-fade-in delay-300">
+          <p className="text-sm text-muted-foreground">
             Don't have an account?{" "}
             <Link 
               to="/revox/auth" 
-              className="text-primary hover:text-primary/80 font-semibold transition-colors hover:underline underline-offset-4"
+              className="text-primary hover:text-primary/80 transition-colors"
             >
-              Sign up for free
+              Sign up
             </Link>
           </p>
-          <div className="flex items-center justify-center gap-6 text-sm text-muted-foreground">
-            <Link to="/revox/about" className="hover:text-primary transition-colors font-medium">
-              About Revox
-            </Link>
-            <span className="text-border">•</span>
-            <Link to="/revox/help" className="hover:text-primary transition-colors font-medium">
-              Help Center
-            </Link>
-            <span className="text-border">•</span>
-            <Link to="/revox" className="hover:text-primary transition-colors font-medium">
-              Back to Home
-            </Link>
-          </div>
         </div>
       </div>
     </div>
