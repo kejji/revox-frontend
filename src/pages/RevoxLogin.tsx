@@ -7,7 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { Link, useNavigate } from "react-router-dom";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
-import revoxLogo from "@/assets/revox-logo.png";
+import revoxLogo from "@/assets/revox-logo.svg";
 
 export default function RevoxLogin() {
   const navigate = useNavigate();
