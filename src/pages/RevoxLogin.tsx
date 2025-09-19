@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
-import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { Link, useNavigate } from "react-router-dom";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import revoxLogoDark from "@/assets/revox-logo-dark.svg";
@@ -89,12 +88,7 @@ export default function RevoxLogin() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-6 relative">
-      {/* Theme Toggle */}
-      <div className="absolute top-6 right-6">
-        <ThemeToggle />
-      </div>
-      
+    <div className="min-h-screen flex items-center justify-center bg-background p-6">
       <div className="w-full max-w-sm space-y-12">
         {/* Logo Header */}
         <div className="text-center mb-8">
