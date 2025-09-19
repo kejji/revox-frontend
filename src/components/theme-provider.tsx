@@ -26,23 +26,34 @@ export function ThemeProvider({
   storageKey = "ui-theme",
   ...props
 }: ThemeProviderProps) {
-  const [theme, setTheme] = useState<Theme>(
-    () => (localStorage.getItem(storageKey) as Theme) || defaultTheme
-  )
+  const [theme, setTheme] = useState<Theme>("system")
 
   useEffect(() => {
     const root = window.document.documentElement
-
+    
     root.classList.remove("light", "dark")
 
-    if (theme === "system") {
+    const applySystemTheme = () => {
       const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
         .matches
         ? "dark"
         : "light"
-
+      
       root.classList.add(systemTheme)
-      return
+    }
+
+    if (theme === "system") {
+      applySystemTheme()
+      
+      // Listen for system theme changes
+      const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)")
+      const handleChange = () => {
+        root.classList.remove("light", "dark")
+        applySystemTheme()
+      }
+      
+      mediaQuery.addEventListener("change", handleChange)
+      return () => mediaQuery.removeEventListener("change", handleChange)
     }
 
     root.classList.add(theme)
