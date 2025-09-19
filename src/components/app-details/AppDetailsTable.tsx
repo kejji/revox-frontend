@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Apple, Bot, Star } from "lucide-react";
 import { UpdateDialog } from "./UpdateDialog";
 import { ResponsiveText } from "@/components/ui/responsive-text";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface AppData {
   name: string;
@@ -25,6 +26,7 @@ interface AppDetailsTableProps {
 export function AppDetailsTable({ currentApp, linkedApps = [], className = "" }: AppDetailsTableProps) {
   const [showUpdateDialog, setShowUpdateDialog] = useState(false);
   const [selectedUpdateText, setSelectedUpdateText] = useState("");
+  const { t } = useLanguage();
 
 
   const renderStars = (rating: number) =>
@@ -48,9 +50,9 @@ export function AppDetailsTable({ currentApp, linkedApps = [], className = "" }:
       <div className="hidden md:block space-y-1">
         {/* Header Row */}
         <div className="grid grid-cols-[180px_180px_1fr] gap-6 pb-2">
-          <h4 className="font-medium text-xs text-muted-foreground uppercase tracking-wider">Version</h4>
-          <h4 className="font-medium text-xs text-muted-foreground uppercase tracking-wider">Rating</h4>
-          <h4 className="font-medium text-xs text-muted-foreground uppercase tracking-wider">Latest Update</h4>
+          <h4 className="font-medium text-xs text-muted-foreground uppercase tracking-wider">{t('version')}</h4>
+          <h4 className="font-medium text-xs text-muted-foreground uppercase tracking-wider">{t('rating')}</h4>
+          <h4 className="font-medium text-xs text-muted-foreground uppercase tracking-wider">{t('latestUpdate')}</h4>
         </div>
 
         {/* App Rows */}
@@ -98,7 +100,7 @@ export function AppDetailsTable({ currentApp, linkedApps = [], className = "" }:
             {/* Version + Rating Row */}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1">
-                <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium">Version</p>
+                <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium">{t('version')}</p>
                 <div className="flex items-center gap-2">
                   {app.platform === "ios" ? (
                     <Apple className="h-4 w-4 text-muted-foreground" />
@@ -109,7 +111,7 @@ export function AppDetailsTable({ currentApp, linkedApps = [], className = "" }:
                 </div>
               </div>
               <div className="space-y-1">
-                <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium">Rating</p>
+                <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium">{t('rating')}</p>
                 <div className="flex items-center gap-2">
                   <div className="flex">{renderStars(Math.floor(app.rating))}</div>
                   <span className="font-semibold text-base">{app.rating}</span>
@@ -119,7 +121,7 @@ export function AppDetailsTable({ currentApp, linkedApps = [], className = "" }:
 
             {/* Latest Update Section */}
             <div className="space-y-3">
-              <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium">Latest Update</p>
+              <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium">{t('latestUpdate')}</p>
               <ResponsiveText
                 text={app.latestUpdate}
                 maxLines={1}

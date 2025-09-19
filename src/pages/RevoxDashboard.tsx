@@ -19,6 +19,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 import { api, linkApps, unlinkApps, appPkFromRoute } from "@/api";
 import { doSignOut } from "@/lib/auth";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 // ✅ Amplify v6: lire l'utilisateur courant + attributs
 import { getCurrentUser, fetchUserAttributes } from "aws-amplify/auth";
@@ -55,6 +56,7 @@ type MergedApp = {
 
 export default function RevoxDashboard() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   const [apps, setApps] = useState<FollowedApp[] | null>(null);
   const [mergedApps, setMergedApps] = useState<MergedApp[] | null>(null);
@@ -305,7 +307,7 @@ export default function RevoxDashboard() {
       <section className="p-6 max-w-6xl mx-auto">
         {/* ===== Page header (icônes à droite + avatar) ===== */}
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-xl font-semibold">Revox Dashboard</h1>
+          <h1 className="text-xl font-semibold">{t('revoxDashboard')}</h1>
 
           <div className="flex items-center gap-2">
             {/* Theme Toggle */}
@@ -337,7 +339,7 @@ export default function RevoxDashboard() {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>
                   <Settings className="mr-2 h-4 w-4" />
-                  Settings
+                  {t('settings')}
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
@@ -345,7 +347,7 @@ export default function RevoxDashboard() {
                   onClick={() => doSignOut(navigate)}
                 >
                   <LogOut className="mr-2 h-4 w-4" />
-                  Log out
+                  {t('logOut')}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -354,11 +356,11 @@ export default function RevoxDashboard() {
 
         {/* ===== Sous-header (titre section) ===== */}
         <div className="mb-4">
-          <h2 className="text-lg font-semibold">Your Apps</h2>
+          <h2 className="text-lg font-semibold">{t('yourApps')}</h2>
         </div>
 
         {/* ===== Contenu ===== */}
-        {loading && <p className="text-sm text-muted-foreground">Loading…</p>}
+        {loading && <p className="text-sm text-muted-foreground">{t('loading')}</p>}
         {!loading && err && (
           <div className="border rounded-xl p-6 text-red-600">{err}</div>
         )}
@@ -397,7 +399,7 @@ export default function RevoxDashboard() {
                               }}
                             >
                               <Unlink className="mr-2 h-4 w-4" />
-                              Unlink apps
+                              {t('unlinkApps')}
                             </DropdownMenuItem>
                             {app.platforms.map((platform) => (
                               <DropdownMenuItem
@@ -406,7 +408,7 @@ export default function RevoxDashboard() {
                                 onClick={() => handleDeleteApp(app, platform.platform)}
                               >
                                 <Trash2 className="mr-2 h-4 w-4" />
-                                Remove {platform.platform === 'ios' ? 'iOS' : 'Android'}
+                                {platform.platform === 'ios' ? t('removeiOS') : t('removeAndroid')}
                               </DropdownMenuItem>
                             ))}
                           </>
@@ -426,7 +428,7 @@ export default function RevoxDashboard() {
                                     }}
                                   >
                                     <LinkIcon className="mr-2 h-4 w-4" />
-                                    Link with {availableApp.platform === 'ios' ? 'iOS' : 'Android'} {availableApp.name || availableApp.bundleId}
+                                    {t('linkWith')} {availableApp.platform === 'ios' ? 'iOS' : 'Android'} {availableApp.name || availableApp.bundleId}
                                   </DropdownMenuItem>
                                 ))}
                                 <DropdownMenuSeparator />
@@ -437,7 +439,7 @@ export default function RevoxDashboard() {
                               onClick={() => handleDeleteApp(app)}
                             >
                               <Trash2 className="mr-2 h-4 w-4" />
-                              Remove app
+                              {t('removeApp')}
                             </DropdownMenuItem>
                           </>
                         )}

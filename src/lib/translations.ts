@@ -83,6 +83,23 @@ export const translations = {
     noCardRequired: "No credit card required",
     backToHome: "Back to Home",
 
+    // Dashboard
+    revoxDashboard: "Revox Dashboard",
+    yourApps: "Your Apps",
+    settings: "Settings",
+    logOut: "Log out",
+    linkWith: "Link with",
+    unlinkApps: "Unlink apps",
+    removeApp: "Remove app",
+    removeiOS: "Remove iOS",
+    removeAndroid: "Remove Android",
+    loading: "Loading…",
+    
+    // App Details Table
+    version: "Version",
+    rating: "Rating",
+    latestUpdate: "Latest Update",
+
     // About Page
     aboutHeroTitle: "Product Owner with a",
     aboutHeroHighlight: "user-first",
@@ -435,6 +452,23 @@ export const translations = {
     daysTrialDesc: "Accès complet à toutes les fonctionnalités",
     noCardRequired: "Aucune carte de crédit requise",
     backToHome: "Retour à l'accueil",
+
+    // Dashboard
+    revoxDashboard: "Tableau de bord Revox",
+    yourApps: "Vos Applications",
+    settings: "Paramètres",
+    logOut: "Se déconnecter",
+    linkWith: "Lier avec",
+    unlinkApps: "Délier les applications",
+    removeApp: "Supprimer l'application",
+    removeiOS: "Supprimer iOS",
+    removeAndroid: "Supprimer Android",
+    loading: "Chargement…",
+    
+    // App Details Table
+    version: "Version",
+    rating: "Note",
+    latestUpdate: "Dernière mise à jour",
 
     // Revox Page
     revoxHeroSubtitle: "Construit par un Product Owner, pour les Product Owners",
