@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Link, useNavigate } from "react-router-dom";
 import { Mail, Lock, Eye, EyeOff, User, Github } from "lucide-react";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { Label } from "@/components/ui/label";
 import revoxLogoDark from "@/assets/revox-logo-dark.svg";
 import revoxLogoLight from "@/assets/revox-logo-light.svg";
@@ -118,9 +119,13 @@ export default function RevoxSignup() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-6 relative">
+    <div className="min-h-screen flex items-center justify-center bg-background p-6">
+      {/* Theme Toggle - positioned in top right */}
+      <div className="absolute top-4 right-4">
+        <ThemeToggle />
+      </div>
       
-      <div className="w-full max-w-sm space-y-12 pt-32">
+      <div className="w-full max-w-sm space-y-12">
         {/* Logo Header */}
         <div className="text-center mb-8">
           <img 
@@ -133,10 +138,9 @@ export default function RevoxSignup() {
         {/* Signup Form */}
         <div className="animate-fade-in delay-200 space-y-8">
 
-          <form onSubmit={handleSubmit} className="space-y-8">
-            <div className="space-y-6">
-              <div className="space-y-2">
-                <div className="relative">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="space-y-4">
+              <div className="relative">
                 <User className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
                 <Input
                   id="name"
@@ -147,11 +151,9 @@ export default function RevoxSignup() {
                   className="pl-12 h-12 rounded-xl border border-border/30 bg-background focus:border-primary transition-colors"
                   required
                 />
-                </div>
               </div>
 
-              <div className="space-y-2">
-                <div className="relative">
+              <div className="relative">
                 <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
                 <Input
                   id="email"
@@ -162,11 +164,9 @@ export default function RevoxSignup() {
                   className="pl-12 h-12 rounded-xl border border-border/30 bg-background focus:border-primary transition-colors"
                   required
                 />
-                </div>
               </div>
 
-              <div className="space-y-2">
-                <div className="relative">
+              <div className="relative">
                 <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
                 <Input
                   id="password"
@@ -184,7 +184,6 @@ export default function RevoxSignup() {
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
-                </div>
               </div>
             </div>
 
