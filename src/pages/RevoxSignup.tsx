@@ -53,7 +53,7 @@ export default function RevoxSignup() {
         <div className="animate-fade-in delay-200 space-y-8">
           <div className="text-center mb-6">
             <h2 className="text-2xl font-semibold text-foreground mb-2">
-              Try Revox Free
+              Reviews. Insights. Growth
             </h2>
             <p className="text-sm text-muted-foreground">
               Start extracting insights from reviews today
