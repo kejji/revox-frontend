@@ -6,8 +6,11 @@ import { Link } from "react-router-dom";
 import { Mail, Lock, Eye, EyeOff, User, Github } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import revoxLogo from "@/assets/revox-logo-new.png";
+import revoxLogoDark from "@/assets/revox-logo-dark.png";
+import { useTheme } from "@/components/theme-provider";
 
 export default function RevoxSignup() {
+  const { theme } = useTheme();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -47,9 +50,9 @@ export default function RevoxSignup() {
           <div className="animate-fade-in">
             <div className="mb-8">
               <img 
-                src={revoxLogo} 
+                src={theme === "dark" ? revoxLogoDark : revoxLogo}
                 alt="Revox" 
-                className="h-16 mx-auto animate-pulse"
+                className="h-24 mx-auto animate-pulse"
               />
             </div>
           </div>
