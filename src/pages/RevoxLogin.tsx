@@ -1,27 +1,87 @@
 import { useState } from "react";
+import { signIn, fetchAuthSession, getCurrentUser, signOut } from "aws-amplify/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import revoxLogo from "@/assets/revox-logo.png";
 
 export default function RevoxLogin() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [successMsg, setSuccessMsg] = useState<string | null>(null);
+
+  // Helper function from RevoxAuth
+  async function ensureSignedOutIfSwitching(targetEmail: string) {
+    try {
+      const session = await fetchAuthSession();
+      if (!session.tokens) return;
+
+      const user = await getCurrentUser().catch(() => null);
+      const currentUsername = (user?.username || "").toLowerCase();
+
+      if (
+        targetEmail &&
+        currentUsername &&
+        currentUsername !== targetEmail.toLowerCase()
+      ) {
+        await signOut();
+      }
+    } catch {
+      // ignore
+    }
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorMsg(null);
+    setSuccessMsg(null);
     setIsLoading(true);
     
-    // Add your authentication logic here
-    // For now, just simulate a delay
-    setTimeout(() => {
+    try {
+      // 1) if already connected with another account → signOut first
+      await ensureSignedOutIfSwitching(email);
+
+      // 2) re-check state after potential signOut
+      const current = await fetchAuthSession();
+      if (current.tokens) {
+        // session still active → probably same user
+        navigate("/revox/dashboard");
+        return;
+      }
+
+      // 3) attempt sign in
+      const res = await signIn({ username: email, password });
+
+      // unconfirmed account → redirect to auth for confirmation
+      if ((res as any)?.nextStep?.signInStep === "CONFIRM_SIGN_UP") {
+        navigate("/revox/auth", { state: { tab: "signup" } });
+        return;
+      }
+
+      // 4) success
+      navigate("/revox/dashboard");
+    } catch (err: any) {
+      if (err?.name === "UserNotConfirmedException") {
+        navigate("/revox/auth", { state: { tab: "signup" } });
+      } else if (err?.name === "NotAuthorizedException") {
+        setErrorMsg("Incorrect email or password.");
+      } else if (err?.name === "UserNotFoundException") {
+        setErrorMsg("No user found with this email.");
+      } else if (err?.name === "UserAlreadyAuthenticatedException") {
+        navigate("/revox/dashboard");
+      } else {
+        setErrorMsg(err?.message || "Sign in failed.");
+      }
+    } finally {
       setIsLoading(false);
-    }, 1000);
+    }
   };
 
   return (
@@ -84,6 +144,9 @@ export default function RevoxLogin() {
                 </div>
               </div>
             </div>
+
+            {errorMsg && <p className="text-sm text-red-600">{errorMsg}</p>}
+            {successMsg && <p className="text-sm text-green-600">{successMsg}</p>}
 
             <Button
               type="submit"
