@@ -18,11 +18,26 @@ interface ThemeAnalysisSectionProps {
 }
 
 const ANALYSIS_STEPS = [
-  "Prétraitement des données",
-  "Représentation sémantique", 
-  "Détection de thèmes",
-  "Classification",
-  "Analyse des thèmes"
+  "Collecting reviews",
+  "Cleaning data",
+  "Analyzing text",
+  "Processing feedback",
+  "Building semantic map",
+  "Understanding context",
+  "Detecting patterns",
+  "Identifying topics",
+  "Grouping feedback",
+  "Extracting insights",
+  "Sorting positive and negative signals",
+  "Highlighting key themes",
+  "Structuring results",
+  "Evaluating sentiment",
+  "Classifying reviews",
+  "Refining themes",
+  "Summarizing findings",
+  "Generating insights",
+  "Validating analysis",
+  "Preparing results"
 ];
 
 export function ThemeAnalysisSection({
@@ -40,6 +55,7 @@ export function ThemeAnalysisSection({
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const pollingRef = useRef<NodeJS.Timeout | null>(null);
+  const stepCyclingRef = useRef<NodeJS.Timeout | null>(null);
   const { toast } = useToast();
 
   // Load initial themes data
@@ -91,11 +107,33 @@ export function ThemeAnalysisSection({
     }
   };
 
+  // Start step cycling (every 2 seconds)
+  const startStepCycling = () => {
+    if (stepCyclingRef.current) {
+      clearInterval(stepCyclingRef.current);
+    }
+
+    stepCyclingRef.current = setInterval(() => {
+      setCurrentStepIndex(prev => (prev + 1) % ANALYSIS_STEPS.length);
+    }, 2000);
+  };
+
+  // Stop step cycling
+  const stopStepCycling = () => {
+    if (stepCyclingRef.current) {
+      clearInterval(stepCyclingRef.current);
+      stepCyclingRef.current = null;
+    }
+  };
+
   // Start polling for analysis results
   const startPolling = () => {
     if (pollingRef.current) {
       clearInterval(pollingRef.current);
     }
+
+    // Start step cycling
+    startStepCycling();
 
     pollingRef.current = setInterval(async () => {
       try {
@@ -105,12 +143,8 @@ export function ThemeAnalysisSection({
         if (data.status === "done") {
           setIsAnalyzing(false);
           stopPolling();
-        } else if (data.status === null) {
-          // If status is still null, continue polling as analysis might not have started yet
-          setCurrentStepIndex(prev => (prev + 1) % ANALYSIS_STEPS.length);
-        } else if (data.status === "pending") {
-          // Continue polling and cycle through steps
-          setCurrentStepIndex(prev => (prev + 1) % ANALYSIS_STEPS.length);
+        } else if (data.status === null || data.status === "pending") {
+          // Continue polling - step cycling is handled separately
         }
       } catch (error) {
         console.error("Polling error:", error);
@@ -126,11 +160,15 @@ export function ThemeAnalysisSection({
       clearInterval(pollingRef.current);
       pollingRef.current = null;
     }
+    stopStepCycling();
   };
 
   useEffect(() => {
     loadThemesData();
-    return () => stopPolling();
+    return () => {
+      stopPolling();
+      stopStepCycling();
+    };
   }, [appPk]);
 
   // Start polling if status is pending on mount
