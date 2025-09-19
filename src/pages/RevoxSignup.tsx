@@ -5,7 +5,6 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Link, useNavigate } from "react-router-dom";
 import { Mail, Lock, Eye, EyeOff, User, Github } from "lucide-react";
-import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { Label } from "@/components/ui/label";
 import revoxLogoDark from "@/assets/revox-logo-dark.svg";
 import revoxLogoLight from "@/assets/revox-logo-light.svg";
@@ -120,10 +119,6 @@ export default function RevoxSignup() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-6 relative">
-      {/* Theme Toggle */}
-      <div className="absolute top-6 right-6">
-        <ThemeToggle />
-      </div>
       
       <div className="w-full max-w-sm space-y-12 pt-32">
         {/* Logo Header */}
