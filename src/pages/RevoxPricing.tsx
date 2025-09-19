@@ -7,14 +7,16 @@ import { Label } from "@/components/ui/label";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { CheckCircle, X, Star, Users, Shield, Zap } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function RevoxPricing() {
+  const { t } = useLanguage();
   const [isAnnual, setIsAnnual] = useState(false);
 
   const plans = [
     {
-      name: "Free",
-      description: "Perfect for trying out Revox",
+      name: t("free"),
+      description: t("freeDesc"),
       monthlyPrice: 0,
       annualPrice: 0,
       badge: null,
@@ -32,15 +34,15 @@ export default function RevoxPricing() {
         "Priority support",
         "Advanced analytics"
       ],
-      cta: "Start Free",
+      cta: t("startFree"),
       ctaVariant: "outline" as const
     },
     {
-      name: "Pro",
-      description: "For growing product teams",
+      name: t("pro"),
+      description: t("proDesc"),
       monthlyPrice: 99,
       annualPrice: 79,
-      badge: "Most Popular",
+      badge: t("mostPopular"),
       icon: Users,
       features: [
         "5 app connections",
@@ -58,15 +60,15 @@ export default function RevoxPricing() {
         "Dedicated support",
         "Custom integrations"
       ],
-      cta: "Start Pro Trial",
+      cta: t("startProTrial"),
       ctaVariant: "default" as const
     },
     {
-      name: "Enterprise",
-      description: "For large organizations",
+      name: t("enterprise"),
+      description: t("enterpriseDesc"),
       monthlyPrice: 299,
       annualPrice: 249,
-      badge: "Best Value",
+      badge: t("bestValue"),
       icon: Shield,
       features: [
         "Unlimited app connections",
@@ -81,7 +83,7 @@ export default function RevoxPricing() {
         "Custom reporting"
       ],
       notIncluded: [],
-      cta: "Contact Sales",
+      cta: t("contactSales"),
       ctaVariant: "default" as const
     }
   ];
@@ -119,17 +121,17 @@ export default function RevoxPricing() {
         {/* Hero Section */}
         <div className="text-center mb-16">
           <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-6xl mb-6">
-            Simple, transparent
-            <span className="text-primary"> pricing</span>
+            {t("simpleTransparentPricing")}
+            <span className="text-primary"> {t("pricing")}</span>
           </h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
-            Choose the plan that fits your team size and analysis needs. All plans include core features with no hidden fees.
+            {t("pricingDescription")}
           </p>
           
           {/* Billing Toggle */}
           <div className="flex items-center justify-center space-x-4 mb-12">
             <Label htmlFor="billing-toggle" className={`text-sm ${!isAnnual ? 'font-medium' : 'text-muted-foreground'}`}>
-              Monthly
+              {t("monthly")}
             </Label>
             <Switch
               id="billing-toggle"
@@ -137,10 +139,10 @@ export default function RevoxPricing() {
               onCheckedChange={setIsAnnual}
             />
             <Label htmlFor="billing-toggle" className={`text-sm ${isAnnual ? 'font-medium' : 'text-muted-foreground'}`}>
-              Annual
+              {t("annual")}
             </Label>
             <Badge className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
-              Save 20%
+              {t("save20")}
             </Badge>
           </div>
         </div>
@@ -149,7 +151,7 @@ export default function RevoxPricing() {
         <section className="mb-20">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {plans.map((plan, index) => (
-              <Card key={index} className={`relative border-2 ${plan.badge === "Most Popular" ? "border-primary shadow-lg scale-105" : "border-border hover:border-primary/50"} transition-all`}>
+              <Card key={index} className={`relative border-2 ${plan.badge === t("mostPopular") ? "border-primary shadow-lg scale-105" : "border-border hover:border-primary/50"} transition-all`}>
                 {plan.badge && (
                   <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
                     <Badge className="bg-primary text-primary-foreground px-4 py-1">
@@ -217,10 +219,10 @@ export default function RevoxPricing() {
         <section className="mb-20">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-foreground mb-4">
-              Feature Comparison
+              {t("featureComparison")}
             </h2>
             <p className="text-lg text-muted-foreground">
-              See what's included in each plan
+              {t("featureComparisonDesc")}
             </p>
           </div>
           
@@ -229,9 +231,9 @@ export default function RevoxPricing() {
               <thead>
                 <tr className="border-b">
                   <th className="text-left py-4 px-4 font-medium text-foreground">Features</th>
-                  <th className="text-center py-4 px-4 font-medium text-foreground">Free</th>
-                  <th className="text-center py-4 px-4 font-medium text-foreground">Pro</th>
-                  <th className="text-center py-4 px-4 font-medium text-foreground">Enterprise</th>
+                  <th className="text-center py-4 px-4 font-medium text-foreground">{t("free")}</th>
+                  <th className="text-center py-4 px-4 font-medium text-foreground">{t("pro")}</th>
+                  <th className="text-center py-4 px-4 font-medium text-foreground">{t("enterprise")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -261,7 +263,7 @@ export default function RevoxPricing() {
         <section className="mb-20">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-foreground mb-4">
-              Frequently Asked Questions
+              {t("frequentlyAskedQuestions")}
             </h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -277,17 +279,17 @@ export default function RevoxPricing() {
         {/* CTA */}
         <section className="text-center bg-gradient-to-r from-primary/10 to-blue-500/10 rounded-lg p-12">
           <h2 className="text-3xl font-bold text-foreground mb-4">
-            Ready to get started?
+            {t("readyToGetStarted")}
           </h2>
           <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Start your free trial today. No credit card required. Cancel anytime.
+            {t("readyToGetStartedDesc")}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button asChild size="lg" className="text-lg px-8 py-6">
-              <Link to="/contact">Start Free Trial</Link>
+              <Link to="/contact">{t("revoxStartFreeTrial")}</Link>
             </Button>
             <Button asChild variant="outline" size="lg" className="text-lg px-8 py-6">
-              <Link to="/contact">Contact Sales</Link>
+              <Link to="/contact">{t("contactSales")}</Link>
             </Button>
           </div>
         </section>

@@ -4,8 +4,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 import { ArrowRight, Lightbulb, Target, Users, Zap, CheckCircle } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function RevoxAbout() {
+  const { t } = useLanguage();
   const timeline = [
     {
       year: "2022",
@@ -32,23 +34,23 @@ export default function RevoxAbout() {
   const values = [
     {
       icon: Target,
-      title: "User-Centric",
-      description: "Every feature we build is designed to help you better understand and serve your users."
+      title: t("userCentric"),
+      description: t("userCentricDesc")
     },
     {
       icon: Zap,
-      title: "Efficiency First",
-      description: "We believe Product Owners should spend time on strategy, not manual data processing."
+      title: t("efficiencyFirst"),
+      description: t("efficiencyFirstDesc")
     },
     {
       icon: Users,
-      title: "Team Collaboration",
+      title: t("revoxTeamCollaboration"),
       description: "Great products are built by teams. Revox facilitates better collaboration through shared insights."
     },
     {
       icon: Lightbulb,
-      title: "Continuous Innovation",
-      description: "As the product landscape evolves, so do we. We're constantly improving our analysis capabilities."
+      title: t("continuousInnovation"),
+      description: t("continuousInnovationDesc")
     }
   ];
 
@@ -80,11 +82,11 @@ export default function RevoxAbout() {
             The Story Behind Revox
           </Badge>
           <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-6xl mb-6">
-            Built by a Product Owner
-            <span className="text-primary"> for Product Owners</span>
+            {t("revoxAboutHeroTitle")}
+            <span className="text-primary"> {t("revoxAboutHeroHighlight")}</span>
           </h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
-            Revox was born from a real problem I faced as a Product Owner: spending countless hours manually analyzing user feedback when I should have been focusing on strategy and building great products.
+            {t("revoxAboutHeroDescription")}
           </p>
         </div>
 
@@ -92,7 +94,7 @@ export default function RevoxAbout() {
         <section className="mb-20">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="text-3xl font-bold text-foreground mb-6">The Problem That Started It All</h2>
+              <h2 className="text-3xl font-bold text-foreground mb-6">{t("theProblemTitle")}</h2>
               <div className="prose prose-lg text-muted-foreground">
                 <p>
                   As a Product Owner working with mobile applications, I was spending 10-15 hours every week manually going through app store reviews. I'd copy and paste comments into spreadsheets, try to categorize them, and struggle to identify patterns across hundreds of data points.
@@ -132,9 +134,9 @@ export default function RevoxAbout() {
         {/* Timeline */}
         <section className="mb-20">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-foreground mb-4">The Revox Journey</h2>
+            <h2 className="text-3xl font-bold text-foreground mb-4">{t("revoxJourneyTitle")}</h2>
             <p className="text-lg text-muted-foreground">
-              From personal problem to solution used by hundreds of teams
+              {t("revoxJourneyDesc")}
             </p>
           </div>
           <div className="space-y-8">
@@ -157,9 +159,9 @@ export default function RevoxAbout() {
         {/* Values */}
         <section className="mb-20">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-foreground mb-4">Our Values</h2>
+            <h2 className="text-3xl font-bold text-foreground mb-4">{t("ourValues")}</h2>
             <p className="text-lg text-muted-foreground">
-              The principles that guide how we build Revox
+              {t("ourValuesDesc")}
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -180,9 +182,9 @@ export default function RevoxAbout() {
         {/* Stats */}
         <section className="mb-20">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-foreground mb-4">Revox by the Numbers</h2>
+            <h2 className="text-3xl font-bold text-foreground mb-4">{t("revoxByNumbers")}</h2>
             <p className="text-lg text-muted-foreground">
-              The impact we're making across the product community
+              {t("revoxByNumbersDesc")}
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
@@ -199,7 +201,7 @@ export default function RevoxAbout() {
         <section className="mb-20">
           <Card className="border-2 border-primary/20 bg-gradient-to-r from-primary/5 to-blue-500/5">
             <CardHeader className="text-center">
-              <CardTitle className="text-2xl">Our Mission</CardTitle>
+              <CardTitle className="text-2xl">{t("ourMission")}</CardTitle>
             </CardHeader>
             <CardContent className="text-center">
               <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-6">
@@ -218,7 +220,7 @@ export default function RevoxAbout() {
         <section className="mb-20">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="text-3xl font-bold text-foreground mb-6">Why This Matters to Me</h2>
+              <h2 className="text-3xl font-bold text-foreground mb-6">{t("whyThisMattersToMe")}</h2>
               <div className="space-y-4 text-muted-foreground">
                 <p>
                   As someone who's spent years in Product Owner roles, I know firsthand how challenging it can be to balance strategic thinking with the day-to-day operational tasks of managing feedback and prioritizing features.
@@ -272,19 +274,19 @@ export default function RevoxAbout() {
         {/* CTA */}
         <section className="text-center bg-muted/30 rounded-lg p-12">
           <h2 className="text-3xl font-bold text-foreground mb-4">
-            Join the Revox Community
+            {t("joinRevoxCommunity")}
           </h2>
           <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Become part of a growing community of Product Owners who are making better decisions with user feedback.
+            {t("joinRevoxCommunityDesc")}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button asChild size="lg" className="text-lg px-8 py-6">
               <Link to="/contact">
-                Start Your Journey <ArrowRight className="ml-2 h-5 w-5" />
+                {t("startYourJourney")} <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>
             <Button asChild variant="outline" size="lg" className="text-lg px-8 py-6">
-              <Link to="/about">Meet the Founder</Link>
+              <Link to="/about">{t("meetTheFounder")}</Link>
             </Button>
           </div>
         </section>

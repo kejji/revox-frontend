@@ -4,14 +4,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 import { ArrowRight, Download, Brain, Target, Settings, CheckCircle } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function RevoxHowItWorks() {
+  const { t } = useLanguage();
   const steps = [
     {
       step: "01",
       icon: Settings,
-      title: "Connect Your App",
-      description: "Simply provide your app's URL from Google Play or Apple App Store. No complex integrations or API keys required.",
+      title: t("connectYourApp"),
+      description: t("connectYourAppDesc"),
       details: [
         "Support for both iOS and Android apps",
         "Instant connection in under 2 minutes",
@@ -22,8 +24,8 @@ export default function RevoxHowItWorks() {
     {
       step: "02",
       icon: Download,
-      title: "Automatic Collection",
-      description: "Revox automatically extracts all reviews and ratings, continuously monitoring for new feedback.",
+      title: t("automaticCollection"),
+      description: t("automaticCollectionDesc"),
       details: [
         "Historical data going back 2+ years",
         "Real-time monitoring for new reviews",
@@ -34,8 +36,8 @@ export default function RevoxHowItWorks() {
     {
       step: "03",
       icon: Brain,
-      title: "AI-Powered Analysis",
-      description: "Our AI engine categorizes feedback, identifies patterns, and extracts actionable insights from user reviews.",
+      title: t("aiPoweredAnalysis"),
+      description: t("aiPoweredAnalysisDesc"),
       details: [
         "Sentiment analysis and emotion detection",
         "Automatic categorization by feature/issue",
@@ -46,7 +48,7 @@ export default function RevoxHowItWorks() {
     {
       step: "04",
       icon: Target,
-      title: "Actionable Insights",
+      title: t("actionableInsights"),
       description: "Get clear, prioritized recommendations with impact analysis to guide your product decisions.",
       details: [
         "Priority scoring based on frequency and impact",
@@ -82,14 +84,14 @@ export default function RevoxHowItWorks() {
         {/* Hero Section */}
         <div className="text-center mb-16">
           <Badge className="mb-6 bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-            How Revox Works
+            {t("howRevoxWorks")}
           </Badge>
           <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-6xl mb-6">
-            From app store reviews to
-            <span className="text-primary"> actionable insights</span>
+            {t("fromReviewsToInsights")}
+            <span className="text-primary"> {t("actionableInsights")}</span>
           </h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
-            See how Revox transforms chaotic app store feedback into clear, prioritized product decisions in just 4 simple steps.
+            {t("howRevoxWorksDesc")}
           </p>
         </div>
 
@@ -134,10 +136,10 @@ export default function RevoxHowItWorks() {
         <section className="mb-20">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-foreground mb-4">
-              The Revox Advantage
+              {t("theRevoxAdvantage")}
             </h2>
             <p className="text-lg text-muted-foreground">
-              See the immediate impact on your feedback analysis workflow
+              {t("revoxAdvantageDesc")}
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -158,16 +160,16 @@ export default function RevoxHowItWorks() {
         <section className="mb-20">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-foreground mb-4">
-              Built for Product Teams
+              {t("builtForProductTeams")}
             </h2>
             <p className="text-lg text-muted-foreground">
-              Enterprise-grade features designed for modern product organizations
+              {t("builtForProductTeamsDesc")}
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">Security & Compliance</CardTitle>
+                <CardTitle className="text-lg">{t("securityCompliance")}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
                 <div className="flex items-center space-x-2">
@@ -191,7 +193,7 @@ export default function RevoxHowItWorks() {
 
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">Integrations</CardTitle>
+                <CardTitle className="text-lg">{t("integrations")}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
                 <div className="flex items-center space-x-2">
@@ -215,7 +217,7 @@ export default function RevoxHowItWorks() {
 
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">Support</CardTitle>
+                <CardTitle className="text-lg">{t("support")}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
                 <div className="flex items-center space-x-2">
@@ -242,19 +244,19 @@ export default function RevoxHowItWorks() {
         {/* CTA */}
         <section className="text-center bg-gradient-to-r from-primary/10 to-blue-500/10 rounded-lg p-12">
           <h2 className="text-3xl font-bold text-foreground mb-4">
-            Ready to see Revox in action?
+            {t("readyToSeeRevox")}
           </h2>
           <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Start your free trial today and experience the power of automated feedback analysis.
+            {t("readyToSeeRevoxDesc")}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button asChild size="lg" className="text-lg px-8 py-6">
               <Link to="/contact">
-                Start Free Trial <ArrowRight className="ml-2 h-5 w-5" />
+                {t("revoxStartFreeTrial")} <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>
             <Button asChild variant="outline" size="lg" className="text-lg px-8 py-6">
-              <Link to="/revox/use-cases">View Use Cases</Link>
+              <Link to="/revox/use-cases">{t("viewUseCases")}</Link>
             </Button>
           </div>
         </section>
