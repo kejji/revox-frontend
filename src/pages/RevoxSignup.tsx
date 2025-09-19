@@ -46,9 +46,6 @@ export default function RevoxSignup() {
                 className="h-16 mx-auto animate-pulse"
               />
             </div>
-            <p className="text-muted-foreground text-lg font-light animate-fade-in delay-100">
-              Reviews. Insights. Growth.
-            </p>
           </div>
         </div>
 
