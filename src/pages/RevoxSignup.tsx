@@ -120,7 +120,7 @@ export default function RevoxSignup() {
                   Creating account...
                 </div>
               ) : (
-                "Start Free Trial"
+                "Get started"
               )}
             </Button>
 
