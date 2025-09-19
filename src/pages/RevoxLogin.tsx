@@ -11,7 +11,7 @@ import revoxLogoLight from "@/assets/revox-logo-light.svg";
 import { useTheme } from "@/components/theme-provider";
 
 export default function RevoxLogin() {
-  const { theme } = useTheme();
+  const { resolvedTheme } = useTheme();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -93,7 +93,7 @@ export default function RevoxLogin() {
         {/* Logo Header */}
         <div className="text-center mb-8">
           <img 
-            src={theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches) ? revoxLogoDark : revoxLogoLight} 
+            src={resolvedTheme === 'dark' ? revoxLogoDark : revoxLogoLight} 
             alt="Revox Logo" 
             className="h-32 w-auto mx-auto"
           />
