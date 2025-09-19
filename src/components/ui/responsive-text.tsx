@@ -18,6 +18,15 @@ export function ResponsiveText({
   const textRef = useRef<HTMLDivElement>(null);
   const hiddenRef = useRef<HTMLDivElement>(null);
 
+  // Decode HTML entities
+  const decodeHtmlEntities = (str: string) => {
+    const textarea = document.createElement('textarea');
+    textarea.innerHTML = str;
+    return textarea.value;
+  };
+
+  const decodedText = decodeHtmlEntities(text);
+
   useEffect(() => {
     const checkTruncation = () => {
       if (!textRef.current || !hiddenRef.current) return;
@@ -38,11 +47,11 @@ export function ResponsiveText({
     }
     
     return () => resizeObserver.disconnect();
-  }, [text, maxLines]);
+  }, [decodedText, maxLines]);
 
   const handleShowMore = () => {
     if (onShowMore) {
-      onShowMore(text);
+      onShowMore(decodedText);
     }
   };
 
@@ -61,7 +70,7 @@ export function ResponsiveText({
             overflow: 'hidden'
           }}
         >
-          {text}
+          {decodedText}
         </div>
         
         {isTruncated && onShowMore && (
@@ -83,7 +92,7 @@ export function ResponsiveText({
         style={{ top: '-9999px', left: '-9999px' }}
         aria-hidden="true"
       >
-        {text}
+        {decodedText}
       </div>
     </div>
   );
