@@ -15,27 +15,26 @@ export function ResponsiveText({
   className = ""
 }: ResponsiveTextProps) {
   const [isTruncated, setIsTruncated] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
+  const textRef = useRef<HTMLDivElement>(null);
+  const hiddenRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const checkTruncation = () => {
-      if (!containerRef.current) return;
+      if (!textRef.current || !hiddenRef.current) return;
       
-      const element = containerRef.current.querySelector('[data-text-content]') as HTMLElement;
-      if (!element) return;
+      const visibleElement = textRef.current;
+      const hiddenElement = hiddenRef.current;
       
-      // Check if content overflows by comparing scroll dimensions with client dimensions
-      const isOverflowing = element.scrollHeight > element.clientHeight || 
-                           element.scrollWidth > element.clientWidth;
-      
-      setIsTruncated(isOverflowing);
+      // Compare the scroll width of the truncated vs full text
+      setIsTruncated(hiddenElement.scrollWidth > visibleElement.clientWidth || 
+                     hiddenElement.scrollHeight > visibleElement.clientHeight);
     };
 
     checkTruncation();
     
     const resizeObserver = new ResizeObserver(checkTruncation);
-    if (containerRef.current) {
-      resizeObserver.observe(containerRef.current);
+    if (textRef.current) {
+      resizeObserver.observe(textRef.current);
     }
     
     return () => resizeObserver.disconnect();
@@ -48,11 +47,12 @@ export function ResponsiveText({
   };
 
   return (
-    <div ref={containerRef} className={className}>
-      <div className="relative">
+    <div className={className}>
+      {/* Visible truncated text */}
+      <div className="flex items-start gap-2">
         <div
-          data-text-content
-          className="text-sm text-foreground leading-relaxed overflow-hidden"
+          ref={textRef}
+          className="text-sm text-foreground leading-relaxed flex-1 overflow-hidden"
           style={{
             display: '-webkit-box',
             WebkitBoxOrient: 'vertical',
@@ -61,20 +61,28 @@ export function ResponsiveText({
           }}
         >
           {text}
-          {isTruncated && onShowMore && (
-            <span className="inline">
-              {" "}
-              <Button
-                variant="link"
-                size="sm"
-                className="h-auto p-0 text-xs text-primary hover:text-primary/80 font-medium inline align-baseline"
-                onClick={handleShowMore}
-              >
-                … Show more
-              </Button>
-            </span>
-          )}
         </div>
+        
+        {isTruncated && onShowMore && (
+          <Button
+            variant="link"
+            size="sm"
+            className="h-auto p-0 text-xs text-primary hover:text-primary/80 font-medium flex-shrink-0 self-start"
+            onClick={handleShowMore}
+          >
+            … Show more
+          </Button>
+        )}
+      </div>
+      
+      {/* Hidden element to measure full text dimensions */}
+      <div
+        ref={hiddenRef}
+        className="text-sm leading-relaxed absolute opacity-0 pointer-events-none whitespace-nowrap overflow-visible"
+        style={{ top: '-9999px', left: '-9999px' }}
+        aria-hidden="true"
+      >
+        {text}
       </div>
     </div>
   );
