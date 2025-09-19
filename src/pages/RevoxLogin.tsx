@@ -93,7 +93,7 @@ export default function RevoxLogin() {
         {/* Logo Header */}
         <div className="text-center mb-8">
           <img 
-            src={theme === 'dark' ? revoxLogoDark : revoxLogoLight} 
+            src={theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches) ? revoxLogoDark : revoxLogoLight} 
             alt="Revox Logo" 
             className="h-32 w-auto mx-auto"
           />
