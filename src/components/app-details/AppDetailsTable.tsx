@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Apple, Bot, Star } from "lucide-react";
 import { UpdateDialog } from "./UpdateDialog";
+import { ResponsiveText } from "@/components/ui/responsive-text";
 
 interface AppData {
   name: string;
@@ -25,8 +26,6 @@ export function AppDetailsTable({ currentApp, linkedApps = [], className = "" }:
   const [showUpdateDialog, setShowUpdateDialog] = useState(false);
   const [selectedUpdateText, setSelectedUpdateText] = useState("");
 
-  // Check if text should be truncated (more than 60 characters)
-  const isUpdateTextTruncated = (text: string) => text.length > 60;
 
   const renderStars = (rating: number) =>
     Array.from({ length: 5 }, (_, i) => (
@@ -48,7 +47,7 @@ export function AppDetailsTable({ currentApp, linkedApps = [], className = "" }:
       {/* Desktop Layout */}
       <div className="hidden md:block space-y-1">
         {/* Header Row */}
-        <div className="grid grid-cols-[200px_200px_1fr] gap-6 pb-2">
+        <div className="grid grid-cols-[180px_180px_1fr] gap-6 pb-2">
           <h4 className="font-medium text-xs text-muted-foreground uppercase tracking-wider">Version</h4>
           <h4 className="font-medium text-xs text-muted-foreground uppercase tracking-wider">Rating</h4>
           <h4 className="font-medium text-xs text-muted-foreground uppercase tracking-wider">Latest Update</h4>
@@ -56,40 +55,31 @@ export function AppDetailsTable({ currentApp, linkedApps = [], className = "" }:
 
         {/* App Rows */}
         {allApps.map((app, index) => (
-          <div key={`${app.platform}-${app.bundleId}-${index}`} className="grid grid-cols-[200px_200px_1fr] gap-6 items-center py-2">
+          <div key={`${app.platform}-${app.bundleId}-${index}`} className="grid grid-cols-[180px_180px_1fr] gap-6 py-3 border-b border-border/30 last:border-b-0">
             {/* Version with Platform Icon */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-start gap-2 pt-1">
               {app.platform === "ios" ? (
-                <Apple className="h-4 w-4 text-muted-foreground" />
+                <Apple className="h-4 w-4 text-muted-foreground flex-shrink-0 mt-0.5" />
               ) : (
-                <Bot className="h-4 w-4 text-muted-foreground" />
+                <Bot className="h-4 w-4 text-muted-foreground flex-shrink-0 mt-0.5" />
               )}
               <span className="font-medium">{app.version}</span>
             </div>
 
             {/* Rating */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-start gap-2 pt-1">
               <div className="flex">{renderStars(Math.floor(app.rating))}</div>
               <span className="font-medium">{app.rating}</span>
             </div>
 
             {/* Latest Update */}
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-foreground leading-relaxed flex-1">
-                {isUpdateTextTruncated(app.latestUpdate) 
-                  ? `${app.latestUpdate.substring(0, 60)}...` 
-                  : app.latestUpdate}
-              </span>
-              {isUpdateTextTruncated(app.latestUpdate) && (
-                <Button
-                  size="sm"
-                  variant="link"
-                  className="h-auto p-0 text-xs text-primary hover:text-primary/80 font-medium flex-shrink-0"
-                  onClick={() => handleShowMore(app.latestUpdate)}
-                >
-                  Show more
-                </Button>
-              )}
+            <div className="min-h-0">
+              <ResponsiveText
+                text={app.latestUpdate}
+                maxLinesDesktop={3}
+                maxLinesMobile={2}
+                onShowMore={handleShowMore}
+              />
             </div>
           </div>
         ))}
@@ -128,26 +118,16 @@ export function AppDetailsTable({ currentApp, linkedApps = [], className = "" }:
               </div>
             </div>
 
-            {/* Last Update Section */}
-            <div className="space-y-2">
+            {/* Latest Update Section */}
+            <div className="space-y-3">
               <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium">Latest Update</p>
-               <div className="flex items-center gap-2">
-                <span className="text-sm text-foreground leading-relaxed flex-1">
-                  {isUpdateTextTruncated(app.latestUpdate) 
-                    ? `${app.latestUpdate.substring(0, 60)}...` 
-                    : app.latestUpdate}
-                </span>
-                {isUpdateTextTruncated(app.latestUpdate) && (
-                  <Button
-                    size="sm"
-                    variant="link"
-                    className="h-auto p-0 text-xs text-primary hover:text-primary/80 font-medium flex-shrink-0"
-                    onClick={() => handleShowMore(app.latestUpdate)}
-                  >
-                    Show more
-                  </Button>
-                )}
-              </div>
+              <ResponsiveText
+                text={app.latestUpdate}
+                maxLinesDesktop={4}
+                maxLinesMobile={3}
+                onShowMore={handleShowMore}
+                className="bg-background/50 p-3 rounded-md border"
+              />
             </div>
           </div>
         ))}
