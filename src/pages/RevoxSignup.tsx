@@ -48,11 +48,6 @@ export default function RevoxSignup() {
         <div className="text-center space-y-8">
           <div className="animate-fade-in">
             <div className="mb-8">
-              <img 
-                src={revoxLogo}
-                alt="Revox" 
-                className="h-72 mx-auto animate-pulse"
-              />
             </div>
           </div>
         </div>
