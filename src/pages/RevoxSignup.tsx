@@ -125,7 +125,7 @@ export default function RevoxSignup() {
         <ThemeToggle />
       </div>
       
-      <div className="w-full max-w-sm space-y-12">
+      <div className="w-full max-w-sm space-y-12 pt-16">
         {/* Logo Header */}
         <div className="text-center mb-8">
           <img 
