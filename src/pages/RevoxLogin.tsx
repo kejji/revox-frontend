@@ -100,7 +100,7 @@ export default function RevoxLogin() {
               <img 
                 src={revoxLogo} 
                 alt="Revox" 
-                className="h-16 mx-auto animate-pulse"
+                className="h-24 mx-auto"
               />
             </div>
             <p className="text-muted-foreground text-lg font-light animate-fade-in delay-100">
