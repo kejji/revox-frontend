@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { signUp, confirmSignUp } from "aws-amplify/auth";
+import { signUp, confirmSignUp, signIn } from "aws-amplify/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -74,21 +74,36 @@ export default function RevoxSignup() {
     setIsLoading(true);
     
     try {
+      // Step 1: Confirm the account
       await confirmSignUp({ 
         username: formData.email, 
         confirmationCode: code 
       });
-      setSuccessMsg("Account confirmed! Redirecting to dashboard...");
+      
+      setSuccessMsg("Account confirmed! Signing you in...");
+      
+      // Step 2: Automatically sign in to get valid token
+      await signIn({ 
+        username: formData.email, 
+        password: formData.password 
+      });
+      
+      setSuccessMsg("Successfully signed in! Redirecting to dashboard...");
+      
+      // Step 3: Redirect to dashboard with valid token
       setTimeout(() => {
         navigate("/revox/dashboard");
-      }, 1500);
+      }, 1000);
+      
     } catch (err: any) {
       if (err?.name === "CodeMismatchException") {
         setErrorMsg("Invalid code. Please try again.");
       } else if (err?.name === "ExpiredCodeException") {
         setErrorMsg("Code expired. Please request a new code.");
+      } else if (err?.name === "NotAuthorizedException") {
+        setErrorMsg("Invalid credentials. Please check your password.");
       } else {
-        setErrorMsg(err?.message || "Confirmation failed.");
+        setErrorMsg(err?.message || "Confirmation or sign-in failed.");
       }
     } finally {
       setIsLoading(false);
