@@ -49,28 +49,29 @@ export function ResponsiveText({
   return (
     <div className={className}>
       {/* Visible truncated text */}
-      <div className="flex items-start gap-2">
-        <div
+      <div className="inline">
+        <span
           ref={textRef}
-          className="text-sm text-foreground leading-relaxed flex-1 overflow-hidden"
+          className="text-sm text-foreground leading-relaxed"
           style={{
             display: '-webkit-box',
             WebkitBoxOrient: 'vertical',
             WebkitLineClamp: maxLines,
-            lineClamp: maxLines
+            lineClamp: maxLines,
+            overflow: 'hidden'
           }}
         >
           {text}
-        </div>
+        </span>
         
         {isTruncated && onShowMore && (
           <Button
             variant="link"
             size="sm"
-            className="h-auto p-0 text-xs text-primary hover:text-primary/80 font-medium flex-shrink-0 self-start"
+            className="h-auto p-0 text-xs text-primary hover:text-primary/80 font-medium inline ml-1 align-baseline"
             onClick={handleShowMore}
           >
-            … Show more
+            Show more
           </Button>
         )}
       </div>
