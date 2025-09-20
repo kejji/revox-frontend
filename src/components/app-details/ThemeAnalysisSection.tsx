@@ -205,8 +205,11 @@ export function ThemeAnalysisSection({
   };
 
   const renderAnalysisStatus = () => {
-    // Status is null - show launch button and historical data if available
-    if (!themesData?.status) {
+    // Check if themes data is empty (both arrays empty or null status)
+    const hasEmptyThemes = !themesData?.top_positive_axes?.length && !themesData?.top_negative_axes?.length;
+    
+    // Status is null OR status is done but themes are empty - show launch button and historical data if available
+    if (!themesData?.status || (themesData?.status === "done" && hasEmptyThemes)) {
       return (
         <div className="space-y-4 py-6">
           {/* Button and Loading Section Container - Fixed Height to Prevent Layout Shift */}
@@ -240,8 +243,8 @@ export function ThemeAnalysisSection({
             </div>
           </div>
           
-          {/* Show historical data if available */}
-          {themesData && (themesData.top_positive_axes.length > 0 || themesData.top_negative_axes.length > 0) && (
+          {/* Show historical data if available (but only when status is null, not when done with empty results) */}
+          {!themesData?.status && themesData && (themesData.top_positive_axes.length > 0 || themesData.top_negative_axes.length > 0) && (
             <div className="mt-6 pt-6 border-t">
               <p className="text-sm text-muted-foreground mb-4">Previous analysis results:</p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -296,7 +299,7 @@ export function ThemeAnalysisSection({
       );
     }
 
-    // Status is done - show results
+    // Status is done and we have theme data - show results
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="space-y-4">
