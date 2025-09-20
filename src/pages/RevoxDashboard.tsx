@@ -13,6 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Settings, LogOut, Star, Trash2, ChevronRight, Bot, Apple, MoreVertical, Plus, Link as LinkIcon, Unlink } from "lucide-react";
+import revoxPicto from "@/assets/revox-picto.svg";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -306,7 +307,10 @@ export default function RevoxDashboard() {
       <section className="p-6 max-w-6xl mx-auto">
         {/* ===== Page header (icônes à droite + avatar) ===== */}
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-xl font-semibold">{t('revoxDashboard')}</h1>
+          <div className="flex items-center gap-3">
+            <img src={revoxPicto} alt="Revox" className="w-8 h-8" />
+            <h1 className="text-xl font-semibold">{t('revoxDashboard')}</h1>
+          </div>
 
           <div className="flex items-center gap-2">
             {/* Theme Toggle */}
