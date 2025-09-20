@@ -27,9 +27,9 @@ export function Header({ showTopbar = true }: HeaderProps) {
   const { t } = useLanguage();
 
   const navigation = [
-    { name: t("about"), href: "/about" },
+    { name: t("home"), href: "/" },
     { name: t("services"), href: "/services" },
-    { name: t("blog"), href: "/blog" },
+    { name: t("project"), href: "/project" },
     { name: t("revox"), href: "/revox", isProduct: true },
   ];
 

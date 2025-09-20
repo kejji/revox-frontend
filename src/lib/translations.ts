@@ -1,9 +1,9 @@
 export const translations = {
   en: {
     // Header
-    about: "About",
-    services: "Services", 
-    blog: "Blog",
+    home: "Home",
+    services: "Services",
+    project: "Project", 
     revox: "Revox",
     getInTouch: "Get in Touch",
     tryRevoxFree: "Try Revox Free",
@@ -334,9 +334,9 @@ export const translations = {
   },
   fr: {
     // Header
-    about: "À propos",
+    home: "Accueil",
     services: "Services",
-    blog: "Blog", 
+    project: "Projet", 
     revox: "Revox",
     getInTouch: "Contactez-moi",
     tryRevoxFree: "Essayer Revox gratuitement",
