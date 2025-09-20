@@ -54,7 +54,7 @@ export default function Revox() {
             <img 
               src={resolvedTheme === 'dark' ? revoxLogoDark : revoxLogoLight} 
               alt="Revox Logo" 
-              className="h-20 w-auto mx-auto"
+              className="h-32 w-auto mx-auto"
             />
           </div>
           <Badge className="mb-6 bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
