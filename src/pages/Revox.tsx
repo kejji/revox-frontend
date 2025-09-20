@@ -59,13 +59,13 @@ export default function Revox() {
           </div>
           <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-7xl mb-8 animate-fade-in [animation-delay:200ms] opacity-0 [animation-fill-mode:forwards]">
             {t("revoxHeroTitle")}
-            <span className="text-primary bg-gradient-to-r from-primary to-blue-500 bg-clip-text text-transparent animate-pulse"> {t("revoxHeroHighlight")}</span>
+            <span className="bg-gradient-primary bg-clip-text text-transparent animate-pulse"> {t("revoxHeroHighlight")}</span>
           </h1>
           <p className="text-xl text-muted-foreground max-w-4xl mx-auto mb-10 animate-fade-in [animation-delay:400ms] opacity-0 [animation-fill-mode:forwards]">
             {t("revoxHeroDescription")}
           </p>
           <div className="flex justify-center mb-12 animate-fade-in [animation-delay:600ms] opacity-0 [animation-fill-mode:forwards]">
-            <Button asChild size="lg" className="text-lg px-8 py-6 hover-scale transition-all duration-300 hover:shadow-lg hover:shadow-primary/25">
+            <Button asChild size="lg" className="text-lg px-8 py-6 bg-gradient-primary hover:shadow-primary transition-all duration-300 hover-scale border-0">
               <Link to="/revox/auth">
                 {t("revoxStartFreeTrial")} <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
               </Link>
@@ -103,7 +103,7 @@ export default function Revox() {
             {features.map((feature, index) => (
               <Card 
                 key={index} 
-                className="text-center border-2 hover:border-primary/50 transition-all duration-300 hover-scale hover:shadow-lg hover:shadow-primary/10 bg-card/50 backdrop-blur-sm animate-fade-in opacity-0 [animation-fill-mode:forwards]"
+                className="text-center border-2 hover:border-primary/50 transition-all duration-300 hover-scale hover:shadow-primary bg-gradient-subtle backdrop-blur-sm animate-fade-in opacity-0 [animation-fill-mode:forwards] group"
                 style={{ animationDelay: `${1200 + index * 100}ms` }}
               >
                 <CardHeader>
