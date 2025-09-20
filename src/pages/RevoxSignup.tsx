@@ -196,7 +196,7 @@ export default function RevoxSignup() {
             <div className="space-y-3">
               <Button
                 type="submit"
-                variant="revox-secondary"
+                variant="revox-primary"
                 className="w-full h-12 rounded-xl font-medium"
                 disabled={isLoading}
               >
@@ -206,13 +206,13 @@ export default function RevoxSignup() {
                     Creating account...
                   </div>
                 ) : (
-                  "Create account & start"
+                  "Create account"
                 )}
               </Button>
 
               <Button
                 type="button"
-                variant="revox-primary"
+                variant="revox-dark"
                 className="w-full h-12 rounded-xl font-medium"
                 onClick={() => navigate("/revox/login")}
               >
@@ -316,19 +316,6 @@ export default function RevoxSignup() {
             </div>
 
           </form>
-        </div>
-
-        {/* Footer Links */}
-        <div className="text-center space-y-6 animate-fade-in delay-300">
-          <p className="text-sm text-muted-foreground">
-            Already have an account?{" "}
-            <Link 
-              to="/revox/login" 
-              className="text-revox-blue hover:text-revox-blue/80 transition-colors"
-            >
-              Sign in
-            </Link>
-          </p>
         </div>
       </div>
     </div>

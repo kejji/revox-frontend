@@ -22,6 +22,7 @@ const buttonVariants = cva(
         "revox-primary": "bg-revox-blue text-white hover:bg-revox-blue/90 shadow-lg hover:shadow-revox-blue/25",
         "revox-secondary": "bg-revox-purple text-white hover:bg-revox-purple/90 shadow-lg hover:shadow-revox-purple/25",
         "revox-accent": "bg-revox-orange text-white hover:bg-revox-orange/90 shadow-lg hover:shadow-revox-orange/25",
+        "revox-dark": "bg-revox-dark-blue text-white hover:bg-revox-dark-blue/90 shadow-lg hover:shadow-revox-dark-blue/25",
         "revox-gradient": "bg-gradient-to-r from-revox-blue to-revox-purple text-white hover:opacity-90 shadow-lg hover:shadow-revox-blue/25",
         "revox-outline": "border-2 border-revox-blue text-revox-blue bg-transparent hover:bg-revox-blue hover:text-white transition-all duration-200",
       },
