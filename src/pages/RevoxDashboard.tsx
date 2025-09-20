@@ -352,8 +352,9 @@ export default function RevoxDashboard() {
         </div>
 
         {/* ===== Sous-header (titre section) ===== */}
-
-        {/* ===== Contenu ===== */}
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold text-foreground">My apps</h2>
+        </div>
         {loading && <p className="text-sm text-muted-foreground">{t('loading')}</p>}
         {!loading && err && (
           <div className="border rounded-xl p-6 text-red-600">{err}</div>
