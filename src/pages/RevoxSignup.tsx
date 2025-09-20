@@ -212,7 +212,7 @@ export default function RevoxSignup() {
 
               <Button
                 type="button"
-                variant="revox-dark"
+                variant="revox-gradient"
                 className="w-full h-12 rounded-xl font-medium"
                 onClick={() => navigate("/revox/login")}
               >
