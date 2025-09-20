@@ -129,6 +129,7 @@ export default function RevoxAppDetails() {
 
   // No mock data - use loading state instead
   const [appDataLoading, setAppDataLoading] = useState(true);
+  const [themesLoading, setThemesLoading] = useState(true);
 
   // Reviews + pagination
   const [reviews, setReviews] = useState<ReviewItem[]>([]);
@@ -313,6 +314,8 @@ export default function RevoxAppDetails() {
     } finally {
       setLoading(false);
       setRefreshing(false);
+      // After reviews are loaded, allow themes to load
+      setThemesLoading(false);
     }
   }
 
@@ -358,20 +361,31 @@ export default function RevoxAppDetails() {
   }
 
   useEffect(() => {
-    loadUserInfo();
-    loadAppData();
+    const loadSequentially = async () => {
+      // First load user info and reviews
+      await loadUserInfo();
+      await fetchReviewsInitial();
+      // Then load app data after reviews are loaded
+      await loadAppData();
+    };
+
+    loadSequentially();
     // eslint-disable-next-line react-hooks/exhaustive-deps  
   }, [platform, bundleId]);
 
+  // Separate effect for when linkedApps change (e.g., after linking/unlinking)
   useEffect(() => {
-    fetchReviewsInitial();
+    if (linkedApps.length >= 0) { // Allow 0 length to trigger refresh after unlinking
+      fetchReviewsInitial();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [platform, bundleId, linkedApps.length, urlAppPks.join(',')]);
+  }, [linkedApps.length, urlAppPks.join(',')]); 
 
   // Handle extraction loader completion
   const handleExtractionComplete = () => {
     setShowExtractionLoader(false);
     setRefreshing(true);
+    setThemesLoading(true); // Reset themes loading when refreshing
     handleRefresh();
   };
 
@@ -379,6 +393,7 @@ export default function RevoxAppDetails() {
   const handleRefresh = async () => {
     if (!platform || !bundleId) return;
     setRefreshing(true);
+    setThemesLoading(true); // Reset themes loading
     try {
       await api.post("/reviews/ingest", {
         appName: displayApp?.name || bundleId,
@@ -386,10 +401,11 @@ export default function RevoxAppDetails() {
         bundleId,
         backfillDays: 2,
       });
-      await fetchReviewsInitial();
+      await fetchReviewsInitial(); // This will set themesLoading to false when complete
     } catch (e: any) {
       setErr(e?.response?.data?.error || e?.message || "Failed to refresh (ingest) reviews.");
       setRefreshing(false);
+      setThemesLoading(false);
     }
   };
 
@@ -716,16 +732,61 @@ export default function RevoxAppDetails() {
 
           {/* Theme Analysis */}
           {platform && bundleId && (
-            <ThemeAnalysisSection
-              appPk={getAppPkParam()}
-              appName={displayApp?.name || bundleId}
-              onThemeClick={setSelectedTheme}
-              analysisFromDate={analysisFromDate}
-              analysisToDate={analysisToDate}
-              onFromDateChange={setAnalysisFromDate}
-              onToDateChange={setAnalysisToDate}
-              onValidate={() => {/* Theme analysis validation handled inside component */}}
-            />
+            <>
+              {themesLoading ? (
+                <section className="space-y-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    <Skeleton className="h-7 w-32" />
+                    <Skeleton className="h-10 w-48" />
+                  </div>
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="text-green-600 flex items-center gap-2">
+                          <TrendingUp className="h-5 w-5" />
+                          <Skeleton className="h-6 w-24" />
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-3">
+                        {Array.from({ length: 3 }).map((_, i) => (
+                          <div key={i} className="flex items-center justify-between p-3 rounded-lg border">
+                            <Skeleton className="h-4 w-20" />
+                            <Skeleton className="h-4 w-12" />
+                          </div>
+                        ))}
+                      </CardContent>
+                    </Card>
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="text-red-600 flex items-center gap-2">
+                          <TrendingDown className="h-5 w-5" />
+                          <Skeleton className="h-6 w-24" />
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-3">
+                        {Array.from({ length: 3 }).map((_, i) => (
+                          <div key={i} className="flex items-center justify-between p-3 rounded-lg border">
+                            <Skeleton className="h-4 w-20" />
+                            <Skeleton className="h-4 w-12" />
+                          </div>
+                        ))}
+                      </CardContent>
+                    </Card>
+                  </div>
+                </section>
+              ) : (
+                <ThemeAnalysisSection
+                  appPk={getAppPkParam()}
+                  appName={displayApp?.name || bundleId}
+                  onThemeClick={setSelectedTheme}
+                  analysisFromDate={analysisFromDate}
+                  analysisToDate={analysisToDate}
+                  onFromDateChange={setAnalysisFromDate}
+                  onToDateChange={setAnalysisToDate}
+                  onValidate={() => {/* Theme analysis validation handled inside component */}}
+                />
+              )}
+            </>
           )}
 
           {/* Theme Samples Dialog */}
