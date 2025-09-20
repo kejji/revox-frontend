@@ -50,7 +50,7 @@ export function FloatingAppIcons() {
           id: i,
           icon: appIcons[Math.floor(Math.random() * appIcons.length)],
           x: Math.random() * 100,
-          y: Math.random() * 100,
+          y: Math.random() * 60, // Constrain to top 60% of hero area
           size: 20 + Math.random() * 15, // 20-35px
           speed: 0.15 + Math.random() * 0.3, // 0.15-0.45 speed
           direction: Math.random() * Math.PI * 2,
@@ -66,7 +66,7 @@ export function FloatingAppIcons() {
           id: i,
           icon: appIcons[Math.floor(Math.random() * appIcons.length)],
           x: startFromLeft ? -10 : 110,
-          y: Math.random() * 80 + 10, // Start from 10-90% height
+          y: Math.random() * 50 + 5, // Start from 5-55% height in hero area
           size: 16 + Math.random() * 12, // 16-28px
           speed: 1.5 + Math.random() * 2, // 1.5-3.5 speed (much faster)
           direction: startFromLeft ? 0.1 + Math.random() * 0.2 : Math.PI - 0.2 + Math.random() * 0.2, // Slight angle
@@ -90,7 +90,7 @@ export function FloatingAppIcons() {
             return {
               ...icon,
               x: (icon.x + Math.cos(icon.direction) * icon.speed + 100) % 100,
-              y: (icon.y + Math.sin(icon.direction) * icon.speed + 100) % 100,
+              y: (icon.y + Math.sin(icon.direction) * icon.speed + 60) % 60, // Keep within hero area
             };
           } else {
             // Shooting star movement
@@ -98,12 +98,12 @@ export function FloatingAppIcons() {
             const newY = icon.y + Math.sin(icon.direction) * icon.speed;
             
             // Reset shooting star when it goes off screen
-            if (newX < -15 || newX > 115 || newY < -15 || newY > 115) {
+            if (newX < -15 || newX > 115 || newY < -15 || newY > 60) { // Constrain to hero area
               const startFromLeft = Math.random() > 0.5;
               return {
                 ...icon,
                 x: startFromLeft ? -10 : 110,
-                y: Math.random() * 80 + 10,
+                y: Math.random() * 50 + 5, // Reset within hero area
                 direction: startFromLeft ? 0.1 + Math.random() * 0.2 : Math.PI - 0.2 + Math.random() * 0.2,
                 icon: appIcons[Math.floor(Math.random() * appIcons.length)],
                 opacity: 0.2 + Math.random() * 0.4
@@ -125,7 +125,7 @@ export function FloatingAppIcons() {
   }, []);
 
   return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+    <div className="absolute inset-x-0 top-0 h-[600px] overflow-hidden pointer-events-none">
       {icons.map((floatingIcon) => (
         <div
           key={floatingIcon.id}
@@ -134,7 +134,7 @@ export function FloatingAppIcons() {
           }`}
           style={{
             left: `${floatingIcon.x}%`,
-            top: `${floatingIcon.y}%`,
+            top: `${floatingIcon.y * 0.6}%`, // Constrain to top 60% of hero area
             opacity: floatingIcon.opacity,
             transform: `translate(-50%, -50%) ${
               floatingIcon.type === 'shooting' ? `rotate(${floatingIcon.direction}rad)` : ''
