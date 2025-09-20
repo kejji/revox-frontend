@@ -152,7 +152,7 @@ export default function RevoxSignup() {
                 <Input
                   id="email"
                   type="email"
-                  placeholder="Work email"
+                  placeholder="Email"
                   value={formData.email}
                   onChange={handleInputChange("email")}
                   className="pl-12 h-12 rounded-xl border border-border/30 bg-background focus:border-revox-blue transition-colors"
