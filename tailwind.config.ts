@@ -67,15 +67,6 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				}
 			},
-			backgroundImage: {
-				'gradient-primary': 'var(--gradient-primary)',
-				'gradient-secondary': 'var(--gradient-secondary)',
-				'gradient-subtle': 'var(--gradient-subtle)'
-			},
-			boxShadow: {
-				'primary': 'var(--shadow-primary)',
-				'glow': 'var(--shadow-glow)'
-			},
 			borderRadius: {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
@@ -157,12 +148,6 @@ export default {
 				'fade-in': 'fade-in 0.4s ease-out',
 				'fade-out': 'fade-out 0.4s ease-out',
 				'slide-up': 'slide-up 0.5s ease-out'
-			},
-			// Utility classes for easier usage
-			utilities: {
-				'.hover-scale': {
-					'@apply': 'transition-transform duration-200 hover:scale-105'
-				}
 			}
 		}
 	},
