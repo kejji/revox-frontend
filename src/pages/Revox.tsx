@@ -57,9 +57,6 @@ export default function Revox() {
               className="h-32 w-auto mx-auto"
             />
           </div>
-          <Badge className="mb-6 bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-            {t("revoxHeroSubtitle")}
-          </Badge>
           <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-7xl mb-8">
             {t("revoxHeroTitle")}
             <span className="text-primary"> {t("revoxHeroHighlight")}</span>
