@@ -40,37 +40,38 @@ export function FloatingAppIcons() {
   const [icons, setIcons] = useState<FloatingIcon[]>([]);
 
   useEffect(() => {
-    // Generate random floating and shooting star icons
+    // Generate unique floating and shooting star icons
     const generateIcons = () => {
+      const shuffledIcons = [...appIcons].sort(() => Math.random() - 0.5); // Shuffle icons
       const newIcons: FloatingIcon[] = [];
       
-      // Regular floating icons (8 icons)
-      for (let i = 0; i < 8; i++) {
+      // Regular floating icons (6 icons)
+      for (let i = 0; i < 6; i++) {
         newIcons.push({
           id: i,
-          icon: appIcons[Math.floor(Math.random() * appIcons.length)],
+          icon: shuffledIcons[i],
           x: Math.random() * 100,
           y: Math.random() * 60, // Constrain to top 60% of hero area
           size: 20 + Math.random() * 15, // 20-35px
-          speed: 0.15 + Math.random() * 0.3, // 0.15-0.45 speed
+          speed: 0.05 + Math.random() * 0.1, // 0.05-0.15 speed (much slower)
           direction: Math.random() * Math.PI * 2,
-          opacity: 0.1 + Math.random() * 0.25, // 0.1-0.35 opacity
+          opacity: 0.15 + Math.random() * 0.25, // 0.15-0.4 opacity
           type: 'floating'
         });
       }
       
       // Shooting star icons (4 icons)
-      for (let i = 8; i < 12; i++) {
+      for (let i = 6; i < 10; i++) {
         const startFromLeft = Math.random() > 0.5;
         newIcons.push({
           id: i,
-          icon: appIcons[Math.floor(Math.random() * appIcons.length)],
+          icon: shuffledIcons[i],
           x: startFromLeft ? -10 : 110,
           y: Math.random() * 50 + 5, // Start from 5-55% height in hero area
           size: 16 + Math.random() * 12, // 16-28px
-          speed: 1.5 + Math.random() * 2, // 1.5-3.5 speed (much faster)
+          speed: 0.3 + Math.random() * 0.4, // 0.3-0.7 speed (slower)
           direction: startFromLeft ? 0.1 + Math.random() * 0.2 : Math.PI - 0.2 + Math.random() * 0.2, // Slight angle
-          opacity: 0.2 + Math.random() * 0.4, // 0.2-0.6 opacity
+          opacity: 0.2 + Math.random() * 0.3, // 0.2-0.5 opacity
           type: 'shooting',
           trail: true
         });
@@ -81,7 +82,7 @@ export function FloatingAppIcons() {
 
     generateIcons();
 
-    // Animate icons
+    // Animate icons with slower interval
     const animateIcons = () => {
       setIcons(prevIcons =>
         prevIcons.map(icon => {
@@ -100,13 +101,18 @@ export function FloatingAppIcons() {
             // Reset shooting star when it goes off screen
             if (newX < -15 || newX > 115 || newY < -15 || newY > 60) { // Constrain to hero area
               const startFromLeft = Math.random() > 0.5;
+              // Use a different icon from the unused ones
+              const usedIcons = prevIcons.filter(i => i.type === 'shooting').map(i => i.icon);
+              const availableIcons = appIcons.filter(ai => !usedIcons.some(ui => ui.src === ai.src));
+              const newIcon = availableIcons.length > 0 ? availableIcons[Math.floor(Math.random() * availableIcons.length)] : appIcons[Math.floor(Math.random() * appIcons.length)];
+              
               return {
                 ...icon,
                 x: startFromLeft ? -10 : 110,
                 y: Math.random() * 50 + 5, // Reset within hero area
                 direction: startFromLeft ? 0.1 + Math.random() * 0.2 : Math.PI - 0.2 + Math.random() * 0.2,
-                icon: appIcons[Math.floor(Math.random() * appIcons.length)],
-                opacity: 0.2 + Math.random() * 0.4
+                icon: newIcon,
+                opacity: 0.2 + Math.random() * 0.3
               };
             }
             
@@ -120,7 +126,7 @@ export function FloatingAppIcons() {
       );
     };
 
-    const interval = setInterval(animateIcons, 50);
+    const interval = setInterval(animateIcons, 100); // Slower interval (100ms instead of 50ms)
     return () => clearInterval(interval);
   }, []);
 
@@ -129,16 +135,14 @@ export function FloatingAppIcons() {
       {icons.map((floatingIcon) => (
         <div
           key={floatingIcon.id}
-          className={`absolute transition-all duration-[50ms] ease-linear ${
+          className={`absolute transition-all duration-100 ease-linear ${
             floatingIcon.type === 'shooting' ? 'animate-pulse' : ''
           }`}
           style={{
             left: `${floatingIcon.x}%`,
             top: `${floatingIcon.y * 0.6}%`, // Constrain to top 60% of hero area
             opacity: floatingIcon.opacity,
-            transform: `translate(-50%, -50%) ${
-              floatingIcon.type === 'shooting' ? `rotate(${floatingIcon.direction}rad)` : ''
-            }`,
+            transform: `translate(-50%, -50%)`, // Remove rotation
           }}
         >
           <img
