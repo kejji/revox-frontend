@@ -193,21 +193,32 @@ export default function RevoxSignup() {
               </div>
             )}
 
-            <Button
-              type="submit"
-              variant="revox-gradient"
-              className="w-full h-12 rounded-xl font-medium"
-              disabled={isLoading}
-            >
-              {isLoading ? (
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
-                  Creating account...
-                </div>
-              ) : (
-                "Get started"
-              )}
-            </Button>
+            <div className="space-y-3">
+              <Button
+                type="submit"
+                variant="revox-secondary"
+                className="w-full h-12 rounded-xl font-medium"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
+                    Creating account...
+                  </div>
+                ) : (
+                  "Create account & start"
+                )}
+              </Button>
+
+              <Button
+                type="button"
+                variant="revox-primary"
+                className="w-full h-12 rounded-xl font-medium"
+                onClick={() => navigate("/revox/login")}
+              >
+                Sign in
+              </Button>
+            </div>
 
             {/* Confirmation Code Section */}
             {needsConfirm && (
