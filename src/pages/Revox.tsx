@@ -114,104 +114,44 @@ export default function Revox() {
           </div>
         </section>
 
-        {/* Benefits */}
-        <section className="mb-20">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        {/* Footer */}
+        <footer className="mt-32 pt-16 border-t border-border">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
             <div>
-              <h2 className="text-3xl font-bold text-foreground mb-6">
-                {t("whyChooseRevox")}
-              </h2>
-              <p className="text-lg text-muted-foreground mb-8">
-                {t("whyChooseRevoxDesc")}
+              <img 
+                src={resolvedTheme === 'dark' ? revoxLogoDark : revoxLogoLight} 
+                alt="Revox Logo" 
+                className="h-8 w-auto mb-4"
+              />
+              <p className="text-muted-foreground text-sm">
+                Transform user feedback into product decisions with AI-powered analysis.
               </p>
-              <ul className="space-y-3">
-                {benefits.map((benefit, index) => (
-                  <li key={index} className="flex items-start space-x-3">
-                    <CheckCircle className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-                    <span className="text-muted-foreground">{benefit}</span>
-                  </li>
-                ))}
+            </div>
+            
+            <div>
+              <h3 className="font-semibold text-foreground mb-4">Product</h3>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li><Link to="/revox/how-it-works" className="hover:text-primary transition-colors">How it Works</Link></li>
+                <li><Link to="/revox/use-cases" className="hover:text-primary transition-colors">Use Cases</Link></li>
+                <li><Link to="/revox/pricing" className="hover:text-primary transition-colors">Pricing</Link></li>
+                <li><Link to="/revox/about" className="hover:text-primary transition-colors">About</Link></li>
               </ul>
             </div>
-            <div className="bg-gradient-to-br from-primary/10 to-blue-500/10 rounded-xl p-8">
-              <div className="text-center">
-                <div className="text-4xl font-bold text-primary mb-2">10x</div>
-                <div className="text-lg font-medium text-foreground mb-4">{t("fasterAnalysis")}</div>
-                <p className="text-sm text-muted-foreground">
-                  {t("fasterAnalysisDesc")}
-                </p>
-              </div>
+            
+            <div>
+              <h3 className="font-semibold text-foreground mb-4">Support</h3>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li><Link to="/contact" className="hover:text-primary transition-colors">Contact</Link></li>
+                <li><Link to="/revox/auth" className="hover:text-primary transition-colors">Sign In</Link></li>
+                <li><Link to="/revox/signup" className="hover:text-primary transition-colors">Sign Up</Link></li>
+              </ul>
             </div>
           </div>
-        </section>
-
-
-        {/* Use Cases CTA */}
-        <section className="mb-20">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Card className="text-center p-6 hover:border-primary/50 transition-colors">
-              <CardHeader>
-                <Users className="h-8 w-8 text-primary mx-auto mb-2" />
-                <CardTitle className="text-lg">{t("productTeams")}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground mb-4">
-                  {t("productTeamsDesc")}
-                </p>
-                <Button asChild variant="outline" size="sm">
-                  <Link to="/revox/use-cases#product-teams">{t("learnMore")}</Link>
-                </Button>
-              </CardContent>
-            </Card>
-            
-            <Card className="text-center p-6 hover:border-primary/50 transition-colors">
-              <CardHeader>
-                <BarChart className="h-8 w-8 text-primary mx-auto mb-2" />
-                <CardTitle className="text-lg">{t("marketingTeams")}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground mb-4">
-                  {t("marketingTeamsDesc")}
-                </p>
-                <Button asChild variant="outline" size="sm">
-                  <Link to="/revox/use-cases#marketing-teams">{t("learnMore")}</Link>
-                </Button>
-              </CardContent>
-            </Card>
-            
-            <Card className="text-center p-6 hover:border-primary/50 transition-colors">
-              <CardHeader>
-                <Shield className="h-8 w-8 text-primary mx-auto mb-2" />
-                <CardTitle className="text-lg">{t("strategyLeaders")}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground mb-4">
-                  {t("strategyLeadersDesc")}
-                </p>
-                <Button asChild variant="outline" size="sm">
-                  <Link to="/revox/use-cases#strategy-leaders">{t("learnMore")}</Link>
-                </Button>
-              </CardContent>
-            </Card>
+          
+          <div className="pt-8 border-t border-border text-center text-sm text-muted-foreground">
+            <p>&copy; 2024 Revox. All rights reserved.</p>
           </div>
-        </section>
-
-        {/* Final CTA */}
-        <section className="text-center bg-gradient-to-r from-primary/10 to-blue-500/10 rounded-lg p-12">
-          <h2 className="text-3xl font-bold text-foreground mb-4">
-            {t("readyToTransform")}
-          </h2>
-          <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-            {t("readyToTransformDesc")}
-          </p>
-          <div className="flex justify-center">
-            <Button asChild size="lg" className="text-lg px-8 py-6">
-              <Link to="/contact">
-                {t("revoxStartFreeTrial")} <ArrowRight className="ml-2 h-5 w-5" />
-              </Link>
-            </Button>
-          </div>
-        </section>
+        </footer>
       </div>
     </Layout>
   );
