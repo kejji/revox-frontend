@@ -142,7 +142,7 @@ export default function RevoxSignup() {
                   placeholder="Full name"
                   value={formData.name}
                   onChange={handleInputChange("name")}
-                  className="pl-12 h-12 rounded-xl border border-border/30 bg-background focus:border-primary transition-colors"
+                  className="pl-12 h-12 rounded-xl border border-border/30 bg-background focus:border-revox-blue transition-colors"
                   required
                 />
               </div>
@@ -155,7 +155,7 @@ export default function RevoxSignup() {
                   placeholder="Work email"
                   value={formData.email}
                   onChange={handleInputChange("email")}
-                  className="pl-12 h-12 rounded-xl border border-border/30 bg-background focus:border-primary transition-colors"
+                  className="pl-12 h-12 rounded-xl border border-border/30 bg-background focus:border-revox-blue transition-colors"
                   required
                 />
               </div>
@@ -168,13 +168,13 @@ export default function RevoxSignup() {
                   placeholder="Create password"
                   value={formData.password}
                   onChange={handleInputChange("password")}
-                  className="pl-12 pr-12 h-12 rounded-xl border border-border/30 bg-background focus:border-primary transition-colors"
+                  className="pl-12 pr-12 h-12 rounded-xl border border-border/30 bg-background focus:border-revox-blue transition-colors"
                   required
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-primary transition-colors"
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-revox-blue transition-colors"
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
@@ -195,6 +195,7 @@ export default function RevoxSignup() {
 
             <Button
               type="submit"
+              variant="revox-gradient"
               className="w-full h-12 rounded-xl font-medium"
               disabled={isLoading}
             >
@@ -223,7 +224,7 @@ export default function RevoxSignup() {
                       placeholder="Enter 6-digit code"
                       value={code}
                       onChange={(e) => setCode(e.target.value)}
-                      className="h-12 rounded-xl border border-border/30 bg-background focus:border-primary transition-colors"
+                      className="h-12 rounded-xl border border-border/30 bg-background focus:border-revox-blue transition-colors"
                       maxLength={6}
                     />
                   </div>
@@ -231,6 +232,7 @@ export default function RevoxSignup() {
                     <Button 
                       onClick={handleConfirm} 
                       disabled={isLoading || !code.trim()}
+                      variant="revox-primary"
                       className="flex-1 h-10 rounded-lg"
                       type="button"
                     >
@@ -264,7 +266,7 @@ export default function RevoxSignup() {
               <Button
                 type="button"
                 variant="outline"
-                className="w-full h-12 rounded-xl border border-border/30 hover:border-primary/30 transition-all duration-200 group"
+                className="w-full h-12 rounded-xl border border-border/30 hover:border-revox-blue/30 transition-all duration-200 group"
               >
                 <div className="flex items-center justify-center gap-3">
                   <svg className="w-5 h-5" viewBox="0 0 24 24">
@@ -280,7 +282,7 @@ export default function RevoxSignup() {
               <Button
                 type="button"
                 variant="outline"
-                className="w-full h-12 rounded-xl border border-border/30 hover:border-primary/30 transition-all duration-200 group"
+                className="w-full h-12 rounded-xl border border-border/30 hover:border-revox-purple/30 transition-all duration-200 group"
               >
                 <div className="flex items-center justify-center gap-3">
                   <svg className="w-5 h-5" fill="#0A66C2" viewBox="0 0 24 24">
@@ -293,7 +295,7 @@ export default function RevoxSignup() {
               <Button
                 type="button"
                 variant="outline"
-                className="w-full h-12 rounded-xl border border-border/30 hover:border-primary/30 transition-all duration-200 group"
+                className="w-full h-12 rounded-xl border border-border/30 hover:border-revox-orange/30 transition-all duration-200 group"
               >
                 <div className="flex items-center justify-center gap-3">
                   <Github className="w-5 h-5 text-foreground" />
@@ -311,7 +313,7 @@ export default function RevoxSignup() {
             Already have an account?{" "}
             <Link 
               to="/revox/login" 
-              className="text-primary hover:text-primary/80 transition-colors"
+              className="text-revox-blue hover:text-revox-blue/80 transition-colors"
             >
               Sign in
             </Link>

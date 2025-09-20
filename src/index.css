@@ -53,6 +53,14 @@ All colors MUST be HSL.
     --sidebar-border: 220 13% 91%;
 
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* Revox Brand Colors (from logo) */
+    --revox-blue: 200 100% 43%;
+    --revox-purple: 284 48% 51%;
+    --revox-orange: 24 82% 56%;
+    --revox-dark-blue: 225 63% 37%;
+    --revox-gradient: linear-gradient(135deg, hsl(var(--revox-blue)), hsl(var(--revox-purple)));
+    --revox-gradient-secondary: linear-gradient(135deg, hsl(var(--revox-orange)), hsl(var(--revox-dark-blue)));
   }
 
   .dark {
@@ -91,6 +99,14 @@ All colors MUST be HSL.
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* Revox Brand Colors (same in dark mode) */
+    --revox-blue: 200 100% 43%;
+    --revox-purple: 284 48% 51%;
+    --revox-orange: 24 82% 56%;
+    --revox-dark-blue: 225 63% 37%;
+    --revox-gradient: linear-gradient(135deg, hsl(var(--revox-blue)), hsl(var(--revox-purple)));
+    --revox-gradient-secondary: linear-gradient(135deg, hsl(var(--revox-orange)), hsl(var(--revox-dark-blue)));
   }
 }
 

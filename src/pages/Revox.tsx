@@ -65,7 +65,7 @@ export default function Revox() {
             {t("revoxHeroDescription")}
           </p>
           <div className="flex justify-center mb-12 animate-fade-in [animation-delay:600ms] opacity-0 [animation-fill-mode:forwards]">
-            <Button asChild size="lg" className="text-lg px-8 py-6 hover-scale transition-all duration-300 hover:shadow-lg hover:shadow-primary/25">
+            <Button asChild size="lg" variant="revox-gradient" className="text-lg px-8 py-6 hover-scale transition-all duration-300">
               <Link to="/revox/auth">
                 {t("revoxStartFreeTrial")} <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
               </Link>
@@ -75,15 +75,15 @@ export default function Revox() {
           {/* Trust Indicators */}
           <div className="flex flex-wrap items-center justify-center gap-8 text-sm text-muted-foreground animate-fade-in [animation-delay:800ms] opacity-0 [animation-fill-mode:forwards]">
             <div className="flex items-center gap-2 hover:text-foreground transition-colors duration-300 cursor-default">
-              <Shield className="h-4 w-4 text-primary" />
+              <Shield className="h-4 w-4 text-revox-blue" />
               {t("revoxGdprCompliant")}
             </div>
             <div className="flex items-center gap-2 hover:text-foreground transition-colors duration-300 cursor-default">
-              <Star className="h-4 w-4 text-primary" />
+              <Star className="h-4 w-4 text-revox-purple" />
               {t("revoxEnterpriseReady")}
             </div>
             <div className="flex items-center gap-2 hover:text-foreground transition-colors duration-300 cursor-default">
-              <CheckCircle className="h-4 w-4 text-primary" />
+              <CheckCircle className="h-4 w-4 text-revox-orange" />
               {t("noSetupRequired")}
             </div>
           </div>
@@ -103,11 +103,16 @@ export default function Revox() {
             {features.map((feature, index) => (
               <Card 
                 key={index} 
-                className="text-center border-2 hover:border-primary/50 transition-all duration-300 hover-scale hover:shadow-lg hover:shadow-primary/10 bg-card/50 backdrop-blur-sm animate-fade-in opacity-0 [animation-fill-mode:forwards]"
+                className="text-center border-2 hover:border-revox-blue/50 transition-all duration-300 hover-scale hover:shadow-lg hover:shadow-revox-blue/10 bg-card/50 backdrop-blur-sm animate-fade-in opacity-0 [animation-fill-mode:forwards]"
                 style={{ animationDelay: `${1200 + index * 100}ms` }}
               >
                 <CardHeader>
-                  <feature.icon className="h-12 w-12 text-primary mx-auto mb-4 transition-transform duration-300 group-hover:scale-110" />
+                  <feature.icon className={`h-12 w-12 mx-auto mb-4 transition-transform duration-300 group-hover:scale-110 ${
+                    index === 0 ? 'text-revox-blue' : 
+                    index === 1 ? 'text-revox-purple' : 
+                    index === 2 ? 'text-revox-orange' : 
+                    'text-revox-dark-blue'
+                  }`} />
                   <CardTitle className="text-lg">{feature.title}</CardTitle>
                 </CardHeader>
                 <CardContent>

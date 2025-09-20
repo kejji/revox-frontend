@@ -18,6 +18,12 @@ const buttonVariants = cva(
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
+        // Revox brand variants
+        "revox-primary": "bg-revox-blue text-white hover:bg-revox-blue/90 shadow-lg hover:shadow-revox-blue/25",
+        "revox-secondary": "bg-revox-purple text-white hover:bg-revox-purple/90 shadow-lg hover:shadow-revox-purple/25",
+        "revox-accent": "bg-revox-orange text-white hover:bg-revox-orange/90 shadow-lg hover:shadow-revox-orange/25",
+        "revox-gradient": "bg-gradient-to-r from-revox-blue to-revox-purple text-white hover:opacity-90 shadow-lg hover:shadow-revox-blue/25",
+        "revox-outline": "border-2 border-revox-blue text-revox-blue bg-transparent hover:bg-revox-blue hover:text-white transition-all duration-200",
       },
       size: {
         default: "h-10 px-4 py-2",

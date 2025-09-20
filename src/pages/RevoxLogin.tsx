@@ -112,7 +112,7 @@ export default function RevoxLogin() {
                     placeholder="Email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="pl-12 h-12 rounded-xl border border-border/30 bg-background focus:border-primary transition-colors"
+                    className="pl-12 h-12 rounded-xl border border-border/30 bg-background focus:border-revox-blue transition-colors"
                     required
                   />
                 </div>
@@ -127,13 +127,13 @@ export default function RevoxLogin() {
                     placeholder="Password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="pl-12 pr-12 h-12 rounded-xl border border-border/30 bg-background focus:border-primary transition-colors"
+                    className="pl-12 pr-12 h-12 rounded-xl border border-border/30 bg-background focus:border-revox-blue transition-colors"
                     required
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-primary transition-colors"
+                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-revox-blue transition-colors"
                   >
                     {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                   </button>
@@ -146,6 +146,7 @@ export default function RevoxLogin() {
 
             <Button
               type="submit"
+              variant="revox-primary"
               className="w-full h-12 rounded-xl font-medium"
               disabled={isLoading}
             >
@@ -163,7 +164,7 @@ export default function RevoxLogin() {
           <div className="text-center">
             <Link 
               to="/revox/forgot-password" 
-              className="text-sm text-muted-foreground hover:text-primary transition-colors"
+              className="text-sm text-muted-foreground hover:text-revox-blue transition-colors"
             >
               Forgot password?
             </Link>
@@ -176,7 +177,7 @@ export default function RevoxLogin() {
             Don't have an account?{" "}
             <Link 
               to="/revox/signup" 
-              className="text-primary hover:text-primary/80 transition-colors"
+              className="text-revox-blue hover:text-revox-blue/80 transition-colors"
             >
               Sign up
             </Link>
