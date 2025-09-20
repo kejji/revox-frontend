@@ -8,6 +8,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useTheme } from "@/components/theme-provider";
 import revoxLogoDark from "@/assets/revox-logo-dark.svg";
 import revoxLogoLight from "@/assets/revox-logo-light.svg";
+import { FloatingAppIcons } from "@/components/animations/FloatingAppIcons";
 
 export default function Revox() {
   const { t } = useLanguage();
@@ -46,9 +47,14 @@ export default function Revox() {
 
   return (
     <Layout>
-      <div className="mx-auto max-w-7xl px-4 py-16 lg:px-8">
+      <div className="relative mx-auto max-w-7xl px-4 py-16 lg:px-8">
+        {/* Animated Background */}
+        <div className="absolute inset-0 overflow-hidden -z-10">
+          <FloatingAppIcons />
+        </div>
+        
         {/* Hero Section */}
-        <div className="text-center mb-20">
+        <div className="relative text-center mb-20 z-10">
           {/* Logo */}
           <div className="mb-8 animate-fade-in">
             <img 
