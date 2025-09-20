@@ -3,11 +3,15 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
-import { ArrowRight, Play, CheckCircle, Star, BarChart, Users, Shield, Zap } from "lucide-react";
+import { ArrowRight, CheckCircle, Star, BarChart, Users, Shield, Zap } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useTheme } from "@/components/theme-provider";
+import revoxLogoDark from "@/assets/revox-logo-dark.svg";
+import revoxLogoLight from "@/assets/revox-logo-light.svg";
 
 export default function Revox() {
   const { t } = useLanguage();
+  const { resolvedTheme } = useTheme();
   const features = [
     {
       icon: Zap,
@@ -40,26 +44,19 @@ export default function Revox() {
     "Generate actionable insights for stakeholders"
   ];
 
-  const testimonials = [
-    {
-      quote: "Revox helped us identify a critical UX issue that was mentioned in over 200 reviews but we'd completely missed.",
-      author: "Sarah Chen",
-      role: "Senior Product Manager",
-      company: "FinTech Startup"
-    },
-    {
-      quote: "The automated categorization saves our team hours every week. We can focus on solving problems instead of finding them.",
-      author: "Marcus Rodriguez",
-      role: "Chief Product Officer",
-      company: "Banking App"
-    }
-  ];
-
   return (
     <Layout>
       <div className="mx-auto max-w-7xl px-4 py-16 lg:px-8">
         {/* Hero Section */}
         <div className="text-center mb-20">
+          {/* Logo */}
+          <div className="mb-8">
+            <img 
+              src={resolvedTheme === 'dark' ? revoxLogoDark : revoxLogoLight} 
+              alt="Revox Logo" 
+              className="h-20 w-auto mx-auto"
+            />
+          </div>
           <Badge className="mb-6 bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
             {t("revoxHeroSubtitle")}
           </Badge>
@@ -70,16 +67,10 @@ export default function Revox() {
           <p className="text-xl text-muted-foreground max-w-4xl mx-auto mb-10">
             {t("revoxHeroDescription")}
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+          <div className="flex justify-center mb-12">
             <Button asChild size="lg" className="text-lg px-8 py-6">
               <Link to="/revox/auth">
                 {t("revoxStartFreeTrial")} <ArrowRight className="ml-2 h-5 w-5" />
-              </Link>
-            </Button>
-            <Button asChild variant="outline" size="lg" className="text-lg px-8 py-6">
-              <Link to="/revox/how-it-works">
-                <Play className="mr-2 h-5 w-5" />
-                {t("seeHowItWorks")}
               </Link>
             </Button>
           </div>
@@ -157,34 +148,6 @@ export default function Revox() {
           </div>
         </section>
 
-        {/* Testimonials */}
-        <section className="mb-20">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-foreground mb-4">
-              {t("trustedByTeams")}
-            </h2>
-            <p className="text-lg text-muted-foreground">
-              {t("trustedByTeamsDesc")}
-            </p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {testimonials.map((testimonial, index) => (
-              <Card key={index} className="border-2">
-                <CardContent className="p-6">
-                  <blockquote className="text-lg text-foreground mb-4">
-                    "{testimonial.quote}"
-                  </blockquote>
-                  <div>
-                    <div className="font-medium text-foreground">{testimonial.author}</div>
-                    <div className="text-sm text-muted-foreground">
-                      {testimonial.role} at {testimonial.company}
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </section>
 
         {/* Use Cases CTA */}
         <section className="mb-20">
@@ -244,14 +207,11 @@ export default function Revox() {
           <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
             {t("readyToTransformDesc")}
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="flex justify-center">
             <Button asChild size="lg" className="text-lg px-8 py-6">
               <Link to="/contact">
                 {t("revoxStartFreeTrial")} <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
-            </Button>
-            <Button asChild variant="outline" size="lg" className="text-lg px-8 py-6">
-              <Link to="/revox/pricing">{t("viewPricing")}</Link>
             </Button>
           </div>
         </section>
