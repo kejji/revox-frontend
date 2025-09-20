@@ -114,23 +114,10 @@ export default function Revox() {
           </div>
         </section>
 
-        {/* Footer */}
-        <footer className="mt-32 pt-16 border-t border-border">
-          <div className="text-center mb-8">
-            <img 
-              src={resolvedTheme === 'dark' ? revoxLogoDark : revoxLogoLight} 
-              alt="Revox Logo" 
-              className="h-8 w-auto mx-auto mb-4"
-            />
-            <p className="text-sm text-muted-foreground mb-2">
-              Created by Revogate.
-            </p>
-          </div>
-          
-          <div className="pt-8 border-t border-border text-center text-sm text-muted-foreground">
-            <p>&copy; 2025 Revogate. All rights reserved.</p>
-          </div>
-        </footer>
+        {/* Copyright */}
+        <div className="mt-32 pt-8 text-center text-sm text-muted-foreground">
+          <p>&copy; 2025 Revogate. All rights reserved.</p>
+        </div>
       </div>
     </Layout>
   );
