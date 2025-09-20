@@ -53,7 +53,7 @@ export function FloatingAppIcons() {
           x: Math.random() * 100,
           y: Math.random() * 60, // Constrain to top 60% of hero area
           size: 20 + Math.random() * 15, // 20-35px
-          speed: 0.05 + Math.random() * 0.1, // 0.05-0.15 speed (much slower)
+          speed: 0.1 + Math.random() * 0.15, // 0.1-0.25 speed (medium speed)
           direction: Math.random() * Math.PI * 2,
           opacity: 0.15 + Math.random() * 0.25, // 0.15-0.4 opacity
           type: 'floating'
@@ -69,7 +69,7 @@ export function FloatingAppIcons() {
           x: startFromLeft ? -10 : 110,
           y: Math.random() * 50 + 5, // Start from 5-55% height in hero area
           size: 16 + Math.random() * 12, // 16-28px
-          speed: 0.3 + Math.random() * 0.4, // 0.3-0.7 speed (slower)
+          speed: 0.5 + Math.random() * 0.5, // 0.5-1.0 speed (medium-fast)
           direction: startFromLeft ? 0.1 + Math.random() * 0.2 : Math.PI - 0.2 + Math.random() * 0.2, // Slight angle
           opacity: 0.2 + Math.random() * 0.3, // 0.2-0.5 opacity
           type: 'shooting',
@@ -126,7 +126,7 @@ export function FloatingAppIcons() {
       );
     };
 
-    const interval = setInterval(animateIcons, 100); // Slower interval (100ms instead of 50ms)
+    const interval = setInterval(animateIcons, 60); // Medium interval (60ms)
     return () => clearInterval(interval);
   }, []);
 
@@ -135,9 +135,7 @@ export function FloatingAppIcons() {
       {icons.map((floatingIcon) => (
         <div
           key={floatingIcon.id}
-          className={`absolute transition-all duration-100 ease-linear ${
-            floatingIcon.type === 'shooting' ? 'animate-pulse' : ''
-          }`}
+          className="absolute transition-all duration-75 ease-linear"
           style={{
             left: `${floatingIcon.x}%`,
             top: `${floatingIcon.y * 0.6}%`, // Constrain to top 60% of hero area
