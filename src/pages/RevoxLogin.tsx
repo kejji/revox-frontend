@@ -175,7 +175,7 @@ export default function RevoxLogin() {
           <p className="text-sm text-muted-foreground">
             Don't have an account?{" "}
             <Link 
-              to="/revox/auth" 
+              to="/revox/signup" 
               className="text-primary hover:text-primary/80 transition-colors"
             >
               Sign up
