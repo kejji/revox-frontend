@@ -196,7 +196,7 @@ export default function RevoxSignup() {
             <div className="space-y-3">
               <Button
                 type="submit"
-                variant="revox-primary"
+                variant="default"
                 className="w-full h-12 rounded-xl font-medium"
                 disabled={isLoading}
               >
