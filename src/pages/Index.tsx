@@ -35,15 +35,14 @@ const Index = () => {
 
             {/* Main Heading */}
             <div className="space-y-6 animate-fade-in [animation-delay:200ms] opacity-0 [animation-fill-mode:forwards] mt-12">
-              <h1 className="text-5xl md:text-7xl font-bold tracking-tight">
-                <div className="flex items-center justify-center mb-4">
+              <h1 className="text-4xl md:text-6xl font-bold tracking-tight">
+                <div className="flex items-center justify-center mb-2">
                   <img 
                     src={resolvedTheme === 'dark' ? revogateLogoDark : revogateLogoLight} 
                     alt="Revogate Logo" 
-                    className="h-20 md:h-24 w-auto" 
+                    className="h-16 md:h-20 w-auto" 
                   />
                 </div>
-                <br />
                 <span className="text-foreground">is coming soon</span>
               </h1>
               
