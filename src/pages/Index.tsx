@@ -81,37 +81,22 @@ const Index = () => {
                   </p>
                 </div>
                 
-                <div className="flex flex-wrap justify-center gap-6 text-sm text-muted-foreground">
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-primary rounded-full" />
-                    <span>10M+ Reviews Analyzed</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-blue-500 rounded-full" />
-                    <span>500+ Teams Trust Us</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-orange-500 rounded-full" />
-                    <span>Real-time Insights</span>
-                  </div>
+                <div className="flex justify-center">
+                  <Button 
+                    asChild 
+                    size="lg" 
+                    className="text-lg px-8 py-6 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 transition-all duration-300 hover-scale group"
+                  >
+                    <Link to="/revox">
+                      <Rocket className="mr-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+                      Explore Revox Now
+                      <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+                    </Link>
+                  </Button>
                 </div>
               </div>
             </div>
 
-            {/* CTA Button */}
-            <div className="animate-fade-in [animation-delay:600ms] opacity-0 [animation-fill-mode:forwards]">
-              <Button 
-                asChild 
-                size="lg" 
-                className="text-lg px-8 py-6 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 transition-all duration-300 hover-scale group"
-              >
-                <Link to="/revox">
-                  <Rocket className="mr-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-                  Explore Revox Now
-                  <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-                </Link>
-              </Button>
-            </div>
 
             {/* Footer Note */}
             <div className="animate-fade-in [animation-delay:800ms] opacity-0 [animation-fill-mode:forwards]">
