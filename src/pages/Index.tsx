@@ -30,13 +30,6 @@ const Index = () => {
         <div className="relative z-10 flex items-center justify-center min-h-screen px-4">
           <div className="max-w-4xl mx-auto text-center space-y-8">
             
-            {/* Coming Soon Badge */}
-            <div className="animate-fade-in">
-              <Badge className="bg-primary/10 text-primary border-primary/20 text-sm px-4 py-2">
-                <Clock className="w-4 h-4 mr-2" />
-                Coming Soon
-              </Badge>
-            </div>
 
             {/* Main Heading */}
             <div className="space-y-6 animate-fade-in [animation-delay:200ms] opacity-0 [animation-fill-mode:forwards]">
