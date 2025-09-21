@@ -38,7 +38,7 @@ const Index = () => {
               <h1 className="text-5xl md:text-7xl font-bold tracking-tight">
                 <div className="flex items-center justify-center mb-4">
                   <img 
-                    src={resolvedTheme === 'dark' ? revogateLogoLight : revogateLogoDark} 
+                    src={resolvedTheme === 'dark' ? revogateLogoDark : revogateLogoLight} 
                     alt="Revogate Logo" 
                     className="h-20 md:h-24 w-auto" 
                   />
