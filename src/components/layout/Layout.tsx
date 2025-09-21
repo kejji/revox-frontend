@@ -1,7 +1,6 @@
 // src/components/layout/Layout.tsx
 import * as React from "react";
 import { Header } from "./Header";
-import { Footer } from "./Footer";
 
 export type LayoutProps = {
   children: React.ReactNode;
@@ -14,7 +13,6 @@ export function Layout({ children, showTopbar = true }: LayoutProps) {
     <div className="min-h-screen flex flex-col">
       <Header showTopbar={showTopbar} />
       <main className="flex-1">{children}</main>
-      <Footer />
     </div>
   );
 }
