@@ -336,7 +336,7 @@ export const translations = {
     // Header
     home: "Accueil",
     services: "Services",
-    project: "Projet", 
+    project: "Projets", 
     revox: "Revox",
     getInTouch: "Contactez-moi",
     tryRevoxFree: "Essayer Revox gratuitement",
