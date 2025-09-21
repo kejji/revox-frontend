@@ -6,8 +6,8 @@ import { ArrowRight, Sparkles, Rocket, Clock } from "lucide-react";
 import { useTheme } from "@/components/theme-provider";
 import revoxLogoDark from "@/assets/revox-logo-dark.svg";
 import revoxLogoLight from "@/assets/revox-logo-light.svg";
-import revogateLogoDark from "@/assets/revogate-logo-dark.svg";
-import revogateLogoLight from "@/assets/revogate-logo-light.svg";
+import revogateLogoDark from "@/assets/revogate-expanded-logo-dark.svg";
+import revogateLogoLight from "@/assets/revogate-expanded-logo-light.svg";
 const Index = () => {
   const {
     resolvedTheme

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" baseProfile="tiny" version="1.2" viewBox="0 0 3800 900">
+  <!-- Generator: Adobe Illustrator 29.8.1, SVG Export Plug-In . SVG Version: 2.1.1 Build 2)  -->
+  <defs>
+    <linearGradient id="linear-gradient" x1="419.22" y1="877.58" x2="419.22" y2="50.9" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#5fbcde"/>
+      <stop offset="0" stop-color="#5cb8de"/>
+      <stop offset="0" stop-color="#55afde"/>
+      <stop offset="0" stop-color="#489fdf"/>
+      <stop offset="0" stop-color="#3688e0"/>
+      <stop offset="0" stop-color="#206be1"/>
+      <stop offset="0" stop-color="#0447e2"/>
+      <stop offset="0" stop-color="#0447e3"/>
+      <stop offset=".22" stop-color="#064ae2"/>
+      <stop offset=".4" stop-color="#0e54e2"/>
+      <stop offset=".57" stop-color="#1b65e1"/>
+      <stop offset=".73" stop-color="#2e7de0"/>
+      <stop offset=".88" stop-color="#469cdf"/>
+      <stop offset="1" stop-color="#5fbcde"/>
+      <stop offset="1" stop-color="#5fbcde"/>
+      <stop offset="1" stop-color="#5fbcde"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient1" x1="64.6" y1="53.89" x2="648.64" y2="887.99" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#12b7dd"/>
+      <stop offset=".3" stop-color="#14b4dc"/>
+      <stop offset=".46" stop-color="#1bacdb"/>
+      <stop offset=".58" stop-color="#289fd9"/>
+      <stop offset=".69" stop-color="#3b8cd7"/>
+      <stop offset=".79" stop-color="#5373d3"/>
+      <stop offset=".87" stop-color="#7054cf"/>
+      <stop offset=".96" stop-color="#9231cb"/>
+      <stop offset="1" stop-color="#a91ac8"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient2" x1="2077.46" y1="106.25" x2="2527.47" y2="748.94" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#5fbcde"/>
+      <stop offset=".24" stop-color="#60b9dd"/>
+      <stop offset=".41" stop-color="#64afdc"/>
+      <stop offset=".56" stop-color="#6ba0d9"/>
+      <stop offset=".7" stop-color="#758ad6"/>
+      <stop offset=".82" stop-color="#826ed2"/>
+      <stop offset=".94" stop-color="#924bcc"/>
+      <stop offset="1" stop-color="#9b38ca"/>
+    </linearGradient>
+  </defs>
+  <g>
+    <path d="M489.69,434.19s-176.16,0-176.16,0c0,0,260.02,382.74,260.02,382.74,24.91,2.62,149.14-1.89,176.56,0,0,0-184.87-266.56-184.87-266.56,15.3-10.79,43.9-27.94,58.25-39.32,120.87-86.22,130.95-266.56,38.83-377.64-38.24-45.55-92.87-76.53-151.32-87.06-37.11-16.31-376.54-6.52-422.67-9.08,0,0,0,826.06,0,826.06,0,0,143.93-104.13,143.93-104.13,0,0,0-587.8,0-587.8,0,0,215.89,0,215.89,0,31.38-.23,65.13,10.35,88.94,31.15,44.03,35.29,53.73,100.6,36.76,152.15-12.43,37.88-44.38,65.18-80.87,79.34" fill="url(#linear-gradient)"/>
+    <path d="M489.69,434.19s-176.16,0-176.16,0c0,0,260.02,382.74,260.02,382.74,24.91,2.62,149.14-1.89,176.56,0,0,0-184.87-266.56-184.87-266.56,15.3-10.79,43.9-27.94,58.25-39.32,120.87-86.22,130.95-266.56,38.83-377.64-38.24-45.55-92.87-76.53-151.32-87.06-37.11-16.31-376.54-6.52-422.67-9.08,0,0,0,826.06,0,826.06,0,0,143.93-104.13,143.93-104.13,0,0,0-587.8,0-587.8,0,0,215.89,0,215.89,0,31.38-.23,65.13,10.35,88.94,31.15,44.03,35.29,53.73,100.6,36.76,152.15-12.43,37.88-44.38,65.18-80.87,79.34" fill="url(#linear-gradient1)"/>
+  </g>
+  <path d="M2490.04,263.86l109.99-93.28s-25.59-27.15-25.59-27.15c-63.8-63.74-155.02-101.36-244.76-105.4-231.54-19.24-422.27,167.22-413.15,398.28-1.93,265.23,270.98,460.88,520.19,364.19,94.99-34.47,169.32-120.33,193.87-217.86,14.85-45.95,7.84-148.89,9.41-197.27,0,0-347.6,0-347.6,0v135.22c9-.02,197.45.01,205.84,0,1.08,27.19-15.38,59.66-30.43,81.46-79.14,104.04-248.53,101.63-330.7,2.23-81.1-86.75-92.04-233.24-22.24-329.82,85.75-128.02,278.59-124.51,375.18-10.61Z" fill="url(#linear-gradient2)"/>
+  <text transform="translate(750.11 704.56)" fill="#fff" font-family="HelveticaNeue-Bold, &apos;Helvetica Neue&apos;" font-size="650" font-weight="700"><tspan x="0" y="0">evo</tspan></text>
+  <text transform="translate(2705.03 713)" fill="#fff" font-family="HelveticaNeue-Bold, &apos;Helvetica Neue&apos;" font-size="650" font-weight="700"><tspan x="0" y="0">ate</tspan></text>
+</svg>
