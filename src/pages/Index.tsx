@@ -68,9 +68,9 @@ const Index = () => {
                     />
                   </div>
                   
-                  <h2 className="text-3xl md:text-4xl font-bold text-foreground leading-tight">
+                  <h2 className="text-4xl font-bold tracking-tight text-foreground sm:text-7xl mb-8 animate-fade-in [animation-delay:200ms] opacity-0 [animation-fill-mode:forwards]">
                     Turn user feedback into{" "}
-                    <span className="bg-gradient-to-r from-blue-500 to-blue-600 bg-clip-text text-transparent">
+                    <span className="text-primary bg-gradient-to-r from-primary to-blue-500 bg-clip-text text-transparent animate-pulse">
                       actionable insights
                     </span>
                   </h2>
@@ -81,14 +81,14 @@ const Index = () => {
                   </p>
                 </div>
                 
-                <div className="flex justify-center">
+                <div className="flex justify-center animate-fade-in [animation-delay:600ms] opacity-0 [animation-fill-mode:forwards]">
                   <Button 
                     asChild 
                     size="lg" 
-                    className="text-lg px-8 py-6 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 transition-all duration-300 hover-scale group"
+                    variant="revox-gradient"
+                    className="text-lg px-8 py-6 hover-scale transition-all duration-300 group"
                   >
                     <Link to="/revox">
-                      <Rocket className="mr-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
                       Explore Revox Now
                       <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
                     </Link>
