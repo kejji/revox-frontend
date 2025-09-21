@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,12 +10,12 @@ import { useTheme } from "@/components/theme-provider";
 import revoxLogoDark from "@/assets/revox-logo-dark.svg";
 import revoxLogoLight from "@/assets/revox-logo-light.svg";
 export default function Revox() {
-  const {
-    t
-  } = useLanguage();
-  const {
-    resolvedTheme
-  } = useTheme();
+  const { t } = useLanguage();
+  const { resolvedTheme } = useTheme();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   const features = [{
     icon: Zap,
     title: t("automatedCollection"),

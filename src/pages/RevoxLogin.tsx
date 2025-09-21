@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { signIn, signUp, confirmSignUp, fetchAuthSession, getCurrentUser, signOut } from "aws-amplify/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,6 +16,10 @@ export default function RevoxLogin() {
   const { resolvedTheme } = useTheme();
   const { t } = useLanguage();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   const [isSignupMode, setIsSignupMode] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
