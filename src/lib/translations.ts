@@ -3,7 +3,7 @@ export const translations = {
     // Header
     home: "Home",
     services: "Services",
-    project: "Project", 
+    project: "Projects", 
     revox: "Revox",
     getInTouch: "Get in Touch",
     tryRevoxFree: "Try Revox Free",
