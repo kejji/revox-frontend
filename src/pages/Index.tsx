@@ -56,6 +56,14 @@ const Index = () => {
                 {/* Revox Product Card */}
                 <div className="bg-card/30 border border-border/30 rounded-xl p-6 space-y-4">
                   <div className="text-center space-y-4">
+                    {/* Revox Logo */}
+                    <div className="mb-6 animate-fade-in">
+                      <img 
+                        src={resolvedTheme === 'dark' ? revoxLogoDark : revoxLogoLight} 
+                        alt="Revox Logo" 
+                        className="h-16 w-auto mx-auto hover-scale transition-transform duration-500" 
+                      />
+                    </div>
                     
                     <h3 className="text-xl font-bold tracking-tight text-foreground sm:text-2xl">
                       {t("revoxHeroTitle")}{" "}
