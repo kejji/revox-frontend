@@ -647,7 +647,7 @@ export const translations = {
     revoxHeroTitle: "Transformez les retours utilisateurs en",
     revoxHeroHighlight: "insights exploitables",
     revoxHeroDescription: "Revox extrait, analyse et surveille automatiquement les retours utilisateurs des app stores, aidant les Product Owners et équipes à prendre des décisions basées sur la data qui améliorent la satisfaction utilisateur.",
-    revoxStartFreeTrial: "Essayer Revox",
+    revoxStartFreeTrial: "Démarrer",
     seeHowItWorks: "Voir comment ça marche",
     revoxGdprCompliant: "Conforme RGPD",
     revoxEnterpriseReady: "Prêt pour l'entreprise",
