@@ -81,9 +81,7 @@ const Index = () => {
 
             {/* Footer Note */}
             <div className="animate-fade-in [animation-delay:800ms] opacity-0 [animation-fill-mode:forwards]">
-              <p className="text-sm text-muted-foreground/70">
-                Stay tuned for something amazing. Revogate is coming soon.
-              </p>
+              
             </div>
 
           </div>
