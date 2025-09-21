@@ -30,12 +30,14 @@ const Index = () => {
             {/* Main Heading */}
             <div className="space-y-6 animate-fade-in [animation-delay:200ms] opacity-0 [animation-fill-mode:forwards] mt-12">
               <h1 className="text-4xl md:text-6xl font-bold tracking-tight">
-                <div className="flex items-center justify-center mb-2">
-                  <img 
-                    src={resolvedTheme === 'dark' ? revogateLogoDark : revogateLogoLight} 
-                    alt="Revogate Logo" 
-                    className="h-24 md:h-32 w-auto" 
-                  />
+                <div className="flex items-center justify-center mb-2 relative">
+                  <div className="relative h-24 md:h-32 flex items-center justify-center">
+                    <img 
+                      src={resolvedTheme === 'dark' ? revogateLogoDark : revogateLogoLight} 
+                      alt="Revogate Logo" 
+                      className="h-full w-auto transition-opacity duration-300 ease-in-out" 
+                    />
+                  </div>
                 </div>
                 <span className="text-foreground">is coming soon</span>
               </h1>
@@ -50,7 +52,13 @@ const Index = () => {
               <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl p-8 md:p-12 space-y-8 max-w-3xl mx-auto">
                 <div className="text-center space-y-4">
                   <div className="flex items-center justify-center mb-2">
-                    <img src={resolvedTheme === 'dark' ? revoxLogoDark : revoxLogoLight} alt="Revox Logo" className="h-16 w-auto" />
+                    <div className="relative h-16 flex items-center justify-center">
+                      <img 
+                        src={resolvedTheme === 'dark' ? revoxLogoDark : revoxLogoLight} 
+                        alt="Revox Logo" 
+                        className="h-full w-auto transition-opacity duration-300 ease-in-out" 
+                      />
+                    </div>
                   </div>
                   
                   <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-4xl mb-8 animate-fade-in [animation-delay:200ms] opacity-0 [animation-fill-mode:forwards]">
