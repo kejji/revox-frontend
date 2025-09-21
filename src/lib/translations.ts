@@ -462,7 +462,7 @@ export const translations = {
     enterpriseReady: "Prêt pour l'entreprise",
     
     // Auth form labels and placeholders
-    fullName: "Nom complet",
+    fullName: "Nom et prénom",
     email: "Email",
     password: "Mot de passe",
     createPassword: "Créer un mot de passe",
