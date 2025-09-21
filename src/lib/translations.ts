@@ -400,7 +400,7 @@ export const translations = {
     
     // Home Page
     isComingSoon: "arrive bientôt",
-    homeHeroDescription: "Nous fusionnons vision produit et ingénierie pour briser les silos, repenser les règles et livrer des expériences digitales révolutionnaires.",
+    homeHeroDescription: "Nous unissons vision produit et technologie pour briser les silos et créer des expériences digitales révolutionnaires.",
     ourProducts: "Nos",
     products: "Produits",
     exploreRevoxNow: "Explorer Revox Maintenant",
