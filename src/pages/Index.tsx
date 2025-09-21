@@ -6,6 +6,8 @@ import { ArrowRight, Sparkles, Rocket, Clock } from "lucide-react";
 import { useTheme } from "@/components/theme-provider";
 import revoxLogoDark from "@/assets/revox-logo-dark.svg";
 import revoxLogoLight from "@/assets/revox-logo-light.svg";
+import revogateLogoDark from "@/assets/revogate-logo-dark.svg";
+import revogateLogoLight from "@/assets/revogate-logo-light.svg";
 const Index = () => {
   const {
     resolvedTheme
@@ -34,7 +36,13 @@ const Index = () => {
             {/* Main Heading */}
             <div className="space-y-6 animate-fade-in [animation-delay:200ms] opacity-0 [animation-fill-mode:forwards] mt-12">
               <h1 className="text-5xl md:text-7xl font-bold tracking-tight">
-                
+                <div className="flex items-center justify-center mb-4">
+                  <img 
+                    src={resolvedTheme === 'dark' ? revogateLogoLight : revogateLogoDark} 
+                    alt="Revogate Logo" 
+                    className="h-20 md:h-24 w-auto" 
+                  />
+                </div>
                 <br />
                 <span className="text-foreground">is coming soon</span>
               </h1>
