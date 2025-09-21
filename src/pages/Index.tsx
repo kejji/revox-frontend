@@ -1,141 +1,117 @@
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
-import { ArrowRight, Users, Zap, Star, CheckCircle, BarChart, Target } from "lucide-react";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { ArrowRight, Sparkles, Rocket, Clock } from "lucide-react";
+
 const Index = () => {
-  const { t } = useLanguage();
-  
-  return <Layout>
-      {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-primary/5 via-background to-blue-500/5">
-        <div className="mx-auto max-w-7xl px-4 py-20 lg:px-8 lg:py-32">
-          <div className="text-center">
-            <Badge className="mb-8 bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">{t("heroSubtitle")}</Badge>
-            <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-7xl mb-8">
-              {t("heroTitle")}
-              <span className="text-primary"> {t("heroTitleHighlight")}</span>
-            </h1>
-            <p className="text-xl text-muted-foreground max-w-4xl mx-auto mb-12">
-              {t("heroDescription")}
-            </p>
-            <div className="flex flex-col sm:flex-row gap-6 justify-center">
-              <Button asChild size="lg" className="text-lg px-8 py-6">
-                <Link to="/revox/signup">
-                  <Zap className="mr-2 h-5 w-5" />
-                  {t("tryRevoxFree")}
-                </Link>
-              </Button>
-              <Button asChild variant="outline" size="lg" className="text-lg px-8 py-6">
-                <Link to="/contact">
-                  {t("getInTouch")} <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
-              </Button>
+  return (
+    <Layout showTopbar={false}>
+      <div className="min-h-screen relative overflow-hidden">
+        {/* Animated Background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-background via-primary/5 to-accent/10">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_50%,hsl(var(--primary)/0.1),transparent_50%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,hsl(var(--accent)/0.1),transparent_50%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_40%_80%,hsl(var(--primary)/0.05),transparent_50%)]" />
+        </div>
+
+        {/* Floating Elements */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-primary/20 rounded-full animate-pulse" />
+          <div className="absolute top-3/4 right-1/4 w-1 h-1 bg-accent/30 rounded-full animate-pulse [animation-delay:1s]" />
+          <div className="absolute top-1/2 right-1/3 w-1.5 h-1.5 bg-primary/15 rounded-full animate-pulse [animation-delay:2s]" />
+        </div>
+
+        {/* Main Content */}
+        <div className="relative z-10 flex items-center justify-center min-h-screen px-4">
+          <div className="max-w-4xl mx-auto text-center space-y-8">
+            
+            {/* Coming Soon Badge */}
+            <div className="animate-fade-in">
+              <Badge className="bg-primary/10 text-primary border-primary/20 text-sm px-4 py-2">
+                <Clock className="w-4 h-4 mr-2" />
+                Coming Soon
+              </Badge>
             </div>
-          </div>
-        </div>
-      </section>
 
-      {/* Services Preview */}
-      <section className="py-20 bg-muted/30">
-        <div className="mx-auto max-w-6xl px-4 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-foreground mb-4">{t("servicesTitle")}</h2>
-            <p className="text-lg text-muted-foreground">{t("servicesDescription")}</p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[{
-            icon: Target,
-            title: t("productStrategy"),
-            desc: t("productStrategyDesc")
-          }, {
-            icon: Users,
-            title: t("userResearch"),
-            desc: t("userResearchDesc")
-          }, {
-            icon: BarChart,
-            title: t("dataDecisions"),
-            desc: t("dataDecisionsDesc")
-          }].map((service, index) => <Card key={index} className="text-center hover:border-primary/50 transition-colors">
-                <CardHeader>
-                  <service.icon className="h-12 w-12 text-primary mx-auto mb-4" />
-                  <CardTitle>{service.title}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground">{service.desc}</p>
-                </CardContent>
-              </Card>)}
-          </div>
-          <div className="text-center mt-12">
-            <Button asChild variant="outline" size="lg">
-              <Link to="/services">{t("viewAllServices")}</Link>
-            </Button>
-          </div>
-        </div>
-      </section>
-
-      {/* Revox Section */}
-      <section className="py-20">
-        <div className="mx-auto max-w-6xl px-4 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <Badge className="mb-6">{t("introducingRevox")}</Badge>
-              <h2 className="text-4xl font-bold text-foreground mb-6">
-                {t("revoxTitle")}
-              </h2>
-              <p className="text-lg text-muted-foreground mb-8">
-                {t("revoxDescription")}
+            {/* Main Heading */}
+            <div className="space-y-6 animate-fade-in [animation-delay:200ms] opacity-0 [animation-fill-mode:forwards]">
+              <h1 className="text-5xl md:text-7xl font-bold tracking-tight">
+                <span className="bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
+                  Revogate
+                </span>
+                <br />
+                <span className="bg-gradient-to-r from-primary via-primary to-accent bg-clip-text text-transparent">
+                  is coming
+                </span>
+              </h1>
+              
+              <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+                Revolutionary product consulting and development platform. 
+                Get ready for the future of digital innovation.
               </p>
-              <div className="space-y-3 mb-8">
-                {[t("revoxFeature1"), t("revoxFeature2"), t("revoxFeature3"), t("revoxFeature4")].map((feature, index) => <div key={index} className="flex items-center space-x-3">
-                    <CheckCircle className="h-5 w-5 text-primary" />
-                    <span className="text-muted-foreground">{feature}</span>
-                  </div>)}
+            </div>
+
+            {/* Revox Pitch Section */}
+            <div className="animate-fade-in [animation-delay:400ms] opacity-0 [animation-fill-mode:forwards]">
+              <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl p-8 md:p-12 space-y-6 max-w-2xl mx-auto">
+                <div className="flex items-center justify-center gap-3">
+                  <Sparkles className="w-8 h-8 text-primary" />
+                  <h2 className="text-2xl md:text-3xl font-bold text-foreground">
+                    Meanwhile, discover Revox
+                  </h2>
+                </div>
+                
+                <p className="text-lg text-muted-foreground leading-relaxed">
+                  Our flagship AI-powered app store intelligence platform is already helping 
+                  thousands of teams make data-driven decisions. Analyze reviews, track 
+                  competitors, and optimize your app strategy with advanced analytics.
+                </p>
+                
+                <div className="flex flex-wrap justify-center gap-4 text-sm text-muted-foreground">
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-primary rounded-full" />
+                    <span>10M+ Reviews Analyzed</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-accent rounded-full" />
+                    <span>500+ Teams Trust Us</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-primary rounded-full" />
+                    <span>Real-time Insights</span>
+                  </div>
+                </div>
               </div>
-              <Button asChild size="lg">
+            </div>
+
+            {/* CTA Button */}
+            <div className="animate-fade-in [animation-delay:600ms] opacity-0 [animation-fill-mode:forwards]">
+              <Button 
+                asChild 
+                size="lg" 
+                className="text-lg px-8 py-6 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 transition-all duration-300 hover-scale group"
+              >
                 <Link to="/revox">
-                  {t("exploreRevox")} <ArrowRight className="ml-2 h-5 w-5" />
+                  <Rocket className="mr-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+                  Explore Revox Now
+                  <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
                 </Link>
               </Button>
             </div>
-            <div className="bg-gradient-to-br from-primary/10 to-blue-500/10 rounded-xl p-8">
-              <div className="text-center space-y-6">
-                <Star className="h-16 w-16 text-primary mx-auto" />
-                <div>
-                  <div className="text-3xl font-bold text-primary">500+</div>
-                  <div className="text-muted-foreground">{t("teamsUsing")}</div>
-                </div>
-                <div>
-                  <div className="text-3xl font-bold text-primary">10M+</div>
-                  <div className="text-muted-foreground">{t("reviewsAnalyzed")}</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
-      {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-primary/10 to-blue-500/10">
-        <div className="mx-auto max-w-4xl px-4 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold text-foreground mb-6">
-            {t("ctaTitle")}
-          </h2>
-          <p className="text-lg text-muted-foreground mb-8">
-            {t("ctaDescription")}
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button asChild size="lg">
-              <Link to="/contact">{t("getInTouch")}</Link>
-            </Button>
-            <Button asChild variant="outline" size="lg">
-              <Link to="/blog">{t("readMyBlog")}</Link>
-            </Button>
+            {/* Footer Note */}
+            <div className="animate-fade-in [animation-delay:800ms] opacity-0 [animation-fill-mode:forwards]">
+              <p className="text-sm text-muted-foreground/70">
+                Stay tuned for something amazing. Revogate is coming soon.
+              </p>
+            </div>
+
           </div>
         </div>
-      </section>
-    </Layout>;
+      </div>
+    </Layout>
+  );
 };
+
 export default Index;
