@@ -34,9 +34,7 @@ const Index = () => {
             {/* Main Heading */}
             <div className="space-y-6 animate-fade-in [animation-delay:200ms] opacity-0 [animation-fill-mode:forwards] mt-12">
               <h1 className="text-5xl md:text-7xl font-bold tracking-tight">
-                <span className="text-foreground">
-                  Revogate
-                </span>
+                
                 <br />
                 <span className="text-foreground">is coming soon</span>
               </h1>
