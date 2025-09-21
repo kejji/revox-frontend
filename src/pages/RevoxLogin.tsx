@@ -9,6 +9,7 @@ import { Mail, Lock, Eye, EyeOff, Github, User, Linkedin } from "lucide-react";
 import revoxLogoDark from "@/assets/revox-logo-dark.svg";
 import revoxLogoLight from "@/assets/revox-logo-light.svg";
 import { useTheme } from "@/components/theme-provider";
+import { Footer } from "@/components/layout/Footer";
 
 export default function RevoxLogin() {
   const { resolvedTheme } = useTheme();
@@ -185,7 +186,8 @@ export default function RevoxLogin() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4">
+    <div className="min-h-screen flex flex-col bg-background">
+      <div className="flex-1 flex items-center justify-center p-4">
       <div className="w-full max-w-sm space-y-8">
         {/* Logo Header */}
         <div className="text-center mb-4">
@@ -401,6 +403,8 @@ export default function RevoxLogin() {
           </p>
         </div>
       </div>
+      </div>
+      <Footer />
     </div>
   );
 }
