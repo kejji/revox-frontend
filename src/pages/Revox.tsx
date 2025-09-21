@@ -30,7 +30,7 @@ export default function Revox() {
   }, {
     icon: Shield,
     title: t("revoxEnterpriseReady"),
-    description: "GDPR compliant, secure data handling designed for regulated industries"
+    description: t("revoxEnterpriseReadyDesc")
   }];
   const benefits = ["Save 10+ hours per week on manual feedback analysis", "Identify product issues 5x faster than manual processes", "Make data-driven prioritization decisions", "Improve user satisfaction through faster response times", "Scale feedback analysis beyond human capacity", "Generate actionable insights for stakeholders"];
   return <Layout>
