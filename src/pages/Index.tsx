@@ -3,13 +3,12 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 import { ArrowRight, Sparkles, Rocket, Clock } from "lucide-react";
-import { useTheme } from "next-themes";
+import { useTheme } from "@/components/theme-provider";
 import revoxLogoDark from "@/assets/revox-logo-dark.svg";
 import revoxLogoLight from "@/assets/revox-logo-light.svg";
 
 const Index = () => {
-  const { theme, systemTheme } = useTheme();
-  const currentTheme = theme === 'system' ? systemTheme : theme;
+  const { resolvedTheme } = useTheme();
   
   return (
     <Layout showTopbar={false}>
@@ -63,7 +62,7 @@ const Index = () => {
                 <div className="text-center space-y-4">
                   <div className="flex items-center justify-center mb-2">
                     <img 
-                      src={currentTheme === 'dark' ? revoxLogoDark : revoxLogoLight} 
+                      src={resolvedTheme === 'dark' ? revoxLogoDark : revoxLogoLight} 
                       alt="Revox Logo" 
                       className="h-16 w-auto"
                     />
