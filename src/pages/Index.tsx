@@ -53,7 +53,7 @@ const Index = () => {
                     <img src={resolvedTheme === 'dark' ? revoxLogoDark : revoxLogoLight} alt="Revox Logo" className="h-16 w-auto" />
                   </div>
                   
-                  <h2 className="text-4xl font-bold tracking-tight text-foreground sm:text-7xl mb-8 animate-fade-in [animation-delay:200ms] opacity-0 [animation-fill-mode:forwards]">
+                  <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-4xl mb-8 animate-fade-in [animation-delay:200ms] opacity-0 [animation-fill-mode:forwards]">
                     Turn user feedback into{" "}
                     <span className="text-primary bg-gradient-to-r from-primary to-blue-500 bg-clip-text text-transparent animate-pulse">
                       actionable insights
