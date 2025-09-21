@@ -188,11 +188,11 @@ export default function RevoxLogin() {
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <div className="w-full max-w-sm space-y-8">
         {/* Logo Header */}
-        <div className="text-center mb-6">
+        <div className="text-center mb-4">
           <img 
             src={resolvedTheme === 'dark' ? revoxLogoDark : revoxLogoLight} 
             alt="Revox Logo" 
-            className="h-24 w-auto mx-auto"
+            className="h-20 w-auto mx-auto"
           />
         </div>
 
