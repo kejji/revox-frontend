@@ -53,31 +53,39 @@ const Index = () => {
 
             {/* Revox Pitch Section */}
             <div className="animate-fade-in [animation-delay:400ms] opacity-0 [animation-fill-mode:forwards]">
-              <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl p-8 md:p-12 space-y-6 max-w-2xl mx-auto">
-                <div className="flex items-center justify-center gap-3">
-                  <Sparkles className="w-8 h-8 text-primary" />
-                  <h2 className="text-2xl md:text-3xl font-bold text-foreground">
-                    Meanwhile, discover Revox
+              <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl p-8 md:p-12 space-y-8 max-w-3xl mx-auto">
+                <div className="text-center space-y-4">
+                  <div className="flex items-center justify-center gap-3 mb-2">
+                    <div className="w-10 h-10 bg-gradient-to-r from-blue-500 via-purple-500 to-orange-500 rounded-lg flex items-center justify-center">
+                      <span className="text-white font-bold text-lg">R</span>
+                    </div>
+                    <span className="text-3xl font-bold text-foreground">Revox</span>
+                  </div>
+                  
+                  <h2 className="text-3xl md:text-4xl font-bold text-foreground leading-tight">
+                    Turn user feedback into{" "}
+                    <span className="bg-gradient-to-r from-blue-500 to-blue-600 bg-clip-text text-transparent">
+                      actionable insights
+                    </span>
                   </h2>
+                  
+                  <p className="text-lg text-muted-foreground leading-relaxed max-w-2xl mx-auto">
+                    Revox automatically extracts, analyzes, and monitors user feedback from app stores, helping 
+                    Product Owners and teams make data-driven decisions that improve user satisfaction.
+                  </p>
                 </div>
                 
-                <p className="text-lg text-muted-foreground leading-relaxed">
-                  Our flagship AI-powered app store intelligence platform is already helping 
-                  thousands of teams make data-driven decisions. Analyze reviews, track 
-                  competitors, and optimize your app strategy with advanced analytics.
-                </p>
-                
-                <div className="flex flex-wrap justify-center gap-4 text-sm text-muted-foreground">
+                <div className="flex flex-wrap justify-center gap-6 text-sm text-muted-foreground">
                   <div className="flex items-center gap-2">
                     <div className="w-2 h-2 bg-primary rounded-full" />
                     <span>10M+ Reviews Analyzed</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-accent rounded-full" />
+                    <div className="w-2 h-2 bg-blue-500 rounded-full" />
                     <span>500+ Teams Trust Us</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-primary rounded-full" />
+                    <div className="w-2 h-2 bg-orange-500 rounded-full" />
                     <span>Real-time Insights</span>
                   </div>
                 </div>
