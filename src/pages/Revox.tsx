@@ -66,7 +66,7 @@ export default function Revox() {
           </p>
           <div className="flex justify-center mb-12 animate-fade-in [animation-delay:600ms] opacity-0 [animation-fill-mode:forwards]">
             <Button asChild size="lg" variant="revox-gradient" className="text-lg px-8 py-6 hover-scale transition-all duration-300">
-              <Link to="/revox/auth">
+              <Link to="/revox/login">
                 {t("revoxStartFreeTrial")} <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
               </Link>
             </Button>

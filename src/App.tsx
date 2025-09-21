@@ -16,9 +16,7 @@ import RevoxHowItWorks from "./pages/RevoxHowItWorks";
 import RevoxUseCases from "./pages/RevoxUseCases";
 import RevoxPricing from "./pages/RevoxPricing";
 import RevoxAbout from "./pages/RevoxAbout";
-import RevoxAuth from "./pages/RevoxAuth";
 import RevoxLogin from "./pages/RevoxLogin";
-import RevoxSignup from "./pages/RevoxSignup";
 import RevoxDashboard from "./pages/RevoxDashboard";
 import RevoxAddApp from "./pages/RevoxAddApp";
 import RevoxAppDetails from "./pages/RevoxAppDetails";
@@ -48,9 +46,7 @@ const App = () => (
           <Route path="/revox/use-cases" element={<RevoxUseCases />} />
           <Route path="/revox/pricing" element={<RevoxPricing />} />
           <Route path="/revox/about" element={<RevoxAbout />} />
-          <Route path="/revox/auth" element={<RevoxAuth />} />
           <Route path="/revox/login" element={<RevoxLogin />} />
-          <Route path="/revox/signup" element={<RevoxSignup />} />
           <Route path="/revox/dashboard" element={<RevoxDashboard />} />
           <Route path="/revox/add" element={<RevoxAddApp />} />
           <Route path="/revox/apps/:platform/:bundleId" element={<RevoxAppDetails />} />
