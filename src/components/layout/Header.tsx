@@ -9,6 +9,7 @@ import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { LanguageToggle } from "@/components/ui/language-toggle";
 import { AlertsInterface } from "@/components/app-details/AlertsInterface";
 import { useLanguage } from "@/contexts/LanguageContext";
+import revogateLogo from "@/assets/revogate-logo.svg";
 
 export type HeaderProps = {
   /** Affiche/masque la topbar globale. Par défaut: true */
@@ -46,7 +47,7 @@ export function Header({ showTopbar = true }: HeaderProps) {
         <div className="flex lg:flex-1">
           <Link to="/" className="-m-1.5 p-1.5">
             <img 
-              src="/src/assets/revogate-logo.svg" 
+              src={revogateLogo} 
               alt="Revogate"
               className="h-8 w-auto"
             />
