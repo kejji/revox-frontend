@@ -32,7 +32,7 @@ const Index = () => {
             
 
             {/* Main Heading */}
-            <div className="space-y-6 animate-fade-in [animation-delay:200ms] opacity-0 [animation-fill-mode:forwards]">
+            <div className="space-y-6 animate-fade-in [animation-delay:200ms] opacity-0 [animation-fill-mode:forwards] mt-12">
               <h1 className="text-5xl md:text-7xl font-bold tracking-tight">
                 <span className="bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
                   Revogate
