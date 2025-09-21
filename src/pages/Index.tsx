@@ -32,11 +32,7 @@ const Index = () => {
               <h1 className="text-4xl md:text-6xl font-bold tracking-tight">
                 <div className="flex items-center justify-center mb-2 relative">
                   <div className="relative h-24 md:h-32 flex items-center justify-center">
-                    <img 
-                      src={resolvedTheme === 'dark' ? revogateLogoDark : revogateLogoLight} 
-                      alt="Revogate Logo" 
-                      className="h-full w-auto transition-opacity duration-300 ease-in-out" 
-                    />
+                    <img src={resolvedTheme === 'dark' ? revogateLogoDark : revogateLogoLight} alt="Revogate Logo" className="h-full w-auto transition-opacity duration-300 ease-in-out" />
                   </div>
                 </div>
                 <span className="text-foreground">is coming soon</span>
@@ -54,15 +50,13 @@ const Index = () => {
                   <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
                     Our <span className="text-primary">Products</span>
                   </h2>
-                  <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                    Discover the revolutionary digital solutions we're building to transform your workflow
-                  </p>
+                  
                 </div>
 
                 {/* Revox Product Card */}
                 <div className="bg-card/30 border border-border/30 rounded-xl p-6 space-y-4">
                   <div className="text-center space-y-4">
-                    <Badge variant="secondary" className="mb-2">Featured Product</Badge>
+                    
                     <h3 className="text-xl font-bold tracking-tight text-foreground sm:text-2xl">
                       Turn user feedback into{" "}
                       <span className="text-primary bg-gradient-to-r from-primary to-blue-500 bg-clip-text text-transparent">
