@@ -6,7 +6,7 @@ export const translations = {
     project: "Projects", 
     revox: "Revox",
     getInTouch: "Get in Touch",
-    tryRevoxFree: "Try Revox Free",
+    tryRevoxFree: "Try Revox",
     
     // Hero Section
     heroSubtitle: "Product Owner & SaaS Creator",
