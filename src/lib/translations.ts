@@ -390,7 +390,7 @@ export const translations = {
     project: "Projets", 
     revox: "Revox",
     getInTouch: "Contactez-nous",
-    tryRevoxFree: "Essayer Revox gratuitement",
+    tryRevoxFree: "Essayer Revox",
     
     // Hero Section
     heroSubtitle: "Product Owner & Créateur SaaS",
