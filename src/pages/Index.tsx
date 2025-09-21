@@ -6,12 +6,11 @@ import { ArrowRight, Sparkles, Rocket, Clock } from "lucide-react";
 import { useTheme } from "@/components/theme-provider";
 import revoxLogoDark from "@/assets/revox-logo-dark.svg";
 import revoxLogoLight from "@/assets/revox-logo-light.svg";
-
 const Index = () => {
-  const { resolvedTheme } = useTheme();
-  
-  return (
-    <Layout showTopbar={false}>
+  const {
+    resolvedTheme
+  } = useTheme();
+  return <Layout showTopbar={false}>
       <div className="min-h-screen relative overflow-hidden">
         {/* Animated Background */}
         <div className="absolute inset-0 bg-gradient-to-br from-background via-primary/2 to-accent/3">
@@ -46,9 +45,7 @@ const Index = () => {
                   Revogate
                 </span>
                 <br />
-                <span className="bg-gradient-to-r from-primary via-primary to-accent bg-clip-text text-transparent">
-                  is coming
-                </span>
+                <span className="bg-gradient-to-r from-primary via-primary to-accent bg-clip-text text-transparent">is coming soon</span>
               </h1>
               
               <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
@@ -61,11 +58,7 @@ const Index = () => {
               <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl p-8 md:p-12 space-y-8 max-w-3xl mx-auto">
                 <div className="text-center space-y-4">
                   <div className="flex items-center justify-center mb-2">
-                    <img 
-                      src={resolvedTheme === 'dark' ? revoxLogoDark : revoxLogoLight} 
-                      alt="Revox Logo" 
-                      className="h-16 w-auto"
-                    />
+                    <img src={resolvedTheme === 'dark' ? revoxLogoDark : revoxLogoLight} alt="Revox Logo" className="h-16 w-auto" />
                   </div>
                   
                   <h2 className="text-4xl font-bold tracking-tight text-foreground sm:text-7xl mb-8 animate-fade-in [animation-delay:200ms] opacity-0 [animation-fill-mode:forwards]">
@@ -82,12 +75,7 @@ const Index = () => {
                 </div>
                 
                 <div className="flex justify-center animate-fade-in [animation-delay:600ms] opacity-0 [animation-fill-mode:forwards]">
-                  <Button 
-                    asChild 
-                    size="lg" 
-                    variant="revox-gradient"
-                    className="text-lg px-8 py-6 hover-scale transition-all duration-300 group"
-                  >
+                  <Button asChild size="lg" variant="revox-gradient" className="text-lg px-8 py-6 hover-scale transition-all duration-300 group">
                     <Link to="/revox">
                       Explore Revox Now
                       <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
@@ -108,8 +96,6 @@ const Index = () => {
           </div>
         </div>
       </div>
-    </Layout>
-  );
+    </Layout>;
 };
-
 export default Index;
