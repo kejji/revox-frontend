@@ -3,8 +3,14 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 import { ArrowRight, Sparkles, Rocket, Clock } from "lucide-react";
+import { useTheme } from "next-themes";
+import revoxLogoDark from "@/assets/revox-logo-dark.svg";
+import revoxLogoLight from "@/assets/revox-logo-light.svg";
 
 const Index = () => {
+  const { theme, systemTheme } = useTheme();
+  const currentTheme = theme === 'system' ? systemTheme : theme;
+  
   return (
     <Layout showTopbar={false}>
       <div className="min-h-screen relative overflow-hidden">
@@ -55,11 +61,12 @@ const Index = () => {
             <div className="animate-fade-in [animation-delay:400ms] opacity-0 [animation-fill-mode:forwards]">
               <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl p-8 md:p-12 space-y-8 max-w-3xl mx-auto">
                 <div className="text-center space-y-4">
-                  <div className="flex items-center justify-center gap-3 mb-2">
-                    <div className="w-10 h-10 bg-gradient-to-r from-blue-500 via-purple-500 to-orange-500 rounded-lg flex items-center justify-center">
-                      <span className="text-white font-bold text-lg">R</span>
-                    </div>
-                    <span className="text-3xl font-bold text-foreground">Revox</span>
+                  <div className="flex items-center justify-center mb-2">
+                    <img 
+                      src={currentTheme === 'dark' ? revoxLogoDark : revoxLogoLight} 
+                      alt="Revox Logo" 
+                      className="h-16 w-auto"
+                    />
                   </div>
                   
                   <h2 className="text-3xl md:text-4xl font-bold text-foreground leading-tight">
