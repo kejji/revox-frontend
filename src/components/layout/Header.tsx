@@ -45,7 +45,11 @@ export function Header({ showTopbar = true }: HeaderProps) {
         {/* Logo */}
         <div className="flex lg:flex-1">
           <Link to="/" className="-m-1.5 p-1.5">
-            <span className="text-xl font-bold text-foreground">Revogate</span>
+            <img 
+              src="/src/assets/revogate-logo.svg" 
+              alt="Revogate"
+              className="h-8 w-auto"
+            />
           </Link>
         </div>
 
