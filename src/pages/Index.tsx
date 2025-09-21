@@ -43,7 +43,7 @@ const Index = () => {
                     className="h-16 md:h-20 w-auto" 
                   />
                 </div>
-                <span className="text-foreground">is coming soon</span>
+                <span className="text-foreground text-xl md:text-2xl">is coming soon</span>
               </h1>
               
               <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
