@@ -28,8 +28,6 @@ export function Header({ showTopbar = true }: HeaderProps) {
 
   const navigation = [
     { name: t("home"), href: "/" },
-    { name: t("services"), href: "/services" },
-    { name: t("project"), href: "/project" },
     { name: t("revox"), href: "/revox", isProduct: true },
   ];
 
@@ -88,7 +86,7 @@ export function Header({ showTopbar = true }: HeaderProps) {
                   <Button asChild className="w-full">
                     <Link to="/contact">{t("getInTouch")}</Link>
                   </Button>
-                  <Button asChild variant="outline" className="w-full">
+                  <Button asChild variant="revox-gradient" size="lg" className="w-full">
                     <Link to="/revox/login">Try Revox</Link>
                   </Button>
                 </div>
@@ -125,7 +123,7 @@ export function Header({ showTopbar = true }: HeaderProps) {
           <Button asChild variant="outline">
             <Link to="/contact">{t("getInTouch")}</Link>
           </Button>
-          <Button asChild>
+          <Button asChild variant="revox-gradient" size="lg">
             <Link to="/revox/login">Try Revox</Link>
           </Button>
         </div>
