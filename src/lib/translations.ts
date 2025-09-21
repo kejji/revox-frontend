@@ -5,7 +5,7 @@ export const translations = {
     services: "Services",
     project: "Projects", 
     revox: "Revox",
-  getInTouch: "Get in Touch",
+    getInTouch: "Get in Touch",
     tryRevoxFree: "Try Revox Free",
     
     // Hero Section
@@ -389,7 +389,7 @@ export const translations = {
     services: "Services",
     project: "Projets", 
     revox: "Revox",
-    getInTouch: "Contact",
+    getInTouch: "Contactez-moi",
     tryRevoxFree: "Essayer Revox gratuitement",
     
     // Hero Section
