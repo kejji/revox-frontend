@@ -10,9 +10,11 @@ import revoxLogoDark from "@/assets/revox-logo-dark.svg";
 import revoxLogoLight from "@/assets/revox-logo-light.svg";
 import { useTheme } from "@/components/theme-provider";
 import { Footer } from "@/components/layout/Footer";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function RevoxLogin() {
   const { resolvedTheme } = useTheme();
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const [isSignupMode, setIsSignupMode] = useState(false);
   const [formData, setFormData] = useState({
@@ -79,7 +81,7 @@ export default function RevoxLogin() {
       // unconfirmed account → redirect to auth for confirmation
       if ((res as any)?.nextStep?.signInStep === "CONFIRM_SIGN_UP") {
         setNeedsConfirm(true);
-        setSuccessMsg("Please confirm your account with the code sent to your email.");
+        setSuccessMsg(t("confirmAccountEmail"));
         return;
       }
 
@@ -88,15 +90,15 @@ export default function RevoxLogin() {
     } catch (err: any) {
       if (err?.name === "UserNotConfirmedException") {
         setNeedsConfirm(true);
-        setSuccessMsg("Please confirm your account with the code sent to your email.");
+        setSuccessMsg(t("confirmAccountEmail"));
       } else if (err?.name === "NotAuthorizedException") {
-        setErrorMsg("Incorrect email or password.");
+        setErrorMsg(t("incorrectCredentials"));
       } else if (err?.name === "UserNotFoundException") {
-        setErrorMsg("No user found with this email.");
+        setErrorMsg(t("userNotFound"));
       } else if (err?.name === "UserAlreadyAuthenticatedException") {
         navigate("/revox/dashboard");
       } else {
-        setErrorMsg(err?.message || "Sign in failed.");
+        setErrorMsg(err?.message || t("signInFailed"));
       }
     } finally {
       setIsLoading(false);
@@ -128,15 +130,15 @@ export default function RevoxLogin() {
       });
       
       setNeedsConfirm(true);
-      setSuccessMsg("We sent you a confirmation code by email.");
+      setSuccessMsg(t("confirmationCodeSent"));
     } catch (err: any) {
       if (err?.name === "UsernameExistsException") {
         setNeedsConfirm(true);
-        setErrorMsg("An account already exists with this email. If not confirmed yet, enter the code below.");
+        setErrorMsg(t("accountExistsConfirm"));
       } else if (err?.name === "InvalidPasswordException") {
-        setErrorMsg("Password does not meet the policy requirements.");
+        setErrorMsg(t("passwordPolicyError"));
       } else {
-        setErrorMsg(err?.message || "Signup failed. Please try again.");
+        setErrorMsg(err?.message || t("signUpFailed"));
       }
     } finally {
       setIsLoading(false);
@@ -155,7 +157,7 @@ export default function RevoxLogin() {
         confirmationCode: code 
       });
       
-      setSuccessMsg("Account confirmed! Signing you in...");
+      setSuccessMsg(t("accountConfirmed"));
       
       // Step 2: Automatically sign in to get valid token
       await signIn({ 
@@ -163,7 +165,7 @@ export default function RevoxLogin() {
         password: formData.password 
       });
       
-      setSuccessMsg("Successfully signed in! Redirecting to dashboard...");
+      setSuccessMsg(t("signInSuccess"));
       
       // Step 3: Redirect to dashboard with valid token
       setTimeout(() => {
@@ -172,13 +174,13 @@ export default function RevoxLogin() {
       
     } catch (err: any) {
       if (err?.name === "CodeMismatchException") {
-        setErrorMsg("Invalid code. Please try again.");
+        setErrorMsg(t("invalidCode"));
       } else if (err?.name === "ExpiredCodeException") {
-        setErrorMsg("Code expired. Please request a new code.");
+        setErrorMsg(t("expiredCode"));
       } else if (err?.name === "NotAuthorizedException") {
-        setErrorMsg("Invalid credentials. Please check your password.");
+        setErrorMsg(t("invalidCredentials"));
       } else {
-        setErrorMsg(err?.message || "Confirmation or sign-in failed.");
+        setErrorMsg(err?.message || t("confirmationFailed"));
       }
     } finally {
       setIsLoading(false);
@@ -209,7 +211,7 @@ export default function RevoxLogin() {
                   <Input
                     id="name"
                     type="text"
-                    placeholder="Full name"
+                    placeholder={t("fullName")}
                     value={formData.name}
                     onChange={handleInputChange("name")}
                     className="pl-12 h-12 rounded-xl border border-border/30 bg-background focus:border-revox-blue transition-colors"
@@ -224,7 +226,7 @@ export default function RevoxLogin() {
                   <Input
                     id="email"
                     type="email"
-                    placeholder="Email"
+                    placeholder={t("email")}
                     value={formData.email}
                     onChange={handleInputChange("email")}
                     className="pl-12 h-12 rounded-xl border border-border/30 bg-background focus:border-revox-blue transition-colors"
@@ -239,7 +241,7 @@ export default function RevoxLogin() {
                   <Input
                     id="password"
                     type={showPassword ? "text" : "password"}
-                    placeholder={isSignupMode ? "Create password" : "Password"}
+                    placeholder={isSignupMode ? t("createPassword") : t("password")}
                     value={formData.password}
                     onChange={handleInputChange("password")}
                     className="pl-12 pr-12 h-12 rounded-xl border border-border/30 bg-background focus:border-revox-blue transition-colors"
@@ -266,12 +268,12 @@ export default function RevoxLogin() {
               disabled={isLoading}
             >
               {isLoading ? (
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
-                  {isSignupMode ? "Creating account..." : "Signing in..."}
-                </div>
-              ) : (
-                isSignupMode ? "Create account" : "Sign In"
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
+                    {isSignupMode ? t("creatingAccount") : t("signingIn")}
+                  </div>
+                ) : (
+                  isSignupMode ? t("createAccount") : t("signIn")
               )}
             </Button>
 
@@ -281,7 +283,7 @@ export default function RevoxLogin() {
                   to="/revox/forgot-password" 
                   className="text-sm text-muted-foreground hover:text-revox-blue transition-colors"
                 >
-                  Forgot password?
+                  {t("forgotPassword")}
                 </Link>
               </div>
             )}
@@ -293,13 +295,13 @@ export default function RevoxLogin() {
               <span className="w-full border-t border-border/30" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-background px-3 text-muted-foreground">Or</span>
+              <span className="bg-background px-3 text-muted-foreground">{t("or")}</span>
             </div>
           </div>
 
           {/* Social Sign-in Section */}
           <div className="space-y-4">
-            <h3 className="text-sm font-medium text-center text-muted-foreground">Continue with</h3>
+            <h3 className="text-sm font-medium text-center text-muted-foreground">{t("continueWith")}</h3>
             <div className="grid grid-cols-3 gap-3">
               <Button
                 type="button"
@@ -345,16 +347,16 @@ export default function RevoxLogin() {
         {/* Confirmation Code Section */}
         {needsConfirm && (
           <div className="mt-6 p-4 border border-border/30 rounded-xl bg-muted/30 animate-fade-in">
-            <h4 className="font-medium mb-2 text-foreground">Confirm your email</h4>
+            <h4 className="font-medium mb-2 text-foreground">{t("confirmEmail")}</h4>
             <p className="text-sm text-muted-foreground mb-4">
-              Enter the 6-digit code sent to <strong>{formData.email}</strong>
+              {t("enterCodeSentTo")} <strong>{formData.email}</strong>
             </p>
             <div className="space-y-3">
               <div className="relative">
                 <Input
                   id="confirmCode"
                   type="text"
-                  placeholder="Enter 6-digit code"
+                  placeholder={t("enterCode")}
                   value={code}
                   onChange={(e) => setCode(e.target.value)}
                   className="h-12 rounded-xl border border-border/30 bg-background focus:border-revox-blue transition-colors"
@@ -369,7 +371,7 @@ export default function RevoxLogin() {
                   className="flex-1 h-10 rounded-lg"
                   type="button"
                 >
-                  {isLoading ? "Confirming..." : "Confirm"}
+                  {isLoading ? t("confirming") : t("confirm")}
                 </Button>
                 <Button 
                   variant="outline" 
@@ -377,7 +379,7 @@ export default function RevoxLogin() {
                   className="flex-1 h-10 rounded-lg"
                   type="button"
                 >
-                  Edit email
+                  {t("editEmail")}
                 </Button>
               </div>
             </div>
@@ -387,7 +389,7 @@ export default function RevoxLogin() {
         {/* Footer Links */}
         <div className="text-center space-y-4 animate-fade-in delay-300">
           <p className="text-sm text-muted-foreground">
-            {isSignupMode ? "Already have an account?" : "Don't have an account?"}{" "}
+            {isSignupMode ? t("alreadyHaveAccount") : t("dontHaveAccount")}{" "}
             <button 
               onClick={() => {
                 setIsSignupMode(!isSignupMode);
@@ -398,7 +400,7 @@ export default function RevoxLogin() {
               }}
               className="text-revox-blue hover:text-revox-blue/80 transition-colors"
             >
-              {isSignupMode ? "Sign in" : "Sign up"}
+              {isSignupMode ? t("signIn") : t("signUp")}
             </button>
           </p>
         </div>

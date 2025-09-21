@@ -69,6 +69,49 @@ export const translations = {
     signUpTerms: "By signing up, you agree to our Terms of Service and Privacy Policy.",
     gdprCompliant: "GDPR Compliant",
     enterpriseReady: "Enterprise Ready",
+    
+    // Auth form labels and placeholders
+    fullName: "Full name",
+    email: "Email",
+    password: "Password",
+    createPassword: "Create password",
+    or: "Or",
+    continueWith: "Continue with",
+    
+    // Auth form buttons and actions
+    creatingAccount: "Creating account...",
+    signingIn: "Signing in...",
+    
+    // Confirmation flow
+    confirmEmail: "Confirm your email",
+    enterCodeSentTo: "Enter the 6-digit code sent to",
+    enterCode: "Enter 6-digit code",
+    confirming: "Confirming...",
+    confirm: "Confirm",
+    editEmail: "Edit email",
+    
+    // Auth status messages
+    confirmAccountEmail: "Please confirm your account with the code sent to your email.",
+    confirmationCodeSent: "We sent you a confirmation code by email.",
+    accountConfirmed: "Account confirmed! Signing you in...",
+    signInSuccess: "Successfully signed in! Redirecting to dashboard...",
+    
+    // Auth error messages
+    incorrectCredentials: "Incorrect email or password.",
+    userNotFound: "No user found with this email.",
+    signInFailed: "Sign in failed.",
+    accountExistsConfirm: "An account already exists with this email. If not confirmed yet, enter the code below.",
+    passwordPolicyError: "Password does not meet the policy requirements.",
+    signUpFailed: "Signup failed. Please try again.",
+    invalidCode: "Invalid code. Please try again.",
+    expiredCode: "Code expired. Please request a new code.",
+    invalidCredentials: "Invalid credentials. Please check your password.",
+    confirmationFailed: "Confirmation or sign-in failed.",
+    
+    // Auth footer messages
+    alreadyHaveAccount: "Already have an account?",
+    dontHaveAccount: "Don't have an account?",
+    
     whyRevox: "Why choose Revox?",
     savesTime: "Saves 10+ hours per week",
     savesTimeDesc: "Automated analysis eliminates manual review reading",
@@ -402,6 +445,49 @@ export const translations = {
     signUpTerms: "En vous inscrivant, vous acceptez nos Conditions d'utilisation et notre Politique de confidentialité.",
     gdprCompliant: "Conforme RGPD",
     enterpriseReady: "Prêt pour l'entreprise",
+    
+    // Auth form labels and placeholders
+    fullName: "Nom complet",
+    email: "Email",
+    password: "Mot de passe",
+    createPassword: "Créer un mot de passe",
+    or: "Ou",
+    continueWith: "Continuer avec",
+    
+    // Auth form buttons and actions
+    creatingAccount: "Création du compte...",
+    signingIn: "Connexion...",
+    
+    // Confirmation flow
+    confirmEmail: "Confirmez votre email",
+    enterCodeSentTo: "Entrez le code à 6 chiffres envoyé à",
+    enterCode: "Entrez le code à 6 chiffres",
+    confirming: "Confirmation...",
+    confirm: "Confirmer",
+    editEmail: "Modifier l'email",
+    
+    // Auth status messages
+    confirmAccountEmail: "Veuillez confirmer votre compte avec le code envoyé à votre email.",
+    confirmationCodeSent: "Nous vous avons envoyé un code de confirmation par email.",
+    accountConfirmed: "Compte confirmé ! Connexion en cours...",
+    signInSuccess: "Connexion réussie ! Redirection vers le tableau de bord...",
+    
+    // Auth error messages
+    incorrectCredentials: "Email ou mot de passe incorrect.",
+    userNotFound: "Aucun utilisateur trouvé avec cet email.",
+    signInFailed: "Échec de la connexion.",
+    accountExistsConfirm: "Un compte existe déjà avec cet email. S'il n'est pas encore confirmé, entrez le code ci-dessous.",
+    passwordPolicyError: "Le mot de passe ne respecte pas les exigences de politique.",
+    signUpFailed: "Échec de l'inscription. Veuillez réessayer.",
+    invalidCode: "Code invalide. Veuillez réessayer.",
+    expiredCode: "Code expiré. Veuillez demander un nouveau code.",
+    invalidCredentials: "Identifiants invalides. Veuillez vérifier votre mot de passe.",
+    confirmationFailed: "Échec de la confirmation ou de la connexion.",
+    
+    // Auth footer messages
+    alreadyHaveAccount: "Vous avez déjà un compte ?",
+    dontHaveAccount: "Vous n'avez pas de compte ?",
+    
     whyRevox: "Pourquoi choisir Revox ?",
     savesTime: "Économise 10+ heures par semaine",
     savesTimeDesc: "L'analyse automatisée élimine la lecture manuelle des avis",
