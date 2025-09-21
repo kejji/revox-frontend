@@ -213,7 +213,7 @@ export const translations = {
     revoxHeroTitle: "Turn user feedback into",
     revoxHeroHighlight: "actionable insights",
     revoxHeroDescription: "Revox automatically extracts, analyzes, and monitors user feedback from app stores, helping Product Owners and teams make data-driven decisions that improve user satisfaction.",
-    revoxStartFreeTrial: "Start Free Trial",
+    revoxStartFreeTrial: "Get started",
     seeHowItWorks: "See How It Works",
     revoxGdprCompliant: "GDPR Compliant",
     revoxEnterpriseReady: "Enterprise Ready",
