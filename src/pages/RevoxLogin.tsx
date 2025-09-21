@@ -185,19 +185,19 @@ export default function RevoxLogin() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-6">
-      <div className="w-full max-w-sm space-y-12">
+    <div className="min-h-screen flex items-center justify-center bg-background p-4">
+      <div className="w-full max-w-sm space-y-8">
         {/* Logo Header */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-6">
           <img 
             src={resolvedTheme === 'dark' ? revoxLogoDark : revoxLogoLight} 
             alt="Revox Logo" 
-            className="h-32 w-auto mx-auto"
+            className="h-24 w-auto mx-auto"
           />
         </div>
 
         {/* Login Form */}
-        <div className="animate-fade-in delay-200 space-y-8">
+        <div className="animate-fade-in delay-200 space-y-6">
           
           {/* Social Sign-in Buttons */}
           <div className="space-y-3">
@@ -245,16 +245,16 @@ export default function RevoxLogin() {
           </div>
 
           {/* Divider */}
-          <div className="relative py-4">
+          <div className="relative py-2">
             <div className="absolute inset-0 flex items-center">
               <span className="w-full border-t border-border/30" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-background px-4 text-muted-foreground">Or</span>
+              <span className="bg-background px-3 text-muted-foreground">Or</span>
             </div>
           </div>
 
-          <form onSubmit={isSignupMode ? handleSignupSubmit : handleLoginSubmit} className="space-y-6">
+          <form onSubmit={isSignupMode ? handleSignupSubmit : handleLoginSubmit} className="space-y-5">
             <div className="space-y-4">
               {isSignupMode && (
                 <div className="relative">
@@ -384,7 +384,7 @@ export default function RevoxLogin() {
         )}
 
         {/* Footer Links */}
-        <div className="text-center space-y-6 animate-fade-in delay-300">
+        <div className="text-center space-y-4 animate-fade-in delay-300">
           <p className="text-sm text-muted-foreground">
             {isSignupMode ? "Already have an account?" : "Don't have an account?"}{" "}
             <button 
