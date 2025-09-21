@@ -146,7 +146,7 @@ export default function RevoxLogin() {
 
             <Button
               type="submit"
-              variant="revox-primary"
+              variant="revox-gradient"
               className="w-full h-12 rounded-xl font-medium"
               disabled={isLoading}
             >
