@@ -4,14 +4,14 @@ import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 import { ArrowRight, Sparkles, Rocket, Clock } from "lucide-react";
 import { useTheme } from "@/components/theme-provider";
+import { useLanguage } from "@/contexts/LanguageContext";
 import revoxLogoDark from "@/assets/revox-logo-dark.svg";
 import revoxLogoLight from "@/assets/revox-logo-light.svg";
 import revogateLogoDark from "@/assets/revogate-expanded-logo-dark.svg";
 import revogateLogoLight from "@/assets/revogate-expanded-logo-light.svg";
 const Index = () => {
-  const {
-    resolvedTheme
-  } = useTheme();
+  const { resolvedTheme } = useTheme();
+  const { t } = useLanguage();
   return <Layout>
       <div className="min-h-screen relative overflow-hidden">
         {/* Animated Background */}
@@ -35,11 +35,11 @@ const Index = () => {
                     <img src={resolvedTheme === 'dark' ? revogateLogoDark : revogateLogoLight} alt="Revogate Logo" className="h-full w-auto transition-opacity duration-300 ease-in-out" />
                   </div>
                 </div>
-                <span className="text-foreground">is coming soon</span>
+                <span className="text-foreground">{t("isComingSoon")}</span>
               </h1>
               
               <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-                We fuse product vision and engineering to break silos, rethink rules and deliver revolutionary digital experiences.
+                {t("homeHeroDescription")}
               </p>
             </div>
 
@@ -48,7 +48,7 @@ const Index = () => {
               <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl p-6 md:p-8 space-y-8 max-w-5xl mx-auto">
                 <div className="text-center space-y-4 mb-8">
                   <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-                    Our <span className="text-primary">Products</span>
+                    {t("ourProducts")} <span className="text-primary">{t("products")}</span>
                   </h2>
                   
                 </div>
@@ -58,22 +58,21 @@ const Index = () => {
                   <div className="text-center space-y-4">
                     
                     <h3 className="text-xl font-bold tracking-tight text-foreground sm:text-2xl">
-                      Turn user feedback into{" "}
+                      {t("revoxHeroTitle")}{" "}
                       <span className="text-primary bg-gradient-to-r from-primary to-blue-500 bg-clip-text text-transparent">
-                        actionable insights
+                        {t("revoxHeroHighlight")}
                       </span>
                     </h3>
                     
                     <p className="text-muted-foreground leading-relaxed max-w-2xl mx-auto">
-                      Revox automatically extracts, analyzes, and monitors user feedback from app stores, helping 
-                      Product Owners and teams make data-driven decisions that improve user satisfaction.
+                      {t("revoxHeroDescription")}
                     </p>
                   </div>
                   
                   <div className="flex justify-center animate-fade-in [animation-delay:600ms] opacity-0 [animation-fill-mode:forwards]">
                     <Button asChild size="lg" variant="revox-gradient" className="text-lg px-8 py-6 hover-scale transition-all duration-300 group">
                       <Link to="/revox">
-                        Explore Revox Now
+                        {t("exploreRevoxNow")}
                         <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
                       </Link>
                     </Button>

@@ -14,6 +14,13 @@ export const translations = {
     heroTitleHighlight: "user insights",
     heroDescription: "I'm a freelance Product Owner who helps teams build user-centric digital experiences. I also created Revox, a SaaS platform that transforms app store feedback into actionable product insights.",
     
+    // Home Page
+    isComingSoon: "is coming soon",
+    homeHeroDescription: "We fuse product vision and engineering to break silos, rethink rules and deliver revolutionary digital experiences.",
+    ourProducts: "Our",
+    products: "Products",
+    exploreRevoxNow: "Explore Revox Now",
+    
     // Services Section
     servicesTitle: "Product Ownership Services",
     servicesDescription: "Comprehensive support for your product development journey",
@@ -390,6 +397,13 @@ export const translations = {
     heroTitle: "Créer de meilleurs produits grâce aux",
     heroTitleHighlight: "insights utilisateurs",
     heroDescription: "Je suis un Product Owner freelance qui aide les équipes à créer des expériences digitales centrées sur l'utilisateur. J'ai aussi créé Revox, une plateforme SaaS qui transforme les commentaires des app stores en insights produit exploitables.",
+    
+    // Home Page
+    isComingSoon: "arrive bientôt",
+    homeHeroDescription: "Nous fusionnons vision produit et ingénierie pour briser les silos, repenser les règles et livrer des expériences digitales révolutionnaires.",
+    ourProducts: "Nos",
+    products: "Produits",
+    exploreRevoxNow: "Explorer Revox Maintenant",
     
     // Services Section
     servicesTitle: "Services de Product Ownership",
