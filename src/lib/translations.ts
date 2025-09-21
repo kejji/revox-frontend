@@ -403,7 +403,7 @@ export const translations = {
     homeHeroDescription: "Nous unissons vision produit et technologie pour briser les silos et créer des expériences digitales révolutionnaires.",
     ourProducts: "Nos",
     products: "Produits",
-    exploreRevoxNow: "Explorer Revox Maintenant",
+    exploreRevoxNow: "Explorer Revox",
     
     // Services Section
     servicesTitle: "Services de Product Ownership",
