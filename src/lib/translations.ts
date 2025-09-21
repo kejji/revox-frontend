@@ -389,7 +389,7 @@ export const translations = {
     services: "Services",
     project: "Projets", 
     revox: "Revox",
-    getInTouch: "Contactez-moi",
+    getInTouch: "Contactez-nous",
     tryRevoxFree: "Essayer Revox gratuitement",
     
     // Hero Section
