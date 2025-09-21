@@ -47,8 +47,7 @@ const Index = () => {
               </h1>
               
               <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-                Revolutionary product consulting and development platform. 
-                Get ready for the future of digital innovation.
+                We fuse product vision and engineering to break silos, rethink rules and deliver revolutionary digital experiences.
               </p>
             </div>
 
