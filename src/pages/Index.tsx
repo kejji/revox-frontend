@@ -10,7 +10,7 @@ const Index = () => {
   const {
     resolvedTheme
   } = useTheme();
-  return <Layout showTopbar={false}>
+  return <Layout>
       <div className="min-h-screen relative overflow-hidden">
         {/* Animated Background */}
         <div className="absolute inset-0 bg-gradient-to-br from-background via-primary/2 to-accent/3">
