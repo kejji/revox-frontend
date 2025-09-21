@@ -34,11 +34,11 @@ const Index = () => {
             {/* Main Heading */}
             <div className="space-y-6 animate-fade-in [animation-delay:200ms] opacity-0 [animation-fill-mode:forwards] mt-12">
               <h1 className="text-5xl md:text-7xl font-bold tracking-tight">
-                <span className="bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
+                <span className="text-foreground">
                   Revogate
                 </span>
                 <br />
-                <span className="bg-gradient-to-r from-primary via-primary to-accent bg-clip-text text-transparent">is coming soon</span>
+                <span className="text-foreground">is coming soon</span>
               </h1>
               
               <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
