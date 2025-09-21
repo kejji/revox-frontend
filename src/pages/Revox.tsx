@@ -8,54 +8,38 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useTheme } from "@/components/theme-provider";
 import revoxLogoDark from "@/assets/revox-logo-dark.svg";
 import revoxLogoLight from "@/assets/revox-logo-light.svg";
-
 export default function Revox() {
-  const { t } = useLanguage();
-  const { resolvedTheme } = useTheme();
-  const features = [
-    {
-      icon: Zap,
-      title: t("automatedCollection"),
-      description: t("automatedCollectionDesc")
-    },
-    {
-      icon: BarChart,
-      title: t("smartAnalysis"),
-      description: t("smartAnalysisDesc")
-    },
-    {
-      icon: Users,
-      title: t("revoxTeamCollaboration"),
-      description: t("revoxTeamCollaborationDesc")
-    },
-    {
-      icon: Shield,
-      title: t("revoxEnterpriseReady"),
-      description: "GDPR compliant, secure data handling designed for regulated industries"
-    }
-  ];
-
-  const benefits = [
-    "Save 10+ hours per week on manual feedback analysis",
-    "Identify product issues 5x faster than manual processes",
-    "Make data-driven prioritization decisions",
-    "Improve user satisfaction through faster response times",
-    "Scale feedback analysis beyond human capacity",
-    "Generate actionable insights for stakeholders"
-  ];
-
-  return (
-    <Layout>
+  const {
+    t
+  } = useLanguage();
+  const {
+    resolvedTheme
+  } = useTheme();
+  const features = [{
+    icon: Zap,
+    title: t("automatedCollection"),
+    description: t("automatedCollectionDesc")
+  }, {
+    icon: BarChart,
+    title: t("smartAnalysis"),
+    description: t("smartAnalysisDesc")
+  }, {
+    icon: Users,
+    title: t("revoxTeamCollaboration"),
+    description: t("revoxTeamCollaborationDesc")
+  }, {
+    icon: Shield,
+    title: t("revoxEnterpriseReady"),
+    description: "GDPR compliant, secure data handling designed for regulated industries"
+  }];
+  const benefits = ["Save 10+ hours per week on manual feedback analysis", "Identify product issues 5x faster than manual processes", "Make data-driven prioritization decisions", "Improve user satisfaction through faster response times", "Scale feedback analysis beyond human capacity", "Generate actionable insights for stakeholders"];
+  return <Layout>
       <div className="mx-auto max-w-7xl px-4 py-16 lg:px-8">
         {/* Hero Section */}
         <div className="text-center mb-20">
           {/* Logo */}
           <div className="mb-8 animate-fade-in">
-            <img 
-              src={resolvedTheme === 'dark' ? revoxLogoDark : revoxLogoLight} 
-              alt="Revox Logo" 
-              className="h-32 w-auto mx-auto hover-scale transition-transform duration-500"
-            />
+            <img src={resolvedTheme === 'dark' ? revoxLogoDark : revoxLogoLight} alt="Revox Logo" className="h-32 w-auto mx-auto hover-scale transition-transform duration-500" />
           </div>
           <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-7xl mb-8 animate-fade-in [animation-delay:200ms] opacity-0 [animation-fill-mode:forwards]">
             {t("revoxHeroTitle")}
@@ -100,34 +84,22 @@ export default function Revox() {
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {features.map((feature, index) => (
-              <Card 
-                key={index} 
-                className="text-center border-2 hover:border-revox-blue/50 transition-all duration-300 hover-scale hover:shadow-lg hover:shadow-revox-blue/10 bg-card/50 backdrop-blur-sm animate-fade-in opacity-0 [animation-fill-mode:forwards]"
-                style={{ animationDelay: `${1200 + index * 100}ms` }}
-              >
+            {features.map((feature, index) => <Card key={index} className="text-center border-2 hover:border-revox-blue/50 transition-all duration-300 hover-scale hover:shadow-lg hover:shadow-revox-blue/10 bg-card/50 backdrop-blur-sm animate-fade-in opacity-0 [animation-fill-mode:forwards]" style={{
+            animationDelay: `${1200 + index * 100}ms`
+          }}>
                 <CardHeader>
-                  <feature.icon className={`h-12 w-12 mx-auto mb-4 transition-transform duration-300 group-hover:scale-110 ${
-                    index === 0 ? 'text-revox-blue' : 
-                    index === 1 ? 'text-revox-purple' : 
-                    index === 2 ? 'text-revox-orange' : 
-                    'text-revox-dark-blue'
-                  }`} />
+                  <feature.icon className={`h-12 w-12 mx-auto mb-4 transition-transform duration-300 group-hover:scale-110 ${index === 0 ? 'text-revox-blue' : index === 1 ? 'text-revox-purple' : index === 2 ? 'text-revox-orange' : 'text-revox-dark-blue'}`} />
                   <CardTitle className="text-lg">{feature.title}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-muted-foreground">{feature.description}</p>
                 </CardContent>
-              </Card>
-            ))}
+              </Card>)}
           </div>
         </section>
 
         {/* Copyright */}
-        <div className="mt-32 pt-8 text-center text-sm text-muted-foreground animate-fade-in [animation-delay:1800ms] opacity-0 [animation-fill-mode:forwards]">
-          <p className="hover:text-foreground transition-colors duration-300">&copy; 2025 Revogate. All rights reserved.</p>
-        </div>
+        
       </div>
-    </Layout>
-  );
+    </Layout>;
 }
