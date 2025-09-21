@@ -59,7 +59,7 @@ export function Header({ showTopbar = true }: HeaderProps) {
               </Button>
             </SheetTrigger>
             <SheetContent side="right" className="w-[300px] sm:w-[400px]">
-              <nav className="flex flex-col gap-4">
+              <nav className="flex flex-col gap-4 pt-6">
                 {navigation.map((item) => (
                   <Link
                     key={item.name}
