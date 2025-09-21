@@ -9,10 +9,10 @@ const Index = () => {
     <Layout showTopbar={false}>
       <div className="min-h-screen relative overflow-hidden">
         {/* Animated Background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-background via-primary/5 to-accent/10">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_50%,hsl(var(--primary)/0.1),transparent_50%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,hsl(var(--accent)/0.1),transparent_50%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_40%_80%,hsl(var(--primary)/0.05),transparent_50%)]" />
+        <div className="absolute inset-0 bg-gradient-to-br from-background via-primary/2 to-accent/3">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_50%,hsl(var(--primary)/0.03),transparent_70%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,hsl(var(--accent)/0.04),transparent_70%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_40%_80%,hsl(var(--primary)/0.02),transparent_70%)]" />
         </div>
 
         {/* Floating Elements */}
