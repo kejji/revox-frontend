@@ -54,38 +54,10 @@ export function AppDetailsTable({
 
       {/* Mobile Layout */}
       <div className="md:hidden space-y-4">
-        {allApps.map((app, index) => <div key={`mobile-${app.platform}-${app.bundleId}-${index}`} className="space-y-4 p-4 bg-muted/30 rounded-lg border">
-            {/* Platform Badge */}
-            <div className="flex items-center gap-2">
-              <Badge variant="secondary" className="text-xs font-medium">
-                {app.platform.toUpperCase()}
-              </Badge>
-            </div>
-            
-            {/* Version + Rating Row */}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-1">
-                <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium">{t('version')}</p>
-                <div className="flex items-center gap-2">
-                  {app.platform === "ios" ? <Apple className="h-4 w-4 text-muted-foreground" /> : <Bot className="h-4 w-4 text-muted-foreground" />}
-                  <span className="font-semibold text-base">{app.version}</span>
-                </div>
-              </div>
-              <div className="space-y-1">
-                <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium">{t('rating')}</p>
-                <div className="flex items-center gap-2">
-                  <div className="flex">{renderStars(Math.floor(app.rating))}</div>
-                  <span className="font-semibold text-base">{app.rating}</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Latest Update Section */}
-            <div className="space-y-3">
-              <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium">{t('latestUpdate')}</p>
-              <ResponsiveText text={app.latestUpdate} maxLines={1} onShowMore={handleShowMore} className="bg-background/50 p-3 rounded-md border" />
-            </div>
-          </div>)}
+        {allApps.map((app, index) => (
+          <div key={`mobile-${app.platform}-${app.bundleId}-${index}`}>
+          </div>
+        ))}
       </div>
 
       <UpdateDialog open={showUpdateDialog} onOpenChange={setShowUpdateDialog} updateText={selectedUpdateText} appName={currentApp.name} />
