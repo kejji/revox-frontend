@@ -659,7 +659,7 @@ export default function RevoxAppDetails() {
                         
                         {/* Unlink Button - positioned between ratings */}
                         {linkedApps.length > 0 && (
-                          <div className="flex justify-center sm:justify-start">
+                          <div className="flex justify-start">
                             <Button
                               size="sm"
                               variant="ghost"
