@@ -639,122 +639,118 @@ export default function RevoxAppDetails() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <h2 className="text-xl sm:text-2xl font-bold line-clamp-2 break-words">{displayApp.name}</h2>
-                      <div>
-                      </div>
-                    </div>
-                  </div>
-
-                   <div className="flex-1 space-y-3 sm:space-y-4 w-full">
-                       
+                      <div className="space-y-3 sm:space-y-4 w-full">
                         {/* Subtle Rating Display */}
-                      <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mb-3 text-sm">
-                        {/* Current App Rating */}
-                        <div className="flex items-center gap-2">
-                          <Badge variant="secondary" className="text-xs px-2 py-0.5 flex items-center gap-1">
-                            {platform === "ios" ? <Apple className="h-3 w-3" /> : <Bot className="h-3 w-3" />}
-                            {platform === "ios" ? "iOS" : "Android"}
-                          </Badge>
-                          <div className="flex items-center gap-1">
-                            {renderStars(Math.floor(displayApp.rating))}
-                            <span className="text-muted-foreground ml-1">{displayApp.rating.toFixed(1)}</span>
-                          </div>
-                        </div>
-                        
-                        {/* Unlink Button - positioned between ratings */}
-                        {linkedApps.length > 0 && (
-                          <div className="flex justify-start">
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              onClick={handleUnlinkApp}
-                              disabled={linkingLoading}
-                              className="h-6 px-2 text-xs gap-1 text-muted-foreground hover:text-destructive border border-dashed border-muted-foreground/30 hover:border-destructive/50"
-                              title="Unlink these apps"
-                            >
-                              <Unlink className="h-3 w-3" />
-                              <span>Unlink</span>
-                            </Button>
-                          </div>
-                        )}
-                        
-                        {/* Linked App Rating */}
-                        {linkedApps.length > 0 && linkedApps[0].rating && (
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mb-3 text-sm">
+                          {/* Current App Rating */}
                           <div className="flex items-center gap-2">
                             <Badge variant="secondary" className="text-xs px-2 py-0.5 flex items-center gap-1">
-                              {linkedApps[0].platform === "ios" ? <Apple className="h-3 w-3" /> : <Bot className="h-3 w-3" />}
-                              {linkedApps[0].platform === "ios" ? "iOS" : "Android"}
+                              {platform === "ios" ? <Apple className="h-3 w-3" /> : <Bot className="h-3 w-3" />}
+                              {platform === "ios" ? "iOS" : "Android"}
                             </Badge>
                             <div className="flex items-center gap-1">
-                              {renderStars(Math.floor(linkedApps[0].rating))}
-                              <span className="text-muted-foreground ml-1">{linkedApps[0].rating.toFixed(1)}</span>
+                              {renderStars(Math.floor(displayApp.rating))}
+                              <span className="text-muted-foreground ml-1">{displayApp.rating.toFixed(1)}</span>
                             </div>
                           </div>
-                        )}
-                      </div>
-
-                       <div className="flex items-center gap-2 flex-wrap">
-                        {linkedApps.length === 0 && availableApps.length > 0 && (
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
+                          
+                          {/* Unlink Button - positioned between ratings */}
+                          {linkedApps.length > 0 && (
+                            <div className="flex justify-start">
                               <Button
                                 size="sm"
                                 variant="ghost"
+                                onClick={handleUnlinkApp}
                                 disabled={linkingLoading}
-                                className="h-6 px-2 text-xs gap-1 text-muted-foreground hover:text-primary"
-                                title="Link with counterpart app"
+                                className="h-6 px-2 text-xs gap-1 text-muted-foreground hover:text-destructive border border-dashed border-muted-foreground/30 hover:border-destructive/50"
+                                title="Unlink these apps"
                               >
-                                <Plus className="h-3 w-3" />
-                                <span className="hidden sm:inline">Link</span>
+                                <Unlink className="h-3 w-3" />
+                                <span>Unlink</span>
                               </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent>
-                              {availableApps.map((availableApp) => (
-                                <DropdownMenuItem
-                                  key={`${availableApp.platform}-${availableApp.bundleId}`}
-                                  onClick={() => handleLinkApp(availableApp)}
-                                  className="gap-2"
-                                >
-                                  {availableApp.platform === "ios" ? (
-                                    <Apple className="h-4 w-4" />
-                                  ) : (
-                                    <Bot className="h-4 w-4" />
-                                  )}
-                                  {availableApp.name || availableApp.bundleId}
-                                </DropdownMenuItem>
-                              ))}
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        )}
-                        <AlertsInterface />
-                      </div>
+                            </div>
+                          )}
+                          
+                          {/* Linked App Rating */}
+                          {linkedApps.length > 0 && linkedApps[0].rating && (
+                            <div className="flex items-center gap-2">
+                              <Badge variant="secondary" className="text-xs px-2 py-0.5 flex items-center gap-1">
+                                {linkedApps[0].platform === "ios" ? <Apple className="h-3 w-3" /> : <Bot className="h-3 w-3" />}
+                                {linkedApps[0].platform === "ios" ? "iOS" : "Android"}
+                              </Badge>
+                              <div className="flex items-center gap-1">
+                                {renderStars(Math.floor(linkedApps[0].rating))}
+                                <span className="text-muted-foreground ml-1">{linkedApps[0].rating.toFixed(1)}</span>
+                              </div>
+                            </div>
+                          )}
+                        </div>
 
-                      <AppDetailsTable
-                        currentApp={{
-                          name: displayApp.name,
-                          version: displayApp.version,
-                          rating: displayApp.rating,
-                          latestUpdate: displayApp.latestUpdate,
-                          lastUpdatedAt: displayApp.lastUpdatedAt,
-                          platform: platform!,
-                          bundleId: bundleId!
-                        }}
-                        linkedApps={linkedApps.map(linkedApp => ({
-                          name: linkedApp.name || linkedApp.bundleId,
-                          version: (linkedApp as any).version || "Unknown",
-                          rating: linkedApp.rating || 4.1,
-                          latestUpdate: (linkedApp as any).releaseNotes ||
-                            `Enhanced ${linkedApp.platform === 'ios' ? 'iOS' : 'Android'} compatibility and bug fixes for better performance.`,
-                          lastUpdatedAt: (linkedApp as any).lastUpdatedAt,
-                          platform: linkedApp.platform,
-                          bundleId: linkedApp.bundleId
-                        }))}
-                        className="mt-4"
-                      />
+                        <div className="flex items-center gap-2 flex-wrap">
+                          {linkedApps.length === 0 && availableApps.length > 0 && (
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button
+                                  size="sm"
+                                  variant="ghost"
+                                  disabled={linkingLoading}
+                                  className="h-6 px-2 text-xs gap-1 text-muted-foreground hover:text-primary"
+                                  title="Link with counterpart app"
+                                >
+                                  <Plus className="h-3 w-3" />
+                                  <span className="hidden sm:inline">Link</span>
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent>
+                                {availableApps.map((availableApp) => (
+                                  <DropdownMenuItem
+                                    key={`${availableApp.platform}-${availableApp.bundleId}`}
+                                    onClick={() => handleLinkApp(availableApp)}
+                                    className="gap-2"
+                                  >
+                                    {availableApp.platform === "ios" ? (
+                                      <Apple className="h-4 w-4" />
+                                    ) : (
+                                      <Bot className="h-4 w-4" />
+                                    )}
+                                    {availableApp.name || availableApp.bundleId}
+                                  </DropdownMenuItem>
+                                ))}
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          )}
+                          <AlertsInterface />
+                        </div>
+
+                        <AppDetailsTable
+                          currentApp={{
+                            name: displayApp.name,
+                            version: displayApp.version,
+                            rating: displayApp.rating,
+                            latestUpdate: displayApp.latestUpdate,
+                            lastUpdatedAt: displayApp.lastUpdatedAt,
+                            platform: platform!,
+                            bundleId: bundleId!
+                          }}
+                          linkedApps={linkedApps.map(linkedApp => ({
+                            name: linkedApp.name || linkedApp.bundleId,
+                            version: (linkedApp as any).version || "Unknown",
+                            rating: linkedApp.rating || 4.1,
+                            latestUpdate: (linkedApp as any).releaseNotes ||
+                              `Enhanced ${linkedApp.platform === 'ios' ? 'iOS' : 'Android'} compatibility and bug fixes for better performance.`,
+                            lastUpdatedAt: (linkedApp as any).lastUpdatedAt,
+                            platform: linkedApp.platform,
+                            bundleId: linkedApp.bundleId
+                          }))}
+                          className="mt-4"
+                        />
+                      </div>
                     </div>
                   </div>
-                ) : null}
-              </div>
-            </section>
+                </div>
+              ) : null}
+            </div>
+          </section>
 
           {/* Theme Analysis */}
           {platform && bundleId && (
