@@ -642,28 +642,16 @@ export default function RevoxAppDetails() {
                       <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-2">
                         <h2 className="text-xl sm:text-2xl font-bold">{displayApp.name}</h2>
                         <div className="flex items-center gap-2 flex-wrap">
-                          <AlertsInterface />
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Ratings Section */}
-                    <div className="space-y-4">
-                      {/* Current App Rating */}
-                      <div className="flex flex-col sm:flex-row sm:items-center gap-3 p-4 bg-muted/30 rounded-lg border">
-                        <div className="flex items-center gap-2">
                           <Badge variant="outline" className="text-xs flex items-center">
                             {platform === "ios" ? <Apple className="h-3 w-3 mr-1" /> : <Bot className="h-3 w-3 mr-1" />}
                             {platform?.toUpperCase()}
                           </Badge>
-                        </div>
-                        <div className="flex items-center gap-3">
-                          <div className="flex items-center gap-1">
-                            {renderStars(displayApp.rating)}
-                          </div>
-                          <span className="text-lg font-semibold">{displayApp.rating}</span>
-                        </div>
-                        <div className="flex items-center gap-2 ml-auto">
+                          {linkedApps.map((linkedApp) => (
+                            <Badge key={linkedApp.bundleId} variant="outline" className="text-xs flex items-center">
+                              {linkedApp.platform === "ios" ? <Apple className="h-3 w-3 mr-1" /> : <Bot className="h-3 w-3 mr-1" />}
+                              {linkedApp.platform.toUpperCase()}
+                            </Badge>
+                          ))}
                           {linkedApps.length > 0 && (
                             <Button
                               size="sm"
@@ -709,26 +697,9 @@ export default function RevoxAppDetails() {
                               </DropdownMenuContent>
                             </DropdownMenu>
                           )}
+                          <AlertsInterface />
                         </div>
                       </div>
-
-                      {/* Linked Apps Ratings */}
-                      {linkedApps.map((linkedApp) => (
-                        <div key={linkedApp.bundleId} className="flex flex-col sm:flex-row sm:items-center gap-3 p-4 bg-muted/20 rounded-lg border">
-                          <div className="flex items-center gap-2">
-                            <Badge variant="outline" className="text-xs flex items-center">
-                              {linkedApp.platform === "ios" ? <Apple className="h-3 w-3 mr-1" /> : <Bot className="h-3 w-3 mr-1" />}
-                              {linkedApp.platform.toUpperCase()}
-                            </Badge>
-                          </div>
-                          <div className="flex items-center gap-3">
-                            <div className="flex items-center gap-1">
-                              {renderStars(linkedApp.rating || 4.1)}
-                            </div>
-                            <span className="text-lg font-semibold">{linkedApp.rating || 4.1}</span>
-                          </div>
-                        </div>
-                      ))}
                     </div>
 
                     <AppDetailsTable

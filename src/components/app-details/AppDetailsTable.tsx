@@ -45,29 +45,7 @@ export function AppDetailsTable({
         
 
         {/* App Rows */}
-        {allApps.map((app, index) => (
-          <div key={`desktop-${app.platform}-${app.bundleId}-${index}`} className="grid grid-cols-4 gap-6 py-4 border-b border-border/30 last:border-b-0">
-            <div className="flex items-center gap-3">
-              {app.platform === "ios" ? <Apple className="h-5 w-5 text-muted-foreground" /> : <Bot className="h-5 w-5 text-muted-foreground" />}
-              <Badge variant="secondary" className="text-xs font-medium">
-                {app.platform.toUpperCase()}
-              </Badge>
-            </div>
-            <div className="font-semibold">{app.version}</div>
-            <div className="flex items-center gap-2">
-              <div className="flex">{renderStars(Math.floor(app.rating))}</div>
-              <span className="font-semibold">{app.rating}</span>
-            </div>
-            <div>
-              <ResponsiveText 
-                text={app.latestUpdate} 
-                maxLines={1} 
-                onShowMore={handleShowMore}
-                className="text-sm"
-              />
-            </div>
-          </div>
-        ))}
+        {allApps.map((app, index) => {})}
       </div>
 
       {/* Mobile Layout */}
