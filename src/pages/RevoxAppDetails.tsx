@@ -164,6 +164,10 @@ export default function RevoxAppDetails() {
   const [showUpdateDialog, setShowUpdateDialog] = useState(false);
   const [selectedTheme, setSelectedTheme] = useState<{ theme: ThemeAxis; type: "positive" | "negative" } | null>(null);
 
+  // Header title visibility state
+  const [isMainTitleVisible, setIsMainTitleVisible] = useState(true);
+  const mainTitleRef = useRef<HTMLHeadingElement>(null);
+
   // Use real app data from API when available
   const displayApp = currentApp ? {
     name: currentApp.name || bundleId || 'Unknown App',
@@ -381,6 +385,29 @@ export default function RevoxAppDetails() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [linkedApps.length, urlAppPks.join(',')]); 
 
+  // IntersectionObserver to track main title visibility
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsMainTitleVisible(entry.isIntersecting);
+      },
+      {
+        threshold: 0.1,
+        rootMargin: '-80px 0px 0px 0px' // Account for header height
+      }
+    );
+
+    if (mainTitleRef.current) {
+      observer.observe(mainTitleRef.current);
+    }
+
+    return () => {
+      if (mainTitleRef.current) {
+        observer.unobserve(mainTitleRef.current);
+      }
+    };
+  }, [displayApp?.name]);
+
   // Handle extraction loader completion
   const handleExtractionComplete = () => {
     setShowExtractionLoader(false);
@@ -544,7 +571,7 @@ export default function RevoxAppDetails() {
               {appDataLoading ? (
                 <Skeleton className="h-6 w-32" />
               ) : (
-                <h1 className="font-semibold text-lg truncate min-w-0 max-w-[200px] sm:max-w-none">{displayApp?.name || bundleId}</h1>
+                <h1 className={`font-semibold text-lg truncate min-w-0 max-w-[200px] sm:max-w-none transition-opacity duration-200 ${isMainTitleVisible ? 'opacity-0' : 'opacity-100'}`}>{displayApp?.name || bundleId}</h1>
               )}
             </div>
             <div className="flex items-center gap-2 flex-shrink-0">
@@ -637,8 +664,8 @@ export default function RevoxAppDetails() {
                         )}
                       </div>
                     </div>
-                    <div className="flex-1 min-w-0">
-                       <h2 className="text-xl sm:text-2xl font-bold line-clamp-2 break-words mb-4">{displayApp.name}</h2>
+                     <div className="flex-1 min-w-0">
+                        <h2 ref={mainTitleRef} className="text-xl sm:text-2xl font-bold line-clamp-2 break-words mb-4">{displayApp.name}</h2>
                        <div className="space-y-3 sm:space-y-4 w-full">
                          {/* Subtle Rating Display */}
                          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mb-3 text-sm mt-2">
