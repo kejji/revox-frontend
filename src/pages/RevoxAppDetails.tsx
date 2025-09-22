@@ -163,7 +163,6 @@ export default function RevoxAppDetails() {
   // Dialog state
   const [showUpdateDialog, setShowUpdateDialog] = useState(false);
   const [selectedTheme, setSelectedTheme] = useState<{ theme: ThemeAxis; type: "positive" | "negative" } | null>(null);
-  const [versionDialogOpen, setVersionDialogOpen] = useState(false);
 
   // Use real app data from API when available
   const displayApp = currentApp ? {
@@ -703,128 +702,28 @@ export default function RevoxAppDetails() {
                       </div>
                     </div>
 
-                    <div className="space-y-4 mt-6">
-                      {/* Current Platform */}
-                      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 rounded-lg border bg-card/50">
-                        <div className="flex items-center gap-4">
-                          <Badge variant="secondary" className="flex items-center gap-1">
-                            {platform === "ios" ? <Apple className="h-3 w-3" /> : <Bot className="h-3 w-3" />}
-                            {platform?.toUpperCase()}
-                          </Badge>
-                          <div className="flex items-center gap-2">
-                            <div className="flex items-center">
-                              {[...Array(5)].map((_, i) => (
-                                <Star
-                                  key={i}
-                                  className={cn(
-                                    "h-4 w-4",
-                                    i < Math.floor(displayApp.rating || 0)
-                                      ? "text-yellow-400 fill-yellow-400"
-                                      : "text-muted-foreground"
-                                  )}
-                                />
-                              ))}
-                            </div>
-                            <span className="text-sm font-medium">
-                              {displayApp.rating?.toFixed(1) || "N/A"}
-                            </span>
-                          </div>
-                        </div>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => setVersionDialogOpen(true)}
-                          className="bg-gradient-to-r from-primary/10 to-primary/5 border-primary/20 hover:from-primary/20 hover:to-primary/10 transition-all duration-200"
-                        >
-                          <span className="text-primary font-medium">Latest version</span>
-                        </Button>
-                      </div>
-
-                      {/* Linked Platforms */}
-                      {linkedApps.map((linkedApp) => (
-                        <div key={linkedApp.bundleId} className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 rounded-lg border bg-card/30">
-                          <div className="flex items-center gap-4">
-                            <Badge variant="secondary" className="flex items-center gap-1">
-                              {linkedApp.platform === "ios" ? <Apple className="h-3 w-3" /> : <Bot className="h-3 w-3" />}
-                              {linkedApp.platform.toUpperCase()}
-                            </Badge>
-                            <div className="flex items-center gap-2">
-                              <div className="flex items-center">
-                                {[...Array(5)].map((_, i) => (
-                                  <Star
-                                    key={i}
-                                    className={cn(
-                                      "h-4 w-4",
-                                      i < Math.floor(linkedApp.rating || 0)
-                                        ? "text-yellow-400 fill-yellow-400"
-                                        : "text-muted-foreground"
-                                    )}
-                                  />
-                                ))}
-                              </div>
-                              <span className="text-sm font-medium">
-                                {linkedApp.rating?.toFixed(1) || "N/A"}
-                              </span>
-                            </div>
-                          </div>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => {
-                              // Create a temporary app object for the linked app
-                              const linkedDisplayApp = {
-                                name: linkedApp.name || linkedApp.bundleId,
-                                version: (linkedApp as any).version || "Unknown",
-                                latestUpdate: (linkedApp as any).releaseNotes || `Enhanced ${linkedApp.platform === 'ios' ? 'iOS' : 'Android'} compatibility and bug fixes for better performance.`
-                              };
-                              // Store the linked app data temporarily and open dialog
-                              (window as any).tempLinkedApp = linkedDisplayApp;
-                              setVersionDialogOpen(true);
-                            }}
-                            className="bg-gradient-to-r from-secondary/10 to-secondary/5 border-secondary/20 hover:from-secondary/20 hover:to-secondary/10 transition-all duration-200"
-                          >
-                            <span className="text-secondary-foreground font-medium">Latest version</span>
-                          </Button>
-                        </div>
-                      ))}
-                    </div>
-
-                    {/* Version details dialog */}
-                    <Dialog open={versionDialogOpen} onOpenChange={(open) => {
-                      setVersionDialogOpen(open);
-                      if (!open) {
-                        // Clear temporary linked app data when dialog closes
-                        (window as any).tempLinkedApp = null;
-                      }
-                    }}>
-                      <DialogContent className="max-w-md sm:max-w-lg">
-                        <DialogHeader>
-                          <DialogTitle>Latest Version Details</DialogTitle>
-                        </DialogHeader>
-                        <div className="space-y-4">
-                          <div>
-                            <h4 className="font-medium text-sm text-muted-foreground mb-1">
-                              Version
-                            </h4>
-                            <p className="text-lg font-semibold">
-                              {((window as any).tempLinkedApp?.version || displayApp.version) || "Unknown"}
-                            </p>
-                          </div>
-                          {((window as any).tempLinkedApp?.latestUpdate || displayApp.latestUpdate) && (
-                            <div>
-                              <h4 className="font-medium text-sm text-muted-foreground mb-2">
-                                What's New
-                              </h4>
-                              <div className="bg-muted/50 rounded-lg p-3">
-                                <p className="text-sm leading-relaxed whitespace-pre-wrap">
-                                  {(window as any).tempLinkedApp?.latestUpdate || displayApp.latestUpdate}
-                                </p>
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      </DialogContent>
-                    </Dialog>
+                    <AppDetailsTable
+                      currentApp={{
+                        name: displayApp.name,
+                        version: displayApp.version,
+                        rating: displayApp.rating,
+                        latestUpdate: displayApp.latestUpdate,
+                        lastUpdatedAt: displayApp.lastUpdatedAt,
+                        platform: platform!,
+                        bundleId: bundleId!
+                      }}
+                      linkedApps={linkedApps.map(linkedApp => ({
+                        name: linkedApp.name || linkedApp.bundleId,
+                        version: (linkedApp as any).version || "Unknown",
+                        rating: linkedApp.rating || 4.1,
+                        latestUpdate: (linkedApp as any).releaseNotes ||
+                          `Enhanced ${linkedApp.platform === 'ios' ? 'iOS' : 'Android'} compatibility and bug fixes for better performance.`,
+                        lastUpdatedAt: (linkedApp as any).lastUpdatedAt,
+                        platform: linkedApp.platform,
+                        bundleId: linkedApp.bundleId
+                      }))}
+                      className="mt-4"
+                    />
                   </div>
                 </div>
               ) : null}
