@@ -134,7 +134,7 @@ export const translations = {
     backToHome: "Back to Home",
 
     // Dashboard
-    revoxDashboard: "Revox Dashboard",
+    revoxDashboard: "Dashboard",
     yourApps: "Your Apps",
     settings: "Settings",
     logOut: "Log out",
@@ -518,7 +518,7 @@ export const translations = {
     backToHome: "Retour à l'accueil",
 
     // Dashboard
-    revoxDashboard: "Tableau de bord Revox",
+    revoxDashboard: "Tableau de bord",
     yourApps: "Vos Apps",
     settings: "Paramètres",
     logOut: "Se déconnecter",
