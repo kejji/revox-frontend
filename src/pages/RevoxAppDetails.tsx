@@ -638,10 +638,10 @@ export default function RevoxAppDetails() {
                       </div>
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h2 className="text-xl sm:text-2xl font-bold line-clamp-2 break-words">{displayApp.name}</h2>
-                      <div className="space-y-3 sm:space-y-4 w-full">
-                        {/* Subtle Rating Display */}
-                        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mb-3 text-sm">
+                       <h2 className="text-xl sm:text-2xl font-bold line-clamp-2 break-words mb-4">{displayApp.name}</h2>
+                       <div className="space-y-3 sm:space-y-4 w-full">
+                         {/* Subtle Rating Display */}
+                         <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mb-3 text-sm mt-2">
                           {/* Current App Rating */}
                           <div className="flex items-center gap-2">
                             <Badge variant="secondary" className="text-xs px-2 py-0.5 flex items-center gap-1">
