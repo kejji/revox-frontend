@@ -28,7 +28,7 @@ const Index = () => {
             
 
             {/* Main Heading */}
-            <div className="space-y-6 animate-fade-in [animation-delay:200ms] opacity-0 [animation-fill-mode:forwards] mt-6">
+            <div className="space-y-6 animate-fade-in [animation-delay:200ms] opacity-0 [animation-fill-mode:forwards] mt-12">
               <h1 className="text-4xl md:text-6xl font-bold tracking-tight">
                 <div className="flex items-center justify-center mb-2 relative">
                   <div className="relative h-24 md:h-32 flex items-center justify-center">
