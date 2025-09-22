@@ -375,7 +375,7 @@ export default function RevoxDashboard() {
               >
                 <CardContent className="p-0">
                   {/* Delete/Options button */}
-                  <div className="absolute top-3 right-3 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                  <div className="absolute top-3 right-3 z-10 opacity-100 transition-opacity duration-200">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button
