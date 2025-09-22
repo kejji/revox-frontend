@@ -613,7 +613,7 @@ export default function RevoxAppDetails() {
                   </div>
                 </div>
               ) : displayApp ? (
-                <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
+                <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6">
                   <div className="flex-shrink-0">
                     <div className="relative">
                       {displayApp.icon ? (
