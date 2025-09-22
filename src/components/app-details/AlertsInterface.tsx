@@ -89,17 +89,16 @@ export function AlertsInterface({ alerts = [], onAlertsChange }: AlertsInterface
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button 
-          variant="ghost" 
+          variant="outline" 
           size="sm" 
-          className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground relative"
+          className="gap-2 text-sm"
         >
           <Bell className="h-4 w-4" />
+          Create Alert
           {alerts.filter(a => a.active).length > 0 && (
-            <div className="absolute -top-1 -right-1 w-4 h-4 bg-primary rounded-full flex items-center justify-center">
-              <span className="text-[10px] text-primary-foreground font-bold">
-                {alerts.filter(a => a.active).length}
-              </span>
-            </div>
+            <Badge variant="secondary" className="ml-1 px-1.5 py-0.5 text-xs">
+              {alerts.filter(a => a.active).length}
+            </Badge>
           )}
         </Button>
       </DialogTrigger>
