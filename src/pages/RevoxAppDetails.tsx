@@ -639,13 +639,14 @@ export default function RevoxAppDetails() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <h2 className="text-xl sm:text-2xl font-bold line-clamp-2 break-words">{displayApp.name}</h2>
+                      <div>
+                      </div>
                     </div>
                   </div>
 
-                  <div className="flex-1 space-y-3 sm:space-y-4 w-full">
-                    <div>
-                      
-                       {/* Subtle Rating Display */}
+                   <div className="flex-1 space-y-3 sm:space-y-4 w-full">
+                       
+                        {/* Subtle Rating Display */}
                       <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mb-3 text-sm">
                         {/* Current App Rating */}
                         <div className="flex items-center gap-2">
@@ -726,35 +727,34 @@ export default function RevoxAppDetails() {
                         )}
                         <AlertsInterface />
                       </div>
-                    </div>
 
-                    <AppDetailsTable
-                      currentApp={{
-                        name: displayApp.name,
-                        version: displayApp.version,
-                        rating: displayApp.rating,
-                        latestUpdate: displayApp.latestUpdate,
-                        lastUpdatedAt: displayApp.lastUpdatedAt,
-                        platform: platform!,
-                        bundleId: bundleId!
-                      }}
-                      linkedApps={linkedApps.map(linkedApp => ({
-                        name: linkedApp.name || linkedApp.bundleId,
-                        version: (linkedApp as any).version || "Unknown",
-                        rating: linkedApp.rating || 4.1,
-                        latestUpdate: (linkedApp as any).releaseNotes ||
-                          `Enhanced ${linkedApp.platform === 'ios' ? 'iOS' : 'Android'} compatibility and bug fixes for better performance.`,
-                        lastUpdatedAt: (linkedApp as any).lastUpdatedAt,
-                        platform: linkedApp.platform,
-                        bundleId: linkedApp.bundleId
-                      }))}
-                      className="mt-4"
-                    />
+                      <AppDetailsTable
+                        currentApp={{
+                          name: displayApp.name,
+                          version: displayApp.version,
+                          rating: displayApp.rating,
+                          latestUpdate: displayApp.latestUpdate,
+                          lastUpdatedAt: displayApp.lastUpdatedAt,
+                          platform: platform!,
+                          bundleId: bundleId!
+                        }}
+                        linkedApps={linkedApps.map(linkedApp => ({
+                          name: linkedApp.name || linkedApp.bundleId,
+                          version: (linkedApp as any).version || "Unknown",
+                          rating: linkedApp.rating || 4.1,
+                          latestUpdate: (linkedApp as any).releaseNotes ||
+                            `Enhanced ${linkedApp.platform === 'ios' ? 'iOS' : 'Android'} compatibility and bug fixes for better performance.`,
+                          lastUpdatedAt: (linkedApp as any).lastUpdatedAt,
+                          platform: linkedApp.platform,
+                          bundleId: linkedApp.bundleId
+                        }))}
+                        className="mt-4"
+                      />
+                    </div>
                   </div>
-                </div>
-              ) : null}
-            </div>
-          </section>
+                ) : null}
+              </div>
+            </section>
 
           {/* Theme Analysis */}
           {platform && bundleId && (
