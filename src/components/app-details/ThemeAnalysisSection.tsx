@@ -179,45 +179,26 @@ export function ThemeAnalysisSection({
   }, [themesData?.status]);
 
   const renderThemeButtons = (themes: ThemeAxis[], type: "positive" | "negative") => {
-    const isPositive = type === "positive";
-    const iconClass = isPositive ? "text-emerald-600" : "text-orange-600";
-    const bgClass = isPositive ? "bg-emerald-50 hover:bg-emerald-100 border-emerald-200" : "bg-orange-50 hover:bg-orange-100 border-orange-200";
-    const accentClass = isPositive ? "bg-emerald-500" : "bg-orange-500";
+    const colorClass = type === "positive" ? "green" : "orange";
     
     return (
-      <div className="space-y-2">
+      <div className="space-y-3">
         {themes.slice(0, 3).map((theme, i) => (
-          <div
+          <button
             key={i}
             onClick={() => onThemeClick({ theme, type })}
-            className={`relative p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 hover:shadow-md group ${bgClass}`}
+            className={`w-full p-3 text-left border rounded-lg hover:bg-muted/50 hover:border-${colorClass}-200 transition-all duration-200 group`}
           >
-            {/* Ranking Badge */}
-            <div className={`absolute -top-2 -left-2 w-6 h-6 rounded-full ${accentClass} flex items-center justify-center shadow-sm`}>
-              <span className="text-xs font-bold text-white">{i + 1}</span>
+            <div className="flex items-center gap-2">
+              <div className={`w-2 h-2 rounded-full bg-${colorClass}-500 flex-shrink-0`} />
+              <span className={`text-sm text-foreground group-hover:text-${colorClass}-700 transition-colors`}>
+                {theme.axis_label}
+              </span>
             </div>
-            
-            {/* Theme Content */}
-            <div className="space-y-2">
-              <div className="flex items-start gap-3">
-                <div className={`w-3 h-3 rounded-full ${accentClass} flex-shrink-0 mt-1`} />
-                <div className="flex-1 min-w-0">
-                  <h4 className="font-medium text-foreground leading-tight">
-                    {theme.axis_label}
-                  </h4>
-                </div>
-              </div>
-              
-              {/* Interactive Hint */}
-              <div className="flex items-center gap-2 text-xs text-muted-foreground group-hover:text-foreground transition-colors">
-                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                </svg>
-                <span>View sample reviews</span>
-              </div>
+            <div className="text-xs text-muted-foreground mt-1 ml-4">
+              Click to view sample comments
             </div>
-          </div>
+          </button>
         ))}
       </div>
     );
