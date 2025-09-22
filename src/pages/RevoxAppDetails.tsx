@@ -657,6 +657,21 @@ export default function RevoxAppDetails() {
                           </div>
                         </div>
                         
+                        {/* Unlink Button - positioned between ratings */}
+                        {linkedApps.length > 0 && (
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={handleUnlinkApp}
+                            disabled={linkingLoading}
+                            className="h-6 px-2 text-xs gap-1 text-muted-foreground hover:text-destructive border border-dashed border-muted-foreground/30 hover:border-destructive/50"
+                            title="Unlink these apps"
+                          >
+                            <Unlink className="h-3 w-3" />
+                            <span className="hidden sm:inline">Unlink</span>
+                          </Button>
+                        )}
+                        
                         {/* Linked App Rating */}
                         {linkedApps.length > 0 && linkedApps[0].rating && (
                           <div className="flex items-center gap-2">
@@ -683,19 +698,6 @@ export default function RevoxAppDetails() {
                             {linkedApp.platform.toUpperCase()}
                           </Badge>
                         ))}
-                        {linkedApps.length > 0 && (
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={handleUnlinkApp}
-                            disabled={linkingLoading}
-                            className="h-6 px-2 text-xs gap-1 text-muted-foreground hover:text-destructive"
-                            title="Unlink apps"
-                          >
-                            <Unlink className="h-3 w-3" />
-                            <span className="hidden sm:inline">Unlink</span>
-                          </Button>
-                        )}
                         {linkedApps.length === 0 && availableApps.length > 0 && (
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
