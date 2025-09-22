@@ -335,7 +335,7 @@ export function ThemeAnalysisSection({
 
   return (
     <section className="space-y-4">
-      <div className="flex flex-row items-center justify-between gap-2">
+      <div className="flex flex-row items-center gap-2">
         <h2 className="text-xl font-semibold">Theme Analysis</h2>
         <AnalysisPeriodPicker
           fromDate={analysisFromDate}
