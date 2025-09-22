@@ -614,34 +614,36 @@ export default function RevoxAppDetails() {
                 </div>
               ) : displayApp ? (
                 <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
-                  <div className="flex-shrink-0">
-                    <div className="relative">
-                      {displayApp.icon ? (
-                        <img
-                          src={displayApp.icon}
-                          alt={displayApp.name}
-                          className="w-20 h-20 rounded-2xl border-2 border-border/50 shadow-sm"
-                        />
-                      ) : (
-                        <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-muted to-muted/50 border-2 border-border/50 flex items-center justify-center">
-                          <span className="text-2xl font-bold text-muted-foreground">
-                            {displayApp.name.substring(0, 2).toUpperCase()}
-                          </span>
-                        </div>
-                      )}
-                      {linkedApps.length > 0 && (
-                        <div className="absolute -top-1 -right-1 w-6 h-6 bg-primary rounded-full flex items-center justify-center">
-                          <LinkIcon className="h-4 w-4 text-primary-foreground" />
-                        </div>
-                      )}
+                  <div className="flex items-start gap-4">
+                    <div className="flex-shrink-0">
+                      <div className="relative">
+                        {displayApp.icon ? (
+                          <img
+                            src={displayApp.icon}
+                            alt={displayApp.name}
+                            className="w-20 h-20 rounded-2xl border-2 border-border/50 shadow-sm"
+                          />
+                        ) : (
+                          <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-muted to-muted/50 border-2 border-border/50 flex items-center justify-center">
+                            <span className="text-2xl font-bold text-muted-foreground">
+                              {displayApp.name.substring(0, 2).toUpperCase()}
+                            </span>
+                          </div>
+                        )}
+                        {linkedApps.length > 0 && (
+                          <div className="absolute -top-1 -right-1 w-6 h-6 bg-primary rounded-full flex items-center justify-center">
+                            <LinkIcon className="h-4 w-4 text-primary-foreground" />
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h2 className="text-xl sm:text-2xl font-bold line-clamp-2 break-words">{displayApp.name}</h2>
                     </div>
                   </div>
 
-                  <div className="flex-1 space-y-3 sm:space-y-4">
+                  <div className="flex-1 space-y-3 sm:space-y-4 w-full">
                     <div>
-                      <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-2">
-                        <h2 className="text-xl sm:text-2xl font-bold">{displayApp.name}</h2>
-                      </div>
                       
                        {/* Subtle Rating Display */}
                       <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mb-3 text-sm">
