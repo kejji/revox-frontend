@@ -647,8 +647,9 @@ export default function RevoxAppDetails() {
                       <div className="flex items-center gap-4 mb-3 text-sm">
                         {/* Current App Rating */}
                         <div className="flex items-center gap-2">
-                          <Badge variant="secondary" className="text-xs px-2 py-0.5">
-                            {platform?.toUpperCase()}
+                          <Badge variant="secondary" className="text-xs px-2 py-0.5 flex items-center gap-1">
+                            {platform === "ios" ? <Apple className="h-3 w-3" /> : <Bot className="h-3 w-3" />}
+                            {platform === "ios" ? "iOS" : "Android"}
                           </Badge>
                           <div className="flex items-center gap-1">
                             {renderStars(Math.floor(displayApp.rating))}
@@ -659,8 +660,9 @@ export default function RevoxAppDetails() {
                         {/* Linked App Rating */}
                         {linkedApps.length > 0 && linkedApps[0].rating && (
                           <div className="flex items-center gap-2">
-                            <Badge variant="secondary" className="text-xs px-2 py-0.5">
-                              {linkedApps[0].platform.toUpperCase()}
+                            <Badge variant="secondary" className="text-xs px-2 py-0.5 flex items-center gap-1">
+                              {linkedApps[0].platform === "ios" ? <Apple className="h-3 w-3" /> : <Bot className="h-3 w-3" />}
+                              {linkedApps[0].platform === "ios" ? "iOS" : "Android"}
                             </Badge>
                             <div className="flex items-center gap-1">
                               {renderStars(Math.floor(linkedApps[0].rating))}
