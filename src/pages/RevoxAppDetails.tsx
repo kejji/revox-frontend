@@ -689,17 +689,7 @@ export default function RevoxAppDetails() {
                         )}
                       </div>
 
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <Badge variant="outline" className="text-xs flex items-center">
-                          {platform === "ios" ? <Apple className="h-3 w-3 mr-1" /> : <Bot className="h-3 w-3 mr-1" />}
-                          {platform?.toUpperCase()}
-                        </Badge>
-                        {linkedApps.map((linkedApp) => (
-                          <Badge key={linkedApp.bundleId} variant="outline" className="text-xs flex items-center">
-                            {linkedApp.platform === "ios" ? <Apple className="h-3 w-3 mr-1" /> : <Bot className="h-3 w-3 mr-1" />}
-                            {linkedApp.platform.toUpperCase()}
-                          </Badge>
-                        ))}
+                       <div className="flex items-center gap-2 flex-wrap">
                         {linkedApps.length === 0 && availableApps.length > 0 && (
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
