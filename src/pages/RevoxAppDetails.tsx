@@ -643,8 +643,8 @@ export default function RevoxAppDetails() {
                         <h2 className="text-xl sm:text-2xl font-bold">{displayApp.name}</h2>
                       </div>
                       
-                      {/* Subtle Rating Display */}
-                      <div className="flex items-center gap-4 mb-3 text-sm">
+                       {/* Subtle Rating Display */}
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mb-3 text-sm">
                         {/* Current App Rating */}
                         <div className="flex items-center gap-2">
                           <Badge variant="secondary" className="text-xs px-2 py-0.5 flex items-center gap-1">
@@ -659,17 +659,19 @@ export default function RevoxAppDetails() {
                         
                         {/* Unlink Button - positioned between ratings */}
                         {linkedApps.length > 0 && (
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={handleUnlinkApp}
-                            disabled={linkingLoading}
-                            className="h-6 px-2 text-xs gap-1 text-muted-foreground hover:text-destructive border border-dashed border-muted-foreground/30 hover:border-destructive/50"
-                            title="Unlink these apps"
-                          >
-                            <Unlink className="h-3 w-3" />
-                            <span className="hidden sm:inline">Unlink</span>
-                          </Button>
+                          <div className="flex justify-center sm:justify-start">
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={handleUnlinkApp}
+                              disabled={linkingLoading}
+                              className="h-6 px-2 text-xs gap-1 text-muted-foreground hover:text-destructive border border-dashed border-muted-foreground/30 hover:border-destructive/50"
+                              title="Unlink these apps"
+                            >
+                              <Unlink className="h-3 w-3" />
+                              <span>Unlink</span>
+                            </Button>
+                          </div>
                         )}
                         
                         {/* Linked App Rating */}
