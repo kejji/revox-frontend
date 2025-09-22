@@ -45,7 +45,11 @@ export function AppDetailsTable({
         
 
         {/* App Rows */}
-        {allApps.map((app, index) => {})}
+        {allApps.map((app, index) => (
+          <div key={`${app.platform}-${app.bundleId}-${index}`}>
+            {/* Desktop table row content would go here */}
+          </div>
+        ))}
       </div>
 
       {/* Mobile Layout */}

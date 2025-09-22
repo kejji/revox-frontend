@@ -641,64 +641,88 @@ export default function RevoxAppDetails() {
                     <div>
                       <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-2">
                         <h2 className="text-xl sm:text-2xl font-bold">{displayApp.name}</h2>
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <Badge variant="outline" className="text-xs flex items-center">
-                            {platform === "ios" ? <Apple className="h-3 w-3 mr-1" /> : <Bot className="h-3 w-3 mr-1" />}
-                            {platform?.toUpperCase()}
-                          </Badge>
-                          {linkedApps.map((linkedApp) => (
-                            <Badge key={linkedApp.bundleId} variant="outline" className="text-xs flex items-center">
-                              {linkedApp.platform === "ios" ? <Apple className="h-3 w-3 mr-1" /> : <Bot className="h-3 w-3 mr-1" />}
-                              {linkedApp.platform.toUpperCase()}
-                            </Badge>
-                          ))}
-                          {linkedApps.length > 0 && (
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              onClick={handleUnlinkApp}
-                              disabled={linkingLoading}
-                              className="h-6 px-2 text-xs gap-1 text-muted-foreground hover:text-destructive"
-                              title="Unlink apps"
-                            >
-                              <Unlink className="h-3 w-3" />
-                              <span className="hidden sm:inline">Unlink</span>
-                            </Button>
-                          )}
-                          {linkedApps.length === 0 && availableApps.length > 0 && (
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <Button
-                                  size="sm"
-                                  variant="ghost"
-                                  disabled={linkingLoading}
-                                  className="h-6 px-2 text-xs gap-1 text-muted-foreground hover:text-primary"
-                                  title="Link with counterpart app"
-                                >
-                                  <Plus className="h-3 w-3" />
-                                  <span className="hidden sm:inline">Link</span>
-                                </Button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent>
-                                {availableApps.map((availableApp) => (
-                                  <DropdownMenuItem
-                                    key={`${availableApp.platform}-${availableApp.bundleId}`}
-                                    onClick={() => handleLinkApp(availableApp)}
-                                    className="gap-2"
-                                  >
-                                    {availableApp.platform === "ios" ? (
-                                      <Apple className="h-4 w-4" />
-                                    ) : (
-                                      <Bot className="h-4 w-4" />
-                                    )}
-                                    {availableApp.name || availableApp.bundleId}
-                                  </DropdownMenuItem>
-                                ))}
-                              </DropdownMenuContent>
-                            </DropdownMenu>
-                          )}
-                          <AlertsInterface />
+                      </div>
+                      
+                      {/* Subtle Rating Display */}
+                      <div className="flex items-center gap-4 mb-3 text-sm">
+                        {/* Current App Rating */}
+                        <div className="flex items-center gap-2">
+                          {platform === "ios" ? <Apple className="h-4 w-4 text-muted-foreground" /> : <Bot className="h-4 w-4 text-muted-foreground" />}
+                          <div className="flex items-center gap-1">
+                            {renderStars(Math.floor(displayApp.rating))}
+                            <span className="text-muted-foreground ml-1">{displayApp.rating.toFixed(1)}</span>
+                          </div>
                         </div>
+                        
+                        {/* Linked App Rating */}
+                        {linkedApps.length > 0 && linkedApps[0].rating && (
+                          <div className="flex items-center gap-2">
+                            {linkedApps[0].platform === "ios" ? <Apple className="h-4 w-4 text-muted-foreground" /> : <Bot className="h-4 w-4 text-muted-foreground" />}
+                            <div className="flex items-center gap-1">
+                              {renderStars(Math.floor(linkedApps[0].rating))}
+                              <span className="text-muted-foreground ml-1">{linkedApps[0].rating.toFixed(1)}</span>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <Badge variant="outline" className="text-xs flex items-center">
+                          {platform === "ios" ? <Apple className="h-3 w-3 mr-1" /> : <Bot className="h-3 w-3 mr-1" />}
+                          {platform?.toUpperCase()}
+                        </Badge>
+                        {linkedApps.map((linkedApp) => (
+                          <Badge key={linkedApp.bundleId} variant="outline" className="text-xs flex items-center">
+                            {linkedApp.platform === "ios" ? <Apple className="h-3 w-3 mr-1" /> : <Bot className="h-3 w-3 mr-1" />}
+                            {linkedApp.platform.toUpperCase()}
+                          </Badge>
+                        ))}
+                        {linkedApps.length > 0 && (
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={handleUnlinkApp}
+                            disabled={linkingLoading}
+                            className="h-6 px-2 text-xs gap-1 text-muted-foreground hover:text-destructive"
+                            title="Unlink apps"
+                          >
+                            <Unlink className="h-3 w-3" />
+                            <span className="hidden sm:inline">Unlink</span>
+                          </Button>
+                        )}
+                        {linkedApps.length === 0 && availableApps.length > 0 && (
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                disabled={linkingLoading}
+                                className="h-6 px-2 text-xs gap-1 text-muted-foreground hover:text-primary"
+                                title="Link with counterpart app"
+                              >
+                                <Plus className="h-3 w-3" />
+                                <span className="hidden sm:inline">Link</span>
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent>
+                              {availableApps.map((availableApp) => (
+                                <DropdownMenuItem
+                                  key={`${availableApp.platform}-${availableApp.bundleId}`}
+                                  onClick={() => handleLinkApp(availableApp)}
+                                  className="gap-2"
+                                >
+                                  {availableApp.platform === "ios" ? (
+                                    <Apple className="h-4 w-4" />
+                                  ) : (
+                                    <Bot className="h-4 w-4" />
+                                  )}
+                                  {availableApp.name || availableApp.bundleId}
+                                </DropdownMenuItem>
+                              ))}
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        )}
+                        <AlertsInterface />
                       </div>
                     </div>
 
