@@ -5,7 +5,6 @@ import { Apple, Bot, Star } from "lucide-react";
 import { UpdateDialog } from "./UpdateDialog";
 import { ResponsiveText } from "@/components/ui/responsive-text";
 import { useLanguage } from "@/contexts/LanguageContext";
-
 interface AppData {
   name: string;
   version: string;
@@ -16,80 +15,42 @@ interface AppData {
   platform: "ios" | "android";
   bundleId: string;
 }
-
 interface AppDetailsTableProps {
   currentApp: AppData;
   linkedApps?: AppData[];
   className?: string;
 }
-
-export function AppDetailsTable({ currentApp, linkedApps = [], className = "" }: AppDetailsTableProps) {
+export function AppDetailsTable({
+  currentApp,
+  linkedApps = [],
+  className = ""
+}: AppDetailsTableProps) {
   const [showUpdateDialog, setShowUpdateDialog] = useState(false);
   const [selectedUpdateText, setSelectedUpdateText] = useState("");
-  const { t } = useLanguage();
-
-
-  const renderStars = (rating: number) =>
-    Array.from({ length: 5 }, (_, i) => (
-      <Star
-        key={i}
-        className={`h-4 w-4 ${i < Math.round(rating) ? "text-yellow-500 fill-yellow-500" : "text-muted-foreground"}`}
-      />
-    ));
-
+  const {
+    t
+  } = useLanguage();
+  const renderStars = (rating: number) => Array.from({
+    length: 5
+  }, (_, i) => <Star key={i} className={`h-4 w-4 ${i < Math.round(rating) ? "text-yellow-500 fill-yellow-500" : "text-muted-foreground"}`} />);
   const handleShowMore = (updateText: string) => {
     setSelectedUpdateText(updateText);
     setShowUpdateDialog(true);
   };
-
   const allApps = [currentApp, ...linkedApps];
-
-  return (
-    <div className={`${className}`}>
+  return <div className={`${className}`}>
       {/* Desktop Layout */}
       <div className="hidden md:block space-y-1">
         {/* Header Row */}
-        <div className="grid grid-cols-[180px_180px_1fr] gap-6 pb-2">
-          <h4 className="font-medium text-xs text-muted-foreground uppercase tracking-wider">{t('version')}</h4>
-          <h4 className="font-medium text-xs text-muted-foreground uppercase tracking-wider">{t('rating')}</h4>
-          <h4 className="font-medium text-xs text-muted-foreground uppercase tracking-wider">{t('latestUpdate')}</h4>
-        </div>
+        
 
         {/* App Rows */}
-        {allApps.map((app, index) => (
-          <div key={`${app.platform}-${app.bundleId}-${index}`} className="grid grid-cols-[180px_180px_1fr] gap-6 py-3 border-b border-border/30 last:border-b-0">
-            {/* Version with Platform Icon */}
-            <div className="flex items-start gap-2 pt-1">
-              {app.platform === "ios" ? (
-                <Apple className="h-4 w-4 text-muted-foreground flex-shrink-0 mt-0.5" />
-              ) : (
-                <Bot className="h-4 w-4 text-muted-foreground flex-shrink-0 mt-0.5" />
-              )}
-              <span className="font-medium">{app.version}</span>
-            </div>
-
-            {/* Rating */}
-            <div className="flex items-start gap-2 pt-1">
-              <div className="flex">{renderStars(Math.floor(app.rating))}</div>
-              <span className="font-medium">{app.rating}</span>
-            </div>
-
-            {/* Latest Update */}
-            <div className="min-h-0">
-              <ResponsiveText
-                text={app.latestUpdate}
-                maxLines={1}
-                onShowMore={handleShowMore}
-              />
-            </div>
-          </div>
-        ))}
+        {allApps.map((app, index) => {})}
       </div>
 
       {/* Mobile Layout */}
       <div className="md:hidden space-y-4">
-        {allApps.map((app, index) => (
-          <div key={`mobile-${app.platform}-${app.bundleId}-${index}`} className="space-y-4 p-4 bg-muted/30 rounded-lg border">
+        {allApps.map((app, index) => <div key={`mobile-${app.platform}-${app.bundleId}-${index}`} className="space-y-4 p-4 bg-muted/30 rounded-lg border">
             {/* Platform Badge */}
             <div className="flex items-center gap-2">
               <Badge variant="secondary" className="text-xs font-medium">
@@ -102,11 +63,7 @@ export function AppDetailsTable({ currentApp, linkedApps = [], className = "" }:
               <div className="space-y-1">
                 <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium">{t('version')}</p>
                 <div className="flex items-center gap-2">
-                  {app.platform === "ios" ? (
-                    <Apple className="h-4 w-4 text-muted-foreground" />
-                  ) : (
-                    <Bot className="h-4 w-4 text-muted-foreground" />
-                  )}
+                  {app.platform === "ios" ? <Apple className="h-4 w-4 text-muted-foreground" /> : <Bot className="h-4 w-4 text-muted-foreground" />}
                   <span className="font-semibold text-base">{app.version}</span>
                 </div>
               </div>
@@ -122,23 +79,11 @@ export function AppDetailsTable({ currentApp, linkedApps = [], className = "" }:
             {/* Latest Update Section */}
             <div className="space-y-3">
               <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium">{t('latestUpdate')}</p>
-              <ResponsiveText
-                text={app.latestUpdate}
-                maxLines={1}
-                onShowMore={handleShowMore}
-                className="bg-background/50 p-3 rounded-md border"
-              />
+              <ResponsiveText text={app.latestUpdate} maxLines={1} onShowMore={handleShowMore} className="bg-background/50 p-3 rounded-md border" />
             </div>
-          </div>
-        ))}
+          </div>)}
       </div>
 
-      <UpdateDialog
-        open={showUpdateDialog}
-        onOpenChange={setShowUpdateDialog}
-        updateText={selectedUpdateText}
-        appName={currentApp.name}
-      />
-    </div>
-  );
+      <UpdateDialog open={showUpdateDialog} onOpenChange={setShowUpdateDialog} updateText={selectedUpdateText} appName={currentApp.name} />
+    </div>;
 }
